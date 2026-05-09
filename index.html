@@ -6,7 +6,7 @@
   <title>MoveQuest 步步兽</title>
   <meta name="description" content="MoveQuest 步步兽是一款用每日步数投喂并养成虚拟宠物的游戏化运动激励 App。">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111712'/%3E%3Ccircle cx='32' cy='34' r='22' fill='%23dfff4f'/%3E%3Ccircle cx='24' cy='30' r='4' fill='%23111712'/%3E%3Ccircle cx='40' cy='30' r='4' fill='%23111712'/%3E%3Cpath d='M24 42c5 5 12 5 17 0' stroke='%23111712' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=movepet-v4">
+  <link rel="stylesheet" href="styles.css?v=movepet-v5">
 </head>
 <body>
   <main class="app-shell" data-pet="sprout" data-mood="calm" data-stage="0">
@@ -16,6 +16,7 @@
         <div class="orbit-card card-b">食物</div>
         <div class="orbit-card card-c">旅行</div>
         <div class="pet-3d pet-sprout intro-pet">
+          <span class="pet-shadow"></span>
           <span class="pet-tail"></span>
           <span class="pet-glow"></span>
           <span class="pet-ear ear-left"></span>
@@ -83,15 +84,49 @@
           <strong>河狸兽</strong>
           <small>适合操场挑战</small>
         </button>
+        <button class="pet-choice" type="button" data-pet-choice="cat">
+          <span class="pet-mini mini-cat"></span>
+          <strong>星尾猫</strong>
+          <small>喜欢夜跑和探索</small>
+        </button>
       </section>
 
       <form class="setup-card" id="setup-form">
+        <div class="account-grid">
+          <label>
+            校园账号
+            <input id="account-input" maxlength="16" value="campus01" autocomplete="username">
+          </label>
+          <label>
+            登录密码
+            <input id="password-input" type="password" minlength="6" maxlength="18" value="move2026" autocomplete="new-password">
+          </label>
+        </div>
         <label>
           你的昵称
           <input id="name-input" maxlength="8" value="阿澈" autocomplete="off">
         </label>
         <div class="profile-setup">
           <span>你的头像</span>
+          <section class="avatar-upload-card">
+            <span class="user-avatar avatar-leaf" id="avatar-preview">澈</span>
+            <div>
+              <strong>上传头像</strong>
+              <p>可以用自己的照片，调节缩放完成圆形裁切。</p>
+              <label class="upload-action" for="avatar-upload">选择图片</label>
+              <input id="avatar-upload" type="file" accept="image/*">
+            </div>
+          </section>
+          <div class="crop-controls">
+            <label>
+              缩放
+              <input id="avatar-zoom" type="range" min="100" max="180" value="120">
+            </label>
+            <label>
+              上下位置
+              <input id="avatar-y" type="range" min="20" max="80" value="50">
+            </label>
+          </div>
           <div class="avatar-picker" id="avatar-picker" aria-label="选择头像">
             <button class="avatar-choice selected" type="button" data-avatar-choice="leaf"><span>澈</span><small>绿茵</small></button>
             <button class="avatar-choice" type="button" data-avatar-choice="sun"><span>晨</span><small>晨跑</small></button>
@@ -124,6 +159,7 @@
             <small id="user-level">Lv.1 运动饲养员</small>
           </span>
         </button>
+        <button class="help-button" type="button" id="help-button">玩法</button>
         <div class="streak-pill">
           <span>连续</span>
           <strong id="streak-label">0</strong>
@@ -155,6 +191,23 @@
 
       <div class="tab-panels">
         <section class="tab-panel active" data-panel="home">
+          <section class="daily-path" aria-label="今日运动主线">
+            <article data-path-step="walk">
+              <span>1</span>
+              <strong>走路</strong>
+              <small>先把真实步数走出来</small>
+            </article>
+            <article data-path-step="feed">
+              <span>2</span>
+              <strong>投喂</strong>
+              <small>步数到节点再喂食</small>
+            </article>
+            <article data-path-step="explore">
+              <span>3</span>
+              <strong>探索</strong>
+              <small>喂饱后派宠物出门</small>
+            </article>
+          </section>
           <section class="pet-room" id="pet-room" aria-label="虚拟宠物小屋">
             <div class="room-sky">
               <span class="soft-cloud cloud-a"></span>
@@ -163,6 +216,7 @@
             </div>
             <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
               <div class="pet-3d" id="pet-3d">
+                <span class="pet-shadow"></span>
                 <span class="pet-tail"></span>
                 <span class="pet-glow"></span>
                 <span class="pet-ear ear-left"></span>
@@ -391,9 +445,23 @@
     </div>
   </main>
 
+  <div class="guide-modal" id="guide-modal" aria-hidden="true">
+    <section class="guide-card">
+      <p class="eyebrow">新手指引</p>
+      <h3>这是一个用真实步数养宠物的校园运动 App。</h3>
+      <ol>
+        <li><strong>先走路：</strong>点击“开始走动”，步数到节点才会解锁食物。</li>
+        <li><strong>再投喂：</strong>投喂不是刷积分，只有真实走到节点才可以喂。</li>
+        <li><strong>去探索：</strong>今天喂饱后继续走路，攒旅行便当，让宠物带回校园明信片。</li>
+        <li><strong>长期养成：</strong>进化需要多天照料和成长值，不会一天毕业。</li>
+      </ol>
+      <button class="primary-action" type="button" id="close-guide">我知道了</button>
+    </section>
+  </div>
+
   <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
   <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
 
-  <script src="app.js?v=movepet-v4"></script>
+  <script src="app.js?v=movepet-v5"></script>
 </body>
 </html>
