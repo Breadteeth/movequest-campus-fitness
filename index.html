@@ -17,12 +17,18 @@
         <div class="orbit-card card-c">进化</div>
         <div class="pet-3d pet-sprout intro-pet">
           <span class="pet-tail"></span>
+          <span class="pet-glow"></span>
           <span class="pet-ear ear-left"></span>
           <span class="pet-ear ear-right"></span>
+          <span class="pet-crown"></span>
           <span class="pet-body"></span>
           <span class="pet-belly"></span>
           <span class="pet-arm arm-left"></span>
           <span class="pet-arm arm-right"></span>
+          <span class="pet-pattern pattern-a"></span>
+          <span class="pet-pattern pattern-b"></span>
+          <span class="pet-muzzle"></span>
+          <span class="pet-nose"></span>
           <span class="pet-face"><i></i><b></b><em></em></span>
           <span class="pet-cheek cheek-left"></span>
           <span class="pet-cheek cheek-right"></span>
@@ -84,6 +90,15 @@
           你的昵称
           <input id="name-input" maxlength="8" value="阿澈" autocomplete="off">
         </label>
+        <div class="profile-setup">
+          <span>你的头像</span>
+          <div class="avatar-picker" id="avatar-picker" aria-label="选择头像">
+            <button class="avatar-choice selected" type="button" data-avatar-choice="leaf"><span>澈</span><small>绿茵</small></button>
+            <button class="avatar-choice" type="button" data-avatar-choice="sun"><span>晨</span><small>晨跑</small></button>
+            <button class="avatar-choice" type="button" data-avatar-choice="wave"><span>浪</span><small>操场</small></button>
+            <button class="avatar-choice" type="button" data-avatar-choice="star"><span>星</span><small>坚持</small></button>
+          </div>
+        </div>
         <label>
           宠物名字
           <input id="pet-input" maxlength="8" value="芽芽" autocomplete="off">
@@ -102,15 +117,26 @@
 
     <section class="screen app-screen" data-screen="app">
       <header class="topbar">
-        <div>
-          <p class="eyebrow" id="goal-label">校园快走</p>
-          <h2><span id="pet-name">芽芽</span>的小屋</h2>
-        </div>
+        <button class="profile-chip" type="button" id="profile-chip" aria-label="查看个人档案">
+          <span class="user-avatar avatar-leaf" id="user-avatar">澈</span>
+          <span>
+            <strong id="user-name">阿澈</strong>
+            <small id="user-level">Lv.1 运动饲养员</small>
+          </span>
+        </button>
         <div class="streak-pill">
           <span>连续</span>
           <strong id="streak-label">0</strong>
         </div>
       </header>
+
+      <section class="pet-title-card">
+        <div>
+          <p class="eyebrow" id="goal-label">校园快走</p>
+          <h2><span id="pet-name">芽芽</span>的小屋</h2>
+        </div>
+        <span id="profile-badge">今日照顾中</span>
+      </section>
 
       <section class="stats-panel">
         <article>
@@ -138,12 +164,18 @@
             <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
               <div class="pet-3d" id="pet-3d">
                 <span class="pet-tail"></span>
+                <span class="pet-glow"></span>
                 <span class="pet-ear ear-left"></span>
                 <span class="pet-ear ear-right"></span>
+                <span class="pet-crown"></span>
                 <span class="pet-body"></span>
                 <span class="pet-belly"></span>
                 <span class="pet-arm arm-left"></span>
                 <span class="pet-arm arm-right"></span>
+                <span class="pet-pattern pattern-a"></span>
+                <span class="pet-pattern pattern-b"></span>
+                <span class="pet-muzzle"></span>
+                <span class="pet-nose"></span>
                 <span class="pet-face" id="pet-face"><i></i><b></b><em></em></span>
                 <span class="pet-cheek cheek-left"></span>
                 <span class="pet-cheek cheek-right"></span>
@@ -243,6 +275,19 @@
         </section>
 
         <section class="tab-panel" data-panel="growth">
+          <section class="profile-panel">
+            <span class="user-avatar avatar-leaf" id="profile-avatar">澈</span>
+            <div>
+              <p class="eyebrow">个人档案</p>
+              <h3 id="profile-name">阿澈</h3>
+              <span id="profile-title">Lv.1 运动饲养员</span>
+            </div>
+            <article>
+              <strong id="profile-days">0</strong>
+              <span>连续天</span>
+            </article>
+          </section>
+
           <section class="evolution-card">
             <div>
               <p class="eyebrow">进化系统</p>
