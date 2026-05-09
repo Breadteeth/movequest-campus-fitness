@@ -1,4 +1,4 @@
-const STORAGE_KEY = "movequest-pet-v5";
+const STORAGE_KEY = "movequest-pet-v6";
 const EXTRA_SNACK_STEPS = 420;
 
 const petTypes = {
