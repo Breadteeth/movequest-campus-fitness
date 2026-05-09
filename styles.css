@@ -711,6 +711,11 @@ p {
   backdrop-filter: none;
 }
 
+.tab-panel[data-panel="home"].active {
+  display: flex;
+  flex-direction: column;
+}
+
 .daily-path {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2439,7 +2444,7 @@ p {
   }
 
   .pet-room {
-    min-height: 318px;
+    min-height: 218px;
   }
 
   .walk-card {
@@ -2476,6 +2481,566 @@ p {
   }
 
   .postcard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* v6 visual system: one clear action per screen, softer hierarchy, stronger motion identity. */
+:root {
+  --ink: #10221c;
+  --paper: #fbf3df;
+  --card: rgba(255, 252, 241, 0.78);
+  --line: rgba(16, 34, 28, 0.12);
+  --muted: #66766c;
+  --sprout: #d8ff3e;
+  --leaf: #24b36b;
+  --berry: #5972ff;
+  --peach: #ff8c5f;
+  --cream: #ffe6ad;
+  --mint: #7ee4c6;
+  --shadow: 0 34px 90px rgba(16, 34, 28, 0.18);
+  --radius: 28px;
+}
+
+body {
+  background:
+    radial-gradient(circle at 10% 4%, rgba(216, 255, 62, 0.34), transparent 30%),
+    radial-gradient(circle at 96% 14%, rgba(126, 228, 198, 0.35), transparent 34%),
+    radial-gradient(circle at 70% 92%, rgba(89, 114, 255, 0.16), transparent 28%),
+    linear-gradient(142deg, #fff1cf 0%, #eef8e7 48%, #edf7ff 100%);
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 0 46%, rgba(36, 179, 107, 0.08) 46.2% 46.8%, transparent 47%),
+    radial-gradient(circle at 50% 50%, transparent 0 18px, rgba(16, 34, 28, 0.035) 19px 20px, transparent 21px);
+  background-size: auto, 46px 46px;
+  content: "";
+}
+
+.app-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 240, 0.9), rgba(246, 255, 239, 0.72)),
+    radial-gradient(circle at 12% 0%, rgba(216, 255, 62, 0.25), transparent 30%);
+}
+
+.app-shell::before {
+  position: absolute;
+  top: -90px;
+  right: -110px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: rgba(126, 228, 198, 0.28);
+  filter: blur(4px);
+  content: "";
+  pointer-events: none;
+}
+
+.screen {
+  position: relative;
+  z-index: 1;
+}
+
+.simple-head {
+  margin-top: 2px;
+}
+
+.simple-head h1,
+.intro-copy h1 {
+  letter-spacing: -0.045em;
+}
+
+.pet-picker {
+  gap: 10px;
+}
+
+.pet-choice,
+.setup-card,
+.stats-panel article,
+.tab-panel,
+.social-strip,
+.explore-hero,
+.friend-board,
+.postcard-grid article,
+.evolution-card,
+.mini-achievement,
+.trip-card,
+.stage-list article,
+.food-card,
+.profile-panel,
+.social-actions article,
+.achievement-grid article {
+  border-color: rgba(16, 34, 28, 0.1);
+  background: rgba(255, 252, 241, 0.72);
+  box-shadow: 0 16px 42px rgba(16, 34, 28, 0.06);
+}
+
+.pet-choice {
+  min-height: 116px;
+  border-radius: 30px;
+}
+
+.pet-choice.selected {
+  border-color: rgba(16, 34, 28, 0.46);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(216, 255, 62, 0.56), transparent 38%),
+    rgba(255, 252, 241, 0.82);
+}
+
+.pet-mini {
+  border: 1px solid rgba(255, 255, 255, 0.84);
+  box-shadow:
+    inset -10px -14px 18px rgba(16, 34, 28, 0.12),
+    inset 8px 10px 18px rgba(255, 255, 255, 0.5),
+    0 16px 26px rgba(16, 34, 28, 0.12);
+}
+
+.setup-card {
+  border-radius: 32px;
+  padding: 14px;
+}
+
+.setup-card input,
+.setup-card select {
+  min-height: 54px;
+  border: 1px solid rgba(16, 34, 28, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.avatar-upload-card {
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216, 255, 62, 0.24), transparent 36%),
+    rgba(255, 255, 255, 0.68);
+}
+
+.upload-action,
+.primary-action,
+.motion-button,
+.trip-card button,
+.food-card button {
+  box-shadow: 0 14px 28px rgba(16, 34, 28, 0.12);
+}
+
+.topbar {
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.profile-chip {
+  min-height: 62px;
+  border-radius: 26px;
+  background: rgba(255, 252, 241, 0.76);
+  box-shadow: 0 16px 36px rgba(16, 34, 28, 0.08);
+}
+
+.profile-chip strong {
+  font-size: 16px;
+}
+
+.help-button {
+  min-height: 44px;
+  background: rgba(255, 252, 241, 0.72);
+  box-shadow: 0 14px 34px rgba(16, 34, 28, 0.08);
+}
+
+.streak-pill {
+  min-width: 58px;
+  min-height: 58px;
+  background:
+    radial-gradient(circle at 42% 24%, rgba(216, 255, 62, 0.52), transparent 28%),
+    var(--ink);
+  box-shadow: 0 18px 34px rgba(16, 34, 28, 0.18);
+}
+
+.pet-title-card {
+  margin-bottom: 10px;
+  border-color: rgba(16, 34, 28, 0.09);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 252, 241, 0.78), rgba(255, 255, 255, 0.54)),
+    radial-gradient(circle at 100% 0%, rgba(126, 228, 198, 0.28), transparent 32%);
+  box-shadow: 0 18px 42px rgba(16, 34, 28, 0.07);
+}
+
+.pet-title-card h2 {
+  font-size: 25px;
+  letter-spacing: -0.045em;
+}
+
+.stats-panel {
+  position: relative;
+  gap: 0;
+  overflow: hidden;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid rgba(16, 34, 28, 0.09);
+  border-radius: 26px;
+  background: rgba(255, 252, 241, 0.58);
+  box-shadow: 0 16px 38px rgba(16, 34, 28, 0.06);
+}
+
+.stats-panel article {
+  min-height: 64px;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.stats-panel article + article {
+  border-left: 1px solid rgba(16, 34, 28, 0.08);
+  border-radius: 0;
+}
+
+.stats-panel strong {
+  margin-top: 3px;
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.daily-path {
+  position: relative;
+  order: 1;
+  flex: 0 0 auto;
+  gap: 0;
+  padding: 10px;
+  border: 1px solid rgba(16, 34, 28, 0.09);
+  border-radius: 30px;
+  background: rgba(255, 252, 241, 0.66);
+  box-shadow: 0 18px 42px rgba(16, 34, 28, 0.07);
+}
+
+.daily-path::before {
+  position: absolute;
+  left: 52px;
+  right: 52px;
+  top: 31px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(36, 179, 107, 0.28), rgba(216, 255, 62, 0.82), rgba(89, 114, 255, 0.18));
+  content: "";
+}
+
+.daily-path article {
+  min-height: 72px;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.daily-path article::after {
+  display: none;
+}
+
+.daily-path article.active {
+  background: rgba(216, 255, 62, 0.28);
+}
+
+.daily-path article.done {
+  background: rgba(36, 179, 107, 0.12);
+}
+
+.daily-path article span {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 8px;
+  box-shadow: 0 8px 18px rgba(16, 34, 28, 0.14);
+}
+
+.pet-room {
+  order: 3;
+  flex: 0 0 auto;
+  height: min(28vh, 226px);
+  min-height: 218px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 38px;
+  background:
+    radial-gradient(circle at 50% 26%, rgba(216, 255, 62, 0.55), transparent 19%),
+    radial-gradient(circle at 78% 18%, rgba(126, 228, 198, 0.18), transparent 28%),
+    linear-gradient(180deg, #10251f 0%, #193a2e 52%, #75a968 53%, #a9d37a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 24px 54px rgba(16, 34, 28, 0.18);
+}
+
+.pet-room::before {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  bottom: 15%;
+  height: 42%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-left: 0;
+  border-right: 0;
+  content: "";
+  transform: rotateX(66deg);
+}
+
+.pet-room::after {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 1;
+  width: 76%;
+  height: 7px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(216, 255, 62, 0.52), transparent);
+  content: "";
+  filter: blur(2px);
+  transform: translateX(-50%);
+}
+
+.pet-3d {
+  width: 164px;
+  height: 172px;
+  scale: 0.82;
+  translate: 0 18px;
+  filter: drop-shadow(0 24px 30px rgba(16, 34, 28, 0.22));
+}
+
+.pet-body {
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.98), transparent 0 10%, transparent 11%),
+    radial-gradient(circle at 48% 40%, rgba(255, 255, 255, 0.24), transparent 0 34%, transparent 35%),
+    linear-gradient(145deg, var(--pet-a) 0%, color-mix(in srgb, var(--pet-a), var(--pet-b) 45%) 42%, var(--pet-b) 100%);
+  box-shadow:
+    inset -22px -28px 34px rgba(16, 34, 28, 0.13),
+    inset 18px 18px 28px rgba(255, 255, 255, 0.42);
+}
+
+.pet-ear {
+  border-width: 1px;
+  box-shadow:
+    inset -8px -10px 16px rgba(16, 34, 28, 0.1),
+    inset 6px 8px 12px rgba(255, 255, 255, 0.4);
+}
+
+.app-shell[data-pet="cat"] .pet-body {
+  inset: 30px 14px 12px;
+  border-radius: 47% 53% 50% 50% / 44% 46% 58% 56%;
+}
+
+.app-shell[data-pet="cat"] .pet-ear {
+  width: 58px;
+  height: 62px;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  border-radius: 26%;
+}
+
+.app-shell[data-pet="cat"] .pet-tail {
+  right: -24px;
+  bottom: 74px;
+  width: 90px;
+  height: 26px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 86% 50%, var(--pet-mark) 0 8px, transparent 9px),
+    linear-gradient(90deg, var(--pet-b), var(--pet-a));
+}
+
+.app-shell[data-pet="cat"] .pet-pattern {
+  background: rgba(16, 34, 28, 0.42);
+}
+
+.app-shell[data-pet="cat"] .pattern-a {
+  left: 54px;
+  top: 52px;
+  width: 20px;
+  height: 11px;
+}
+
+.app-shell[data-pet="cat"] .pattern-b {
+  right: 38px;
+  top: 126px;
+  width: 20px;
+  height: 14px;
+}
+
+.pet-face i,
+.pet-face b {
+  width: 12px;
+  height: 17px;
+}
+
+.pet-muzzle {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.mood-bubble {
+  left: 20px;
+  right: 20px;
+  top: 12px;
+  bottom: auto;
+  border: 0;
+  border-radius: 20px;
+  background: rgba(16, 34, 28, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  text-align: center;
+  font-size: 12px;
+}
+
+.walk-card {
+  position: relative;
+  order: 2;
+  flex: 0 0 auto;
+  overflow: hidden;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(216, 255, 62, 0.42), transparent 28%),
+    linear-gradient(135deg, rgba(16, 34, 28, 0.96), rgba(22, 62, 48, 0.92));
+  color: white;
+  box-shadow: 0 22px 52px rgba(16, 34, 28, 0.18);
+}
+
+.walk-card span,
+.walk-card strong {
+  color: white;
+}
+
+.walk-card span {
+  opacity: 0.72;
+}
+
+.walk-card strong {
+  max-width: 96%;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.walk-progress {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.motion-button {
+  background: var(--sprout);
+  box-shadow: 0 18px 36px rgba(216, 255, 62, 0.2);
+}
+
+.interaction-dock {
+  order: 4;
+  flex: 0 0 auto;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid rgba(16, 34, 28, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 252, 241, 0.6);
+}
+
+.interaction-dock button {
+  border-radius: 22px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.interaction-dock button:not(:disabled):hover,
+.tab-button:hover,
+.profile-chip:hover,
+.help-button:hover {
+  transform: translateY(-1px);
+}
+
+.food-card,
+.trip-card {
+  border-radius: 24px;
+  background: rgba(255, 252, 241, 0.74);
+}
+
+.food-card.ready,
+.trip-card.ready {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216, 255, 62, 0.36), transparent 38%),
+    rgba(255, 252, 241, 0.78);
+}
+
+.food-symbol,
+.trip-symbol,
+.friend-pet {
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(216, 255, 62, 0.55), transparent 30%),
+    var(--ink);
+}
+
+.explore-hero,
+.evolution-card {
+  border-radius: 30px;
+}
+
+.profile-panel {
+  border-radius: 28px;
+}
+
+.bottom-tabs {
+  bottom: 10px;
+  border-color: rgba(16, 34, 28, 0.1);
+  border-radius: 28px;
+  background: rgba(255, 252, 241, 0.82);
+  box-shadow: 0 20px 54px rgba(16, 34, 28, 0.17);
+}
+
+.tab-button {
+  min-height: 48px;
+  border-radius: 20px;
+}
+
+.tab-button.active {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(216, 255, 62, 0.26), transparent 34%),
+    var(--ink);
+}
+
+.guide-card,
+.result-card {
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216, 255, 62, 0.26), transparent 36%),
+    var(--paper);
+}
+
+@media (max-width: 430px) {
+  .screen {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .pet-picker {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .daily-path {
+    padding: 8px;
+  }
+
+  .daily-path article {
+    min-height: 76px;
+    padding: 9px 7px;
+  }
+
+  .daily-path small {
+    font-size: 10px;
+  }
+
+  .pet-room {
+    min-height: 218px;
+  }
+
+  .walk-card {
     grid-template-columns: 1fr;
   }
 }
