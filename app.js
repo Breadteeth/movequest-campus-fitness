@@ -8,7 +8,7 @@ const petTypes = {
     stages: [
       { name: "幼芽期", min: 0, copy: "刚被领养，最需要稳定投喂。" },
       { name: "伸展期", min: 70, copy: "耳朵长出嫩叶，会主动跟着你晃。" },
-      { name: "花冠期", min: 170, copy: "连续运动后开出光花，房间也会更亮。" }
+      { name: "花冠期", min: 130, copy: "连续运动后开出光花，房间也会更亮。" }
     ]
   },
   cloud: {
@@ -18,7 +18,7 @@ const petTypes = {
     stages: [
       { name: "小云团", min: 0, copy: "像一团软软的云，走一走就会飘起来。" },
       { name: "蓬蓬云", min: 70, copy: "身体变得更蓬松，心情好时会发光。" },
-      { name: "晴空云", min: 170, copy: "能把小屋变成晴天，适合连续打卡。" }
+      { name: "晴空云", min: 130, copy: "能把小屋变成晴天，适合连续打卡。" }
     ]
   },
   otter: {
@@ -28,7 +28,7 @@ const petTypes = {
     stages: [
       { name: "小河狸", min: 0, copy: "精力很多，但需要你带它出门。" },
       { name: "冲浪狸", min: 70, copy: "尾巴更有力，投喂后会弹起来。" },
-      { name: "浪花狸", min: 170, copy: "完成高强度目标后，会解锁浪花纹。" }
+      { name: "浪花狸", min: 130, copy: "完成高强度目标后，会解锁浪花纹。" }
     ]
   }
 };
@@ -78,6 +78,17 @@ const foods = {
   friend: { name: "好友蓝莓干", symbol: "友", bond: 10, xp: 0, copy: "好友宠物带来的串门礼物。" }
 };
 
+const achievements = [
+  { id: "adopt", title: "领养伙伴", copy: "选择一只宠物。", done: (s) => s.adopted },
+  { id: "walk", title: "带它出门", copy: "开始一次走动采集。", done: (s) => s.steps > 0 },
+  { id: "feed", title: "第一口", copy: "完成第一次投喂。", done: (s) => s.fed.length > 0 },
+  { id: "play", title: "一起玩球", copy: "用步数活力陪宠物玩。", done: (s) => s.played },
+  { id: "social", title: "好友串门", copy: "收下一份好友礼物。", done: (s) => s.friendUsed },
+  { id: "invite", title: "约走成功", copy: "向好友发起一起走路。", done: (s) => s.inviteSent },
+  { id: "evolve", title: "第一次进化", copy: "宠物进入第二阶段。", done: () => currentStage().index > 0 },
+  { id: "full", title: "今日喂饱", copy: "完成今日所有投喂。", done: (s) => s.completed }
+];
+
 const defaultState = {
   introSeen: false,
   adopted: false,
@@ -90,8 +101,13 @@ const defaultState = {
   fed: [],
   bond: 28,
   growth: 0,
+  careEnergy: 0,
   streak: 0,
   friendUsed: false,
+  inviteSent: false,
+  teamCompleted: false,
+  played: false,
+  cleaned: false,
   completed: false,
   collecting: false
 };
@@ -122,16 +138,26 @@ const els = {
   motionButton: document.getElementById("motion-button"),
   motionLabel: document.getElementById("motion-label"),
   motionSubtitle: document.getElementById("motion-subtitle"),
+  patAction: document.getElementById("pat-action"),
+  playAction: document.getElementById("play-action"),
+  playCost: document.getElementById("play-cost"),
+  cleanAction: document.getElementById("clean-action"),
   foodCount: document.getElementById("food-count"),
   foodList: document.getElementById("food-list"),
   friendTitle: document.getElementById("friend-title"),
   friendCopy: document.getElementById("friend-copy"),
   friendButton: document.getElementById("friend-button"),
+  inviteButton: document.getElementById("invite-button"),
+  teamButton: document.getElementById("team-button"),
+  teamCopy: document.getElementById("team-copy"),
+  teamProgress: document.getElementById("team-progress"),
   growthLabel: document.getElementById("growth-label"),
   evolutionTitle: document.getElementById("evolution-title"),
   evolutionCopy: document.getElementById("evolution-copy"),
   evolutionProgress: document.getElementById("evolution-progress"),
   stageList: document.getElementById("stage-list"),
+  achievementCount: document.getElementById("achievement-count"),
+  achievementGrid: document.getElementById("achievement-grid"),
   tabButtons: [...document.querySelectorAll("[data-tab]")],
   panels: [...document.querySelectorAll("[data-panel]")],
   badges: {
@@ -225,6 +251,7 @@ function petMood() {
   if (state.completed) return "full";
   if (availableIndexes().length > 0) return "ready";
   if (state.collecting) return "walking";
+  if (state.careEnergy > 0) return "playful";
   if (fedCount() === 0) return "hungry";
   return state.bond >= 70 ? "happy" : "calm";
 }
@@ -275,7 +302,7 @@ function confetti(count = 14) {
 }
 
 function setPetReaction(className, duration = 720) {
-  els.pet3d.classList.remove("pet-fed", "pet-patted", "pet-walk", "pet-evolve");
+  els.pet3d.classList.remove("pet-fed", "pet-patted", "pet-walk", "pet-evolve", "pet-play", "pet-clean");
   void els.pet3d.offsetWidth;
   els.pet3d.classList.add(className);
   setTimeout(() => els.pet3d.classList.remove(className), duration);
@@ -298,12 +325,25 @@ function addSteps(amount) {
   if (after > before) {
     const unlocked = unlockedIndexes()[after - 1];
     const food = foods[unlocked.food];
+    state.careEnergy += after - before;
     showToast("食物已解锁", `${food.name}可以投喂了。`);
     setPetReaction("pet-walk", 680);
   }
 
   saveState();
   render();
+}
+
+function showGrowthResult(beforeStage, symbol, title, copy) {
+  const afterStage = currentStage();
+  if (afterStage.index > beforeStage) {
+    setPetReaction("pet-evolve", 1100);
+    showResult("进", `${state.petName}进化到${afterStage.name}`, afterStage.copy);
+    confetti(30);
+    return;
+  }
+
+  showResult(symbol, title, copy);
 }
 
 async function toggleCollecting() {
@@ -399,6 +439,48 @@ function patPet() {
   render();
 }
 
+function playWithPet() {
+  if (state.careEnergy <= 0) {
+    showToast("还没有活力", "走到一个步数节点后，就能陪它玩球。");
+    return;
+  }
+
+  const beforeStage = currentStage().index;
+  state.careEnergy -= 1;
+  state.played = true;
+  state.bond = clamp(state.bond + 8, 0, 100);
+  state.growth += 14;
+  popFood({ symbol: "球" });
+  setPetReaction("pet-play", 900);
+  showGrowthResult(beforeStage, "球", "玩球成功", `${state.petName}追着球跑了一圈，成长值 +14。`);
+  confetti(12);
+  saveState();
+  render();
+}
+
+function cleanPet() {
+  if (fedCount() === 0) {
+    showToast("还不能洗澡", "先完成一次投喂，它才愿意进浴盆。");
+    return;
+  }
+
+  if (state.cleaned) {
+    showToast("已经洗香香", "今天的小澡已经完成。");
+    return;
+  }
+
+  const beforeStage = currentStage().index;
+  state.cleaned = true;
+  state.bond = clamp(state.bond + 6, 0, 100);
+  state.growth += 10;
+  popFood({ symbol: "泡" });
+  setPetReaction("pet-clean", 900);
+  showGrowthResult(beforeStage, "泡", "洗澡完成", `${state.petName}变得亮晶晶，成长值 +10。`);
+  confetti(10);
+  saveState();
+  render();
+}
+
 function useFriendSnack() {
   if (state.friendUsed) return;
   const food = foods.friend;
@@ -408,6 +490,45 @@ function useFriendSnack() {
   setPetReaction("pet-fed", 850);
   showResult(food.symbol, "小雨送来蓝莓干", "串门礼物只加心情，不替代你的步数目标。");
   confetti(12);
+  saveState();
+  render();
+}
+
+function inviteFriendWalk() {
+  if (state.inviteSent) {
+    showToast("已经约好", "小雨会在晚饭后提醒你一起走。");
+    return;
+  }
+
+  state.inviteSent = true;
+  state.bond = clamp(state.bond + 4, 0, 100);
+  showResult("约", "约走已发出", "小雨收到了轻提醒。社交压力被控制在低打扰，但能提升开始运动的概率。");
+  confetti(10);
+  saveState();
+  render();
+}
+
+function completeTeamChallenge() {
+  const friendSteps = 920;
+  const total = state.steps + friendSteps;
+  if (state.teamCompleted) {
+    showToast("已经合喂", "今天的双人便当已经做好。");
+    return;
+  }
+
+  if (total < 1500) {
+    showToast("还差一点", `你们合计还差 ${1500 - total} 步做便当。`);
+    return;
+  }
+
+  const beforeStage = currentStage().index;
+  state.teamCompleted = true;
+  state.bond = clamp(state.bond + 12, 0, 100);
+  state.growth += 24;
+  popFood({ symbol: "盒" });
+  setPetReaction("pet-fed", 900);
+  showGrowthResult(beforeStage, "盒", "双人便当完成", `${state.petName}和团团一起吃了便当，成长值 +24。`);
+  confetti(18);
   saveState();
   render();
 }
@@ -463,6 +584,22 @@ function renderBadges() {
   els.badges.walk.querySelector("strong").textContent = `${walked ? 1 : 0}/1`;
   els.badges.feed.querySelector("strong").textContent = `${fed ? 1 : 0}/1`;
   els.badges.full.querySelector("strong").textContent = `${full ? 1 : 0}/1`;
+}
+
+function renderAchievements() {
+  const items = achievements.map((achievement) => ({
+    ...achievement,
+    unlocked: achievement.done(state)
+  }));
+  const unlockedCount = items.filter((item) => item.unlocked).length;
+  els.achievementCount.textContent = `${unlockedCount}/${items.length}`;
+  els.achievementGrid.innerHTML = items.map((item) => `
+    <article class="${item.unlocked ? "unlocked" : ""}">
+      <strong>${item.title}</strong>
+      <span>${item.unlocked ? "已解锁" : "未解锁"}</span>
+      <p>${item.copy}</p>
+    </article>
+  `).join("");
 }
 
 function renderStages() {
@@ -521,15 +658,28 @@ function render() {
   els.motionLabel.textContent = state.collecting ? "暂停采集" : "开始走动";
   els.motionSubtitle.textContent = state.completed ? "明天继续" : available.length ? "去投喂页喂一口" : "走到节点解锁食物";
   els.motionButton.disabled = state.completed;
+  els.playAction.disabled = state.careEnergy <= 0;
+  els.playCost.textContent = state.careEnergy > 0 ? `剩 ${state.careEnergy} 活力` : "走到节点获得";
+  els.cleanAction.disabled = fedCount() === 0 || state.cleaned;
+  els.cleanAction.querySelector("small").textContent = state.cleaned ? "今日已完成" : fedCount() > 0 ? "洗香香 +成长" : "投喂后解锁";
   els.foodCount.textContent = `${available.length} 份可喂`;
   els.moodBubble.textContent = moodText();
   els.friendButton.disabled = state.friendUsed;
   els.friendButton.textContent = state.friendUsed ? "已收下" : "收下";
   els.friendTitle.textContent = state.friendUsed ? "团团已经回家" : "小雨的团团在门口";
   els.friendCopy.textContent = state.friendUsed ? `${state.petName}心情变好了，但步数还要自己走。` : "收下蓝莓干，给宠物加一点心情。";
+  els.inviteButton.disabled = state.inviteSent;
+  els.inviteButton.textContent = state.inviteSent ? "已约" : "约走";
+  const teamTotal = state.steps + 920;
+  const teamProgress = clamp((teamTotal / 1500) * 100, 0, 100);
+  els.teamProgress.style.width = `${teamProgress}%`;
+  els.teamButton.disabled = state.teamCompleted;
+  els.teamButton.textContent = state.teamCompleted ? "已完成" : "合喂";
+  els.teamCopy.textContent = state.teamCompleted ? "双人便当已完成，今天的好友协作达成。" : `你和小雨合计 ${Math.min(teamTotal, 1500)}/1500 步，可一起做便当。`;
 
   renderFoodList();
   renderBadges();
+  renderAchievements();
   renderEvolution();
   setTab(state.activeTab);
 }
@@ -572,7 +722,12 @@ els.setupForm.addEventListener("submit", (event) => {
 
 els.motionButton.addEventListener("click", toggleCollecting);
 els.petButton.addEventListener("click", patPet);
+els.patAction.addEventListener("click", patPet);
+els.playAction.addEventListener("click", playWithPet);
+els.cleanAction.addEventListener("click", cleanPet);
 els.friendButton.addEventListener("click", useFriendSnack);
+els.inviteButton.addEventListener("click", inviteFriendWalk);
+els.teamButton.addEventListener("click", completeTeamChallenge);
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.tab));
 });
