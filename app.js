@@ -94,6 +94,7 @@ const defaultState = {
   adopted: false,
   activeTab: "home",
   name: "阿澈",
+  avatar: "leaf",
   petType: "sprout",
   petName: "芽芽",
   plan: "daily",
@@ -121,6 +122,16 @@ const els = {
   petInput: document.getElementById("pet-input"),
   goalSelect: document.getElementById("goal-select"),
   petChoices: [...document.querySelectorAll("[data-pet-choice]")],
+  avatarChoices: [...document.querySelectorAll("[data-avatar-choice]")],
+  userAvatar: document.getElementById("user-avatar"),
+  userName: document.getElementById("user-name"),
+  userLevel: document.getElementById("user-level"),
+  profileBadge: document.getElementById("profile-badge"),
+  profileChip: document.getElementById("profile-chip"),
+  profileAvatar: document.getElementById("profile-avatar"),
+  profileName: document.getElementById("profile-name"),
+  profileTitle: document.getElementById("profile-title"),
+  profileDays: document.getElementById("profile-days"),
   goalLabel: document.getElementById("goal-label"),
   petName: document.getElementById("pet-name"),
   streakLabel: document.getElementById("streak-label"),
@@ -176,6 +187,7 @@ const els = {
 
 let state = loadState();
 let selectedPetType = state.petType;
+let selectedAvatar = state.avatar;
 let collectTimer = null;
 let lastMotionAt = 0;
 
@@ -198,6 +210,14 @@ function petType() {
 
 function selectedPet() {
   return petTypes[selectedPetType] || petTypes.sprout;
+}
+
+function avatarText() {
+  return (state.name || els.nameInput.value || "我").trim().slice(0, 1) || "我";
+}
+
+function userLevel() {
+  return Math.max(1, Math.floor((state.growth + state.steps / 12 + state.streak * 30) / 90) + 1);
 }
 
 function plan() {
@@ -548,6 +568,17 @@ function selectPet(type) {
   els.petInput.value = pet.defaultName;
 }
 
+function selectAvatar(type) {
+  selectedAvatar = type;
+  els.avatarChoices.forEach((button) => button.classList.toggle("selected", button.dataset.avatarChoice === type));
+}
+
+function applyAvatar(el, type, text) {
+  if (!el) return;
+  el.className = `user-avatar avatar-${type}`;
+  el.textContent = text;
+}
+
 function renderFoodList() {
   els.foodList.innerHTML = milestones().map((item, index) => {
     const food = foods[item.food];
@@ -647,6 +678,14 @@ function render() {
   els.nameInput.value = state.name;
   els.goalSelect.value = state.plan;
   if (state.adopted) els.petInput.value = state.petName;
+  applyAvatar(els.userAvatar, state.avatar, avatarText());
+  applyAvatar(els.profileAvatar, state.avatar, avatarText());
+  els.userName.textContent = state.name;
+  els.userLevel.textContent = `Lv.${userLevel()} 运动饲养员`;
+  els.profileName.textContent = state.name;
+  els.profileTitle.textContent = `Lv.${userLevel()} · ${petType().label}搭档`;
+  els.profileDays.textContent = state.streak;
+  els.profileBadge.textContent = state.completed ? "今日已完成" : available.length ? "有食物待喂" : "今日照顾中";
   els.goalLabel.textContent = currentPlan.label;
   els.petName.textContent = state.petName;
   els.streakLabel.textContent = state.streak;
@@ -702,6 +741,12 @@ els.petChoices.forEach((button) => {
   button.addEventListener("click", () => selectPet(button.dataset.petChoice));
 });
 
+els.avatarChoices.forEach((button) => {
+  button.addEventListener("click", () => selectAvatar(button.dataset.avatarChoice));
+});
+
+els.profileChip.addEventListener("click", () => setTab("growth"));
+
 els.setupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   state = {
@@ -710,6 +755,7 @@ els.setupForm.addEventListener("submit", (event) => {
     adopted: true,
     activeTab: "home",
     name: els.nameInput.value.trim() || "阿澈",
+    avatar: selectedAvatar,
     petType: selectedPetType,
     petName: els.petInput.value.trim() || selectedPet().defaultName,
     plan: els.goalSelect.value
@@ -743,6 +789,8 @@ els.resultModal.addEventListener("click", (event) => {
 window.addEventListener("devicemotion", handleMotion);
 
 selectedPetType = state.petType;
+selectedAvatar = state.avatar;
 selectPet(selectedPetType);
+selectAvatar(selectedAvatar);
 switchScreen(state.adopted ? "app" : state.introSeen ? "adopt" : "intro");
 render();
