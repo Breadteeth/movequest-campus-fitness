@@ -6,7 +6,7 @@
   <title>MoveQuest 步步兽</title>
   <meta name="description" content="MoveQuest 步步兽是一款用每日步数投喂并养成虚拟宠物的游戏化运动激励 App。">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111712'/%3E%3Ccircle cx='32' cy='34' r='22' fill='%23dfff4f'/%3E%3Ccircle cx='24' cy='30' r='4' fill='%23111712'/%3E%3Ccircle cx='40' cy='30' r='4' fill='%23111712'/%3E%3Cpath d='M24 42c5 5 12 5 17 0' stroke='%23111712' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=movepet-v6">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="app-shell" data-pet="sprout" data-mood="calm" data-stage="0">
@@ -108,25 +108,14 @@
         </label>
         <div class="profile-setup">
           <span>你的头像</span>
-          <section class="avatar-upload-card">
+          <section class="avatar-summary-card">
             <span class="user-avatar avatar-leaf" id="avatar-preview">澈</span>
             <div>
-              <strong>上传头像</strong>
-              <p>可以用自己的照片，调节缩放完成圆形裁切。</p>
-              <label class="upload-action" for="avatar-upload">选择图片</label>
-              <input id="avatar-upload" type="file" accept="image/*">
+              <strong>头像</strong>
+              <p>先选一个预设头像，也可以上传照片后裁切。</p>
             </div>
+            <button class="upload-action" type="button" id="custom-avatar-button">自定义头像</button>
           </section>
-          <div class="crop-controls">
-            <label>
-              缩放
-              <input id="avatar-zoom" type="range" min="100" max="180" value="120">
-            </label>
-            <label>
-              上下位置
-              <input id="avatar-y" type="range" min="20" max="80" value="50">
-            </label>
-          </div>
           <div class="avatar-picker" id="avatar-picker" aria-label="选择头像">
             <button class="avatar-choice selected" type="button" data-avatar-choice="leaf"><span>澈</span><small>绿茵</small></button>
             <button class="avatar-choice" type="button" data-avatar-choice="sun"><span>晨</span><small>晨跑</small></button>
@@ -268,50 +257,50 @@
               <small>投喂后解锁</small>
             </button>
           </section>
-        </section>
 
-        <section class="tab-panel" data-panel="feed">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">今日投喂</p>
-              <h3>走到节点，回来喂一口。</h3>
-            </div>
-            <span id="food-count">0 份可喂</span>
-          </div>
-          <div class="food-list panel-list" id="food-list"></div>
-        </section>
-
-        <section class="tab-panel" data-panel="explore">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">校园探索</p>
-              <h3>喂饱后，让宠物带着便当出门。</h3>
-            </div>
-            <span id="campus-snack-count">0 份便当</span>
-          </div>
-
-          <section class="explore-hero">
-            <div>
-              <span class="route-chip">旅行青蛙式轻探索</span>
-              <strong>继续走路，攒旅行便当。</strong>
-              <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
-            </div>
-            <article>
-              <strong id="postcard-count">0</strong>
-              <span>明信片</span>
-            </article>
-          </section>
-
-          <div class="trip-list" id="trip-list"></div>
-
-          <section class="postcard-section">
+          <section class="home-module feed-module">
             <div class="section-head compact">
               <div>
-                <p class="eyebrow">相册</p>
-                <h3>宠物今天带回了什么？</h3>
+                <p class="eyebrow">小屋投喂</p>
+                <h3>走到节点，就在小屋里喂它。</h3>
               </div>
+              <span id="food-count">0 份可喂</span>
             </div>
-            <div class="postcard-grid" id="postcard-grid"></div>
+            <div class="food-list panel-list" id="food-list"></div>
+          </section>
+
+          <section class="home-module explore-module">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">小屋出发</p>
+                <h3>喂饱后，从小屋派它去校园走走。</h3>
+              </div>
+              <span id="campus-snack-count">0 份便当</span>
+            </div>
+
+            <section class="explore-hero">
+              <div>
+                <span class="route-chip">校园轻探索</span>
+                <strong>继续走路，攒旅行便当。</strong>
+                <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
+              </div>
+              <article>
+                <strong id="postcard-count">0</strong>
+                <span>明信片</span>
+              </article>
+            </section>
+
+            <div class="trip-list" id="trip-list"></div>
+
+            <section class="postcard-section">
+              <div class="section-head compact">
+                <div>
+                  <p class="eyebrow">小屋相册</p>
+                  <h3>宠物今天带回了什么？</h3>
+                </div>
+              </div>
+              <div class="postcard-grid" id="postcard-grid"></div>
+            </section>
           </section>
         </section>
 
@@ -428,8 +417,6 @@
 
       <nav class="bottom-tabs" aria-label="底部功能导航">
         <button class="tab-button active" type="button" data-tab="home"><span>小屋</span></button>
-        <button class="tab-button" type="button" data-tab="feed"><span>投喂</span></button>
-        <button class="tab-button" type="button" data-tab="explore"><span>探索</span></button>
         <button class="tab-button" type="button" data-tab="friends"><span>好友</span></button>
         <button class="tab-button" type="button" data-tab="growth"><span>成长</span></button>
       </nav>
@@ -459,9 +446,30 @@
     </section>
   </div>
 
+  <div class="avatar-modal" id="avatar-modal" aria-hidden="true">
+    <section class="avatar-editor-card">
+      <p class="eyebrow">自定义头像</p>
+      <h3>上传照片，调整成圆形头像。</h3>
+      <span class="user-avatar avatar-leaf" id="avatar-editor-preview">澈</span>
+      <label class="upload-action" for="avatar-upload">选择图片</label>
+      <input id="avatar-upload" type="file" accept="image/*">
+      <div class="crop-controls">
+        <label>
+          缩放
+          <input id="avatar-zoom" type="range" min="100" max="180" value="120">
+        </label>
+        <label>
+          上下位置
+          <input id="avatar-y" type="range" min="20" max="80" value="50">
+        </label>
+      </div>
+      <button class="primary-action" type="button" id="close-avatar-editor">完成</button>
+    </section>
+  </div>
+
   <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
   <div class="confetti-layer" id="confetti-layer" aria-hidden="true"></div>
 
-  <script src="app.js?v=movepet-v6"></script>
+  <script src="app.js"></script>
 </body>
 </html>
