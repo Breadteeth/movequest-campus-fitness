@@ -3,47 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoveQuest 星轨</title>
-  <meta name="description" content="MoveQuest 星轨是一款用现实走动为游戏充能的运动激励 App。">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111512'/%3E%3Ccircle cx='32' cy='32' r='20' fill='%23dfff4f'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23ff6a4d'/%3E%3C/svg%3E">
+  <title>MoveQuest 步步兽</title>
+  <meta name="description" content="MoveQuest 步步兽是一款用每日步数投喂虚拟宠物的游戏化运动激励 App。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111712'/%3E%3Ccircle cx='32' cy='34' r='22' fill='%23dfff4f'/%3E%3Ccircle cx='24' cy='30' r='4' fill='%23111712'/%3E%3Ccircle cx='40' cy='30' r='4' fill='%23111712'/%3E%3Cpath d='M24 42c5 5 12 5 17 0' stroke='%23111712' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="app-shell">
     <section class="screen start-screen active" data-screen="start">
-      <div class="brand-orbit" aria-hidden="true">
-        <canvas id="intro-canvas" width="360" height="280"></canvas>
-        <span class="brand-core">MQ</span>
+      <div class="pet-hero" aria-hidden="true">
+        <div class="preview-room">
+          <div class="preview-plant"></div>
+          <div class="pet-3d pet-preview">
+            <span class="pet-ear ear-left"></span>
+            <span class="pet-ear ear-right"></span>
+            <span class="pet-body"></span>
+            <span class="pet-face">
+              <i></i>
+              <b></b>
+              <em></em>
+            </span>
+            <span class="pet-foot foot-left"></span>
+            <span class="pet-foot foot-right"></span>
+          </div>
+          <div class="room-shadow"></div>
+        </div>
       </div>
 
       <div class="start-copy">
-        <p class="eyebrow">MoveQuest 星轨</p>
-        <h1>走一段路，点亮今天的星轨。</h1>
-        <p>先走路收集同步次数，再回到星轨画面。角色碰到光点时点“同步”，点亮所有光点就完成今天的运动。</p>
+        <p class="eyebrow">MoveQuest 步步兽</p>
+        <h1>今天走几段路，把小宠物喂饱。</h1>
+        <p>达到步数节点会解锁食物。走路、投喂、摸摸、好友串门，宠物会跟着你的运动一起长大。</p>
       </div>
 
       <form class="setup-card" id="setup-form">
         <label>
-          昵称
+          你的昵称
           <input id="name-input" maxlength="8" value="阿澈" autocomplete="off">
         </label>
         <label>
-          今日目标
+          宠物名字
+          <input id="pet-input" maxlength="8" value="糯糯" autocomplete="off">
+        </label>
+        <label>
+          今日运动目标
           <select id="goal-select">
-            <option value="easy">热身：走 40 步，点亮 4 个光点</option>
-            <option value="daily" selected>日常：走 96 步，点亮 6 个光点</option>
-            <option value="hard">挑战：走 144 步，点亮 8 个光点</option>
+            <option value="easy">课间散步：600 步，解锁 3 次投喂</option>
+            <option value="daily" selected>校园快走：1200 步，解锁 4 次投喂</option>
+            <option value="hard">操场一圈：2000 步，解锁 5 次投喂</option>
           </select>
         </label>
-        <button class="primary-action" type="submit">开始走路游戏</button>
+        <button class="primary-action" type="submit">领养我的步步兽</button>
       </form>
     </section>
 
     <section class="screen play-screen" data-screen="play">
       <header class="topbar">
         <div>
-          <p class="eyebrow" id="session-label">课间快走</p>
-          <h2><span id="player-name">阿澈</span>的星轨</h2>
+          <p class="eyebrow" id="goal-label">校园快走</p>
+          <h2><span id="pet-name">糯糯</span>的小屋</h2>
         </div>
         <div class="streak-pill">
           <span>连续</span>
@@ -51,57 +69,89 @@
         </div>
       </header>
 
-      <section class="score-panel">
+      <section class="stats-panel">
         <article>
           <span>今日步数</span>
           <strong id="steps-label">0</strong>
         </article>
         <article>
-          <span>同步次数</span>
-          <strong id="pulse-label">0</strong>
+          <span>已投喂</span>
+          <strong id="fed-label">0/4</strong>
         </article>
         <article>
-          <span>已点亮</span>
-          <strong id="lit-label">0/6</strong>
+          <span>亲密度</span>
+          <strong id="bond-label">28</strong>
         </article>
       </section>
 
-      <section class="orbit-stage">
-        <canvas id="game-canvas" width="720" height="720" aria-label="星轨游戏画面"></canvas>
-        <div class="orbit-hint" id="orbit-hint">开始走动，让星轨亮起来</div>
+      <section class="pet-room" id="pet-room" aria-label="虚拟宠物小屋">
+        <div class="room-sky">
+          <span class="soft-cloud cloud-a"></span>
+          <span class="soft-cloud cloud-b"></span>
+          <span class="hanging-light"></span>
+        </div>
+        <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
+          <div class="pet-3d" id="pet-3d">
+            <span class="pet-ear ear-left"></span>
+            <span class="pet-ear ear-right"></span>
+            <span class="pet-body"></span>
+            <span class="pet-face" id="pet-face">
+              <i></i>
+              <b></b>
+              <em></em>
+            </span>
+            <span class="pet-cheek cheek-left"></span>
+            <span class="pet-cheek cheek-right"></span>
+            <span class="pet-foot foot-left"></span>
+            <span class="pet-foot foot-right"></span>
+          </div>
+        </button>
+        <div class="food-pop" id="food-pop" aria-hidden="true"></div>
+        <div class="mood-bubble" id="mood-bubble">走到第一个节点，就有早餐吃。</div>
+        <div class="room-floor"></div>
       </section>
 
-      <section class="action-dock">
+      <section class="walk-card">
+        <div>
+          <span id="next-label">下个投喂：250 步</span>
+          <strong id="walk-title">先走一小段路</strong>
+          <div class="walk-progress"><i id="walk-progress"></i></div>
+        </div>
         <button class="motion-button" type="button" id="motion-button">
           <span id="motion-label">开始走动</span>
-          <small id="motion-subtitle">目标约 96 步</small>
+          <small id="motion-subtitle">走到节点解锁食物</small>
         </button>
-        <button class="sync-button" type="button" id="sync-button">
-          <span>同步</span>
-          <small id="sync-subtitle">踩准时机点亮</small>
-        </button>
+      </section>
+
+      <section class="food-section">
+        <div class="section-head">
+          <h3>今日投喂</h3>
+          <span id="food-count">0 份可喂</span>
+        </div>
+        <div class="food-list" id="food-list"></div>
       </section>
 
       <section class="social-strip">
+        <div class="friend-pet" aria-hidden="true">团</div>
         <div>
-          <span>好友助攻</span>
-          <strong id="friend-title">小雨在线</strong>
-          <p id="friend-copy">送你 2 次同步，不聊天也能互相拉一把。</p>
+          <span>好友串门</span>
+          <strong id="friend-title">小雨的团团在门口</strong>
+          <p id="friend-copy">收下蓝莓干，给糯糯加一点心情。</p>
         </div>
-        <button class="quiet-action" type="button" id="friend-button">领取</button>
+        <button class="quiet-action" type="button" id="friend-button">收下</button>
       </section>
 
       <section class="achievement-strip">
-        <div class="mini-achievement" id="badge-motion">
-          <span>动起来</span>
+        <div class="mini-achievement" id="badge-walk">
+          <span>带它出门</span>
           <strong>0/1</strong>
         </div>
-        <div class="mini-achievement" id="badge-sync">
-          <span>点亮光点</span>
-          <strong>0/3</strong>
+        <div class="mini-achievement" id="badge-feed">
+          <span>第一口</span>
+          <strong>0/1</strong>
         </div>
-        <div class="mini-achievement" id="badge-clear">
-          <span>完成星轨</span>
+        <div class="mini-achievement" id="badge-full">
+          <span>今日喂饱</span>
           <strong>0/1</strong>
         </div>
       </section>
@@ -109,9 +159,9 @@
 
     <div class="result-modal" id="result-modal" aria-hidden="true">
       <div class="result-card">
-        <span class="result-symbol" id="result-symbol">光</span>
-        <h3 id="result-title">已点亮</h3>
-        <p id="result-copy">继续保持节奏。</p>
+        <span class="result-symbol" id="result-symbol">豆</span>
+        <h3 id="result-title">投喂成功</h3>
+        <p id="result-copy">糯糯开心地转了一圈。</p>
         <button class="primary-action" type="button" id="close-result">继续</button>
       </div>
     </div>
