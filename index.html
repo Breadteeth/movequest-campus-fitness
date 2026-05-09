@@ -4,37 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoveQuest 步步兽</title>
-  <meta name="description" content="MoveQuest 步步兽是一款用每日步数投喂虚拟宠物的游戏化运动激励 App。">
+  <meta name="description" content="MoveQuest 步步兽是一款用每日步数投喂并养成虚拟宠物的游戏化运动激励 App。">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23111712'/%3E%3Ccircle cx='32' cy='34' r='22' fill='%23dfff4f'/%3E%3Ccircle cx='24' cy='30' r='4' fill='%23111712'/%3E%3Ccircle cx='40' cy='30' r='4' fill='%23111712'/%3E%3Cpath d='M24 42c5 5 12 5 17 0' stroke='%23111712' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="app-shell">
-    <section class="screen start-screen active" data-screen="start">
-      <div class="pet-hero" aria-hidden="true">
-        <div class="preview-room">
-          <div class="preview-plant"></div>
-          <div class="pet-3d pet-preview">
-            <span class="pet-ear ear-left"></span>
-            <span class="pet-ear ear-right"></span>
-            <span class="pet-body"></span>
-            <span class="pet-face">
-              <i></i>
-              <b></b>
-              <em></em>
-            </span>
-            <span class="pet-foot foot-left"></span>
-            <span class="pet-foot foot-right"></span>
-          </div>
-          <div class="room-shadow"></div>
+  <main class="app-shell" data-pet="sprout" data-mood="calm" data-stage="0">
+    <section class="screen intro-screen active" data-screen="intro">
+      <div class="intro-visual" aria-hidden="true">
+        <div class="orbit-card card-a">走路</div>
+        <div class="orbit-card card-b">食物</div>
+        <div class="orbit-card card-c">进化</div>
+        <div class="pet-3d pet-sprout intro-pet">
+          <span class="pet-ear ear-left"></span>
+          <span class="pet-ear ear-right"></span>
+          <span class="pet-body"></span>
+          <span class="pet-face"><i></i><b></b><em></em></span>
+          <span class="pet-cheek cheek-left"></span>
+          <span class="pet-cheek cheek-right"></span>
+          <span class="pet-foot foot-left"></span>
+          <span class="pet-foot foot-right"></span>
         </div>
       </div>
 
-      <div class="start-copy">
+      <div class="intro-copy">
         <p class="eyebrow">MoveQuest 步步兽</p>
-        <h1>今天走几段路，把小宠物喂饱。</h1>
-        <p>达到步数节点会解锁食物。走路、投喂、摸摸、好友串门，宠物会跟着你的运动一起长大。</p>
+        <h1>把每天的步数，变成一只会长大的宠物。</h1>
+        <p>你每走到一个阶段目标，就能解锁一份食物。投喂、摸摸、好友串门都会让宠物回应你；连续运动会推动它进化。</p>
       </div>
+
+      <div class="intro-steps">
+        <article>
+          <strong>1</strong>
+          <span>走到阶段步数</span>
+        </article>
+        <article>
+          <strong>2</strong>
+          <span>解锁食物投喂</span>
+        </article>
+        <article>
+          <strong>3</strong>
+          <span>宠物成长进化</span>
+        </article>
+      </div>
+
+      <button class="primary-action" type="button" id="intro-start">开始领养</button>
+    </section>
+
+    <section class="screen adopt-screen" data-screen="adopt">
+      <header class="simple-head">
+        <p class="eyebrow">选择伙伴</p>
+        <h1>先选一只愿意陪你走路的小家伙。</h1>
+      </header>
+
+      <section class="pet-picker" id="pet-picker" aria-label="选择宠物">
+        <button class="pet-choice selected" type="button" data-pet-choice="sprout">
+          <span class="pet-mini mini-sprout"></span>
+          <strong>芽芽兽</strong>
+          <small>适合慢慢建立习惯</small>
+        </button>
+        <button class="pet-choice" type="button" data-pet-choice="cloud">
+          <span class="pet-mini mini-cloud"></span>
+          <strong>云团兽</strong>
+          <small>喜欢课间散步</small>
+        </button>
+        <button class="pet-choice" type="button" data-pet-choice="otter">
+          <span class="pet-mini mini-otter"></span>
+          <strong>河狸兽</strong>
+          <small>适合操场挑战</small>
+        </button>
+      </section>
 
       <form class="setup-card" id="setup-form">
         <label>
@@ -43,7 +82,7 @@
         </label>
         <label>
           宠物名字
-          <input id="pet-input" maxlength="8" value="糯糯" autocomplete="off">
+          <input id="pet-input" maxlength="8" value="芽芽" autocomplete="off">
         </label>
         <label>
           今日运动目标
@@ -53,15 +92,15 @@
             <option value="hard">操场一圈：2000 步，解锁 5 次投喂</option>
           </select>
         </label>
-        <button class="primary-action" type="submit">领养我的步步兽</button>
+        <button class="primary-action" type="submit">领养并进入小屋</button>
       </form>
     </section>
 
-    <section class="screen play-screen" data-screen="play">
+    <section class="screen app-screen" data-screen="app">
       <header class="topbar">
         <div>
           <p class="eyebrow" id="goal-label">校园快走</p>
-          <h2><span id="pet-name">糯糯</span>的小屋</h2>
+          <h2><span id="pet-name">芽芽</span>的小屋</h2>
         </div>
         <div class="streak-pill">
           <span>连续</span>
@@ -79,89 +118,134 @@
           <strong id="fed-label">0/4</strong>
         </article>
         <article>
-          <span>亲密度</span>
-          <strong id="bond-label">28</strong>
+          <span>进化</span>
+          <strong id="stage-label">幼崽</strong>
         </article>
       </section>
 
-      <section class="pet-room" id="pet-room" aria-label="虚拟宠物小屋">
-        <div class="room-sky">
-          <span class="soft-cloud cloud-a"></span>
-          <span class="soft-cloud cloud-b"></span>
-          <span class="hanging-light"></span>
-        </div>
-        <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
-          <div class="pet-3d" id="pet-3d">
-            <span class="pet-ear ear-left"></span>
-            <span class="pet-ear ear-right"></span>
-            <span class="pet-body"></span>
-            <span class="pet-face" id="pet-face">
-              <i></i>
-              <b></b>
-              <em></em>
-            </span>
-            <span class="pet-cheek cheek-left"></span>
-            <span class="pet-cheek cheek-right"></span>
-            <span class="pet-foot foot-left"></span>
-            <span class="pet-foot foot-right"></span>
+      <div class="tab-panels">
+        <section class="tab-panel active" data-panel="home">
+          <section class="pet-room" id="pet-room" aria-label="虚拟宠物小屋">
+            <div class="room-sky">
+              <span class="soft-cloud cloud-a"></span>
+              <span class="soft-cloud cloud-b"></span>
+              <span class="hanging-light"></span>
+            </div>
+            <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
+              <div class="pet-3d" id="pet-3d">
+                <span class="pet-ear ear-left"></span>
+                <span class="pet-ear ear-right"></span>
+                <span class="pet-body"></span>
+                <span class="pet-face" id="pet-face"><i></i><b></b><em></em></span>
+                <span class="pet-cheek cheek-left"></span>
+                <span class="pet-cheek cheek-right"></span>
+                <span class="pet-foot foot-left"></span>
+                <span class="pet-foot foot-right"></span>
+              </div>
+            </button>
+            <div class="food-pop" id="food-pop" aria-hidden="true"></div>
+            <div class="mood-bubble" id="mood-bubble">走到第一个节点，就有早餐吃。</div>
+            <div class="room-floor"></div>
+          </section>
+
+          <section class="walk-card">
+            <div>
+              <span id="next-label">下个投喂：250 步</span>
+              <strong id="walk-title">先走一小段路</strong>
+              <div class="walk-progress"><i id="walk-progress"></i></div>
+            </div>
+            <button class="motion-button" type="button" id="motion-button">
+              <span id="motion-label">开始走动</span>
+              <small id="motion-subtitle">走到节点解锁食物</small>
+            </button>
+          </section>
+        </section>
+
+        <section class="tab-panel" data-panel="feed">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">今日投喂</p>
+              <h3>走到节点，回来喂一口。</h3>
+            </div>
+            <span id="food-count">0 份可喂</span>
           </div>
-        </button>
-        <div class="food-pop" id="food-pop" aria-hidden="true"></div>
-        <div class="mood-bubble" id="mood-bubble">走到第一个节点，就有早餐吃。</div>
-        <div class="room-floor"></div>
-      </section>
+          <div class="food-list panel-list" id="food-list"></div>
+        </section>
 
-      <section class="walk-card">
-        <div>
-          <span id="next-label">下个投喂：250 步</span>
-          <strong id="walk-title">先走一小段路</strong>
-          <div class="walk-progress"><i id="walk-progress"></i></div>
-        </div>
-        <button class="motion-button" type="button" id="motion-button">
-          <span id="motion-label">开始走动</span>
-          <small id="motion-subtitle">走到节点解锁食物</small>
-        </button>
-      </section>
+        <section class="tab-panel" data-panel="friends">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">好友</p>
+              <h3>串门只加心情，步数还要自己走。</h3>
+            </div>
+          </div>
+          <section class="social-strip">
+            <div class="friend-pet" aria-hidden="true">团</div>
+            <div>
+              <span>好友串门</span>
+              <strong id="friend-title">小雨的团团在门口</strong>
+              <p id="friend-copy">收下蓝莓干，给宠物加一点心情。</p>
+            </div>
+            <button class="quiet-action" type="button" id="friend-button">收下</button>
+          </section>
+          <section class="friend-board">
+            <article>
+              <strong>小雨</strong>
+              <span>今天 820 步，团团已吃 2 口</span>
+            </article>
+            <article>
+              <strong>子豪</strong>
+              <span>还差 180 步解锁晚安奶昔</span>
+            </article>
+          </section>
+        </section>
 
-      <section class="food-section">
-        <div class="section-head">
-          <h3>今日投喂</h3>
-          <span id="food-count">0 份可喂</span>
-        </div>
-        <div class="food-list" id="food-list"></div>
-      </section>
+        <section class="tab-panel" data-panel="growth">
+          <section class="evolution-card">
+            <div>
+              <p class="eyebrow">进化系统</p>
+              <h3 id="evolution-title">幼崽期</h3>
+              <p id="evolution-copy">先完成第一天投喂，宠物会开始成长。</p>
+            </div>
+            <div class="evolution-ring">
+              <strong id="growth-label">0</strong>
+              <span>成长值</span>
+            </div>
+            <div class="evolution-progress"><i id="evolution-progress"></i></div>
+          </section>
 
-      <section class="social-strip">
-        <div class="friend-pet" aria-hidden="true">团</div>
-        <div>
-          <span>好友串门</span>
-          <strong id="friend-title">小雨的团团在门口</strong>
-          <p id="friend-copy">收下蓝莓干，给糯糯加一点心情。</p>
-        </div>
-        <button class="quiet-action" type="button" id="friend-button">收下</button>
-      </section>
+          <section class="achievement-strip">
+            <div class="mini-achievement" id="badge-walk">
+              <span>带它出门</span>
+              <strong>0/1</strong>
+            </div>
+            <div class="mini-achievement" id="badge-feed">
+              <span>第一口</span>
+              <strong>0/1</strong>
+            </div>
+            <div class="mini-achievement" id="badge-full">
+              <span>今日喂饱</span>
+              <strong>0/1</strong>
+            </div>
+          </section>
 
-      <section class="achievement-strip">
-        <div class="mini-achievement" id="badge-walk">
-          <span>带它出门</span>
-          <strong>0/1</strong>
-        </div>
-        <div class="mini-achievement" id="badge-feed">
-          <span>第一口</span>
-          <strong>0/1</strong>
-        </div>
-        <div class="mini-achievement" id="badge-full">
-          <span>今日喂饱</span>
-          <strong>0/1</strong>
-        </div>
-      </section>
+          <section class="stage-list" id="stage-list"></section>
+        </section>
+      </div>
+
+      <nav class="bottom-tabs" aria-label="底部功能导航">
+        <button class="tab-button active" type="button" data-tab="home"><span>小屋</span></button>
+        <button class="tab-button" type="button" data-tab="feed"><span>投喂</span></button>
+        <button class="tab-button" type="button" data-tab="friends"><span>好友</span></button>
+        <button class="tab-button" type="button" data-tab="growth"><span>成长</span></button>
+      </nav>
     </section>
 
     <div class="result-modal" id="result-modal" aria-hidden="true">
       <div class="result-card">
         <span class="result-symbol" id="result-symbol">豆</span>
         <h3 id="result-title">投喂成功</h3>
-        <p id="result-copy">糯糯开心地转了一圈。</p>
+        <p id="result-copy">宠物开心地转了一圈。</p>
         <button class="primary-action" type="button" id="close-result">继续</button>
       </div>
     </div>
