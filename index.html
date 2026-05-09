@@ -16,9 +16,13 @@
         <div class="orbit-card card-b">食物</div>
         <div class="orbit-card card-c">进化</div>
         <div class="pet-3d pet-sprout intro-pet">
+          <span class="pet-tail"></span>
           <span class="pet-ear ear-left"></span>
           <span class="pet-ear ear-right"></span>
           <span class="pet-body"></span>
+          <span class="pet-belly"></span>
+          <span class="pet-arm arm-left"></span>
+          <span class="pet-arm arm-right"></span>
           <span class="pet-face"><i></i><b></b><em></em></span>
           <span class="pet-cheek cheek-left"></span>
           <span class="pet-cheek cheek-right"></span>
@@ -133,9 +137,13 @@
             </div>
             <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
               <div class="pet-3d" id="pet-3d">
+                <span class="pet-tail"></span>
                 <span class="pet-ear ear-left"></span>
                 <span class="pet-ear ear-right"></span>
                 <span class="pet-body"></span>
+                <span class="pet-belly"></span>
+                <span class="pet-arm arm-left"></span>
+                <span class="pet-arm arm-right"></span>
                 <span class="pet-face" id="pet-face"><i></i><b></b><em></em></span>
                 <span class="pet-cheek cheek-left"></span>
                 <span class="pet-cheek cheek-right"></span>
@@ -157,6 +165,21 @@
             <button class="motion-button" type="button" id="motion-button">
               <span id="motion-label">开始走动</span>
               <small id="motion-subtitle">走到节点解锁食物</small>
+            </button>
+          </section>
+
+          <section class="interaction-dock" aria-label="宠物互动">
+            <button type="button" id="pat-action">
+              <span>摸摸</span>
+              <small>随时安抚</small>
+            </button>
+            <button type="button" id="play-action">
+              <span>玩球</span>
+              <small id="play-cost">需要 1 活力</small>
+            </button>
+            <button type="button" id="clean-action">
+              <span>洗澡</span>
+              <small>投喂后解锁</small>
             </button>
           </section>
         </section>
@@ -188,10 +211,29 @@
             </div>
             <button class="quiet-action" type="button" id="friend-button">收下</button>
           </section>
+
+          <section class="social-actions">
+            <article>
+              <div>
+                <strong>约小雨一起走</strong>
+                <p>发出轻提醒，约 20 分钟后一起完成下一段路。</p>
+              </div>
+              <button type="button" id="invite-button">约走</button>
+            </article>
+            <article>
+              <div>
+                <strong>双人投喂挑战</strong>
+                <p id="team-copy">你和小雨合计走到 1500 步，可给两只宠物做便当。</p>
+                <div class="team-progress"><i id="team-progress"></i></div>
+              </div>
+              <button type="button" id="team-button">合喂</button>
+            </article>
+          </section>
+
           <section class="friend-board">
             <article>
               <strong>小雨</strong>
-              <span>今天 820 步，团团已吃 2 口</span>
+              <span>今天 920 步，团团已吃 2 口</span>
             </article>
             <article>
               <strong>子豪</strong>
@@ -227,6 +269,17 @@
               <span>今日喂饱</span>
               <strong>0/1</strong>
             </div>
+          </section>
+
+          <section class="achievement-panel">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">成就墙</p>
+                <h3>每个徽章都对应一次真实行动。</h3>
+              </div>
+              <span id="achievement-count">0/7</span>
+            </div>
+            <div class="achievement-grid" id="achievement-grid"></div>
           </section>
 
           <section class="stage-list" id="stage-list"></section>
