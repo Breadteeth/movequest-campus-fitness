@@ -408,9 +408,10 @@ p {
   gap: 8px;
 }
 
+.avatar-summary-card,
 .avatar-upload-card {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 58px 1fr auto;
   gap: 12px;
   align-items: center;
   padding: 10px;
@@ -419,11 +420,13 @@ p {
   background: rgba(255, 255, 255, 0.58);
 }
 
+.avatar-summary-card .user-avatar,
 .avatar-upload-card .user-avatar {
   width: 58px;
   height: 58px;
 }
 
+.avatar-summary-card strong,
 .avatar-upload-card strong {
   display: block;
   margin-bottom: 4px;
@@ -431,6 +434,7 @@ p {
   font-size: 14px;
 }
 
+.avatar-summary-card p,
 .avatar-upload-card p {
   margin: 0 0 8px;
   color: var(--muted);
@@ -1945,7 +1949,7 @@ p {
   bottom: 12px;
   z-index: 30;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   width: min(430px, calc(100vw - 24px));
   padding: 9px;
@@ -1995,6 +1999,48 @@ p {
   padding: 18px;
   background: rgba(18, 23, 17, 0.38);
   backdrop-filter: blur(8px);
+}
+
+.avatar-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 46;
+  display: none;
+  place-items: end center;
+  padding: 18px;
+  background: rgba(18, 23, 17, 0.38);
+  backdrop-filter: blur(8px);
+}
+
+.avatar-modal.active {
+  display: grid;
+}
+
+.avatar-editor-card {
+  display: grid;
+  gap: 12px;
+  width: min(390px, 100%);
+  padding: 20px 18px 18px;
+  border: 1px solid rgba(18, 23, 17, 0.16);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(216, 255, 62, 0.26), transparent 36%),
+    var(--paper);
+  box-shadow: var(--shadow);
+  animation: modal-in 220ms ease both;
+}
+
+.avatar-editor-card h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.22;
+}
+
+.avatar-editor-card .user-avatar {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto;
+  font-size: 28px;
 }
 
 .guide-modal.active {
@@ -2615,6 +2661,7 @@ body::before {
   background: rgba(255, 255, 255, 0.78);
 }
 
+.avatar-summary-card,
 .avatar-upload-card {
   border-radius: 26px;
   background:
@@ -2942,6 +2989,17 @@ body::before {
   background: rgba(255, 252, 241, 0.6);
 }
 
+.home-module {
+  order: 5;
+  flex: 0 0 auto;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(16, 34, 28, 0.08);
+  border-radius: 30px;
+  background: rgba(255, 252, 241, 0.62);
+  box-shadow: 0 18px 42px rgba(16, 34, 28, 0.07);
+}
+
 .interaction-dock button {
   border-radius: 22px;
   background: transparent;
@@ -2992,6 +3050,10 @@ body::before {
   border-radius: 28px;
   background: rgba(255, 252, 241, 0.82);
   box-shadow: 0 20px 54px rgba(16, 34, 28, 0.17);
+}
+
+.bottom-tabs {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .tab-button {
