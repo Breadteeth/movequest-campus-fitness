@@ -115,6 +115,13 @@ p {
   --pet-mark: #7b4b2a;
 }
 
+.app-shell[data-pet="cat"] {
+  --pet-a: #fff1d0;
+  --pet-b: #ff9f72;
+  --pet-c: #ffe8b8;
+  --pet-mark: #1b1b1b;
+}
+
 .screen {
   display: none;
   min-height: 100dvh;
@@ -302,7 +309,7 @@ p {
 
 .pet-picker {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-bottom: 12px;
 }
@@ -357,10 +364,23 @@ p {
   background: linear-gradient(145deg, #ffdca8, #b97843);
 }
 
+.mini-cat {
+  border-radius: 48% 52% 42% 58%;
+  background:
+    radial-gradient(circle at 32% 24%, #fff 0 8px, transparent 9px),
+    linear-gradient(145deg, #fff1d0, #ff9f72);
+}
+
 .setup-card {
   display: grid;
   gap: 12px;
   padding: 14px;
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
 .setup-card label {
@@ -386,6 +406,65 @@ p {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
+}
+
+.avatar-upload-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(18, 23, 17, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.avatar-upload-card .user-avatar {
+  width: 58px;
+  height: 58px;
+}
+
+.avatar-upload-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.avatar-upload-card p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.upload-action {
+  display: inline-flex !important;
+  min-height: 34px;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#avatar-upload {
+  display: none;
+}
+
+.crop-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.crop-controls input {
+  accent-color: var(--leaf);
 }
 
 .avatar-choice {
@@ -431,6 +510,15 @@ p {
   width: 48px;
   height: 48px;
   flex: 0 0 auto;
+  overflow: hidden;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.avatar-custom {
+  background-color: #e7f6d6;
+  color: transparent;
+  text-shadow: none;
 }
 
 .avatar-leaf,
@@ -488,6 +576,18 @@ p {
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
+}
+
+.help-button {
+  min-height: 42px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  backdrop-filter: blur(18px);
 }
 
 .pet-title-card {
@@ -611,6 +711,75 @@ p {
   backdrop-filter: none;
 }
 
+.daily-path {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.daily-path article {
+  position: relative;
+  min-height: 82px;
+  padding: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(18, 23, 17, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.daily-path article::after {
+  position: absolute;
+  right: -18px;
+  bottom: -22px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(18, 23, 17, 0.05);
+  content: "";
+}
+
+.daily-path article.active {
+  border-color: rgba(18, 23, 17, 0.5);
+  background: rgba(223, 255, 79, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.daily-path article.done {
+  background: rgba(22, 160, 106, 0.14);
+}
+
+.daily-path article span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.daily-path strong,
+.daily-path small {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.daily-path strong {
+  font-size: 14px;
+}
+
+.daily-path small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .pet-room {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
@@ -690,7 +859,7 @@ p {
   height: 188px;
   transform-style: preserve-3d;
   transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(var(--growth));
-  animation: pet-idle 3s ease-in-out infinite;
+  animation: pet-idle 6.8s ease-in-out infinite;
 }
 
 .pet-ear,
@@ -700,6 +869,7 @@ p {
 .pet-cheek,
 .pet-foot,
 .pet-tail,
+.pet-shadow,
 .pet-arm,
 .pet-crown,
 .pet-glow,
@@ -719,6 +889,19 @@ p {
   transform: translateZ(-18px);
 }
 
+.pet-shadow {
+  left: 50%;
+  bottom: 0;
+  z-index: 0;
+  width: 132px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(18, 23, 17, 0.2);
+  filter: blur(6px);
+  transform: translateX(-50%) translateZ(-36px) rotateX(68deg);
+  animation: shadow-breathe 6.8s ease-in-out infinite;
+}
+
 .pet-tail {
   right: -8px;
   bottom: 48px;
@@ -728,7 +911,9 @@ p {
   border-radius: 62% 38% 58% 42%;
   background: linear-gradient(135deg, var(--pet-b), var(--pet-a));
   box-shadow: inset -10px -8px 16px rgba(18, 23, 17, 0.12);
+  transform-origin: 12% 52%;
   transform: rotate(22deg) translateZ(6px);
+  animation: tail-wiggle 2.8s ease-in-out infinite;
 }
 
 .app-shell[data-pet="cloud"] .pet-tail {
@@ -745,6 +930,15 @@ p {
   height: 36px;
   border-radius: 50% 26% 50% 26%;
   transform: rotate(14deg) translateZ(4px);
+}
+
+.app-shell[data-pet="cat"] .pet-tail {
+  right: -18px;
+  bottom: 62px;
+  width: 74px;
+  height: 26px;
+  border-radius: 999px;
+  transform: rotate(-28deg) translateZ(8px);
 }
 
 .pet-ear {
@@ -798,6 +992,14 @@ p {
   height: 22px;
   top: 28px;
   border-radius: 50%;
+}
+
+.app-shell[data-pet="cat"] .pet-crown {
+  top: 24px;
+  width: 28px;
+  height: 18px;
+  border-radius: 50%;
+  opacity: 0.75;
 }
 
 .pet-body {
@@ -887,6 +1089,21 @@ p {
   border-radius: 50%;
 }
 
+.app-shell[data-pet="cat"] .pet-ear {
+  top: 14px;
+  width: 54px;
+  height: 60px;
+  border-radius: 18% 82% 24% 76%;
+}
+
+.app-shell[data-pet="cat"] .ear-left {
+  transform: rotate(-38deg) translateZ(-8px);
+}
+
+.app-shell[data-pet="cat"] .ear-right {
+  transform: rotate(38deg) translateZ(-8px);
+}
+
 .pet-arm {
   top: 94px;
   z-index: 3;
@@ -896,6 +1113,8 @@ p {
   background: color-mix(in srgb, var(--pet-b), #ffffff 12%);
   box-shadow: inset -8px -6px 12px rgba(18, 23, 17, 0.1);
   transform: translateZ(52px);
+  transform-origin: 50% 20%;
+  animation: arm-sway 3.4s ease-in-out infinite;
 }
 
 .arm-left {
@@ -965,10 +1184,13 @@ p {
 
 .pet-face i {
   left: 12px;
+  animation: pet-blink 4.6s ease-in-out infinite;
 }
 
 .pet-face b {
   right: 12px;
+  animation: pet-blink 4.6s ease-in-out infinite;
+  animation-delay: 80ms;
 }
 
 .pet-face em {
@@ -1759,6 +1981,54 @@ p {
   display: grid;
 }
 
+.guide-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: none;
+  place-items: end center;
+  padding: 18px;
+  background: rgba(18, 23, 17, 0.38);
+  backdrop-filter: blur(8px);
+}
+
+.guide-modal.active {
+  display: grid;
+}
+
+.guide-card {
+  width: min(390px, 100%);
+  padding: 20px 18px 18px;
+  border: 1px solid rgba(18, 23, 17, 0.16);
+  border-radius: 28px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  animation: modal-in 220ms ease both;
+}
+
+.guide-card h3 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  line-height: 1.22;
+}
+
+.guide-card ol {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.guide-card li {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.guide-card strong {
+  color: var(--ink);
+}
+
 .result-card {
   width: min(360px, 100%);
   padding: 24px 18px 18px;
@@ -1868,13 +2138,71 @@ p {
 }
 
 @keyframes pet-idle {
-  0%,
-  100% {
-    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(0) scale(var(--growth));
+  0% {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate3d(-18px, 4px, 0) rotateZ(-1deg) scale(var(--growth));
+  }
+
+  24% {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate3d(24px, -8px, 0) rotateZ(2deg) scale(var(--growth));
   }
 
   50% {
-    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-8px) scale(var(--growth));
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate3d(10px, 4px, 0) rotateZ(-2deg) scale(var(--growth));
+  }
+
+  76% {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate3d(-24px, -10px, 0) rotateZ(1deg) scale(var(--growth));
+  }
+
+  100% {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate3d(-18px, 4px, 0) rotateZ(-1deg) scale(var(--growth));
+  }
+}
+
+@keyframes shadow-breathe {
+  0%,
+  100% {
+    opacity: 0.18;
+    scale: 0.92;
+  }
+
+  50% {
+    opacity: 0.28;
+    scale: 1.08;
+  }
+}
+
+@keyframes tail-wiggle {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+
+  50% {
+    rotate: 10deg;
+  }
+}
+
+@keyframes arm-sway {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+
+  50% {
+    rotate: -6deg;
+  }
+}
+
+@keyframes pet-blink {
+  0%,
+  88%,
+  100% {
+    scale: 1 1;
+  }
+
+  92% {
+    scale: 1 0.18;
   }
 }
 
@@ -2086,6 +2414,11 @@ p {
 
   .pet-choice {
     min-height: 126px;
+  }
+
+  .account-grid,
+  .crop-controls {
+    grid-template-columns: 1fr;
   }
 
   .stats-panel article {
