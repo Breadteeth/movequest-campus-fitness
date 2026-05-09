@@ -191,8 +191,10 @@ const els = {
   avatarChoices: [...document.querySelectorAll("[data-avatar-choice]")],
   avatarUpload: document.getElementById("avatar-upload"),
   avatarPreview: document.getElementById("avatar-preview"),
+  avatarEditorPreview: document.getElementById("avatar-editor-preview"),
   avatarZoom: document.getElementById("avatar-zoom"),
   avatarY: document.getElementById("avatar-y"),
+  customAvatarButton: document.getElementById("custom-avatar-button"),
   userAvatar: document.getElementById("user-avatar"),
   userName: document.getElementById("user-name"),
   userLevel: document.getElementById("user-level"),
@@ -261,6 +263,8 @@ const els = {
   helpButton: document.getElementById("help-button"),
   guideModal: document.getElementById("guide-modal"),
   closeGuide: document.getElementById("close-guide"),
+  avatarModal: document.getElementById("avatar-modal"),
+  closeAvatarEditor: document.getElementById("close-avatar-editor"),
   toastRegion: document.getElementById("toast-region"),
   confettiLayer: document.getElementById("confetti-layer")
 };
@@ -284,7 +288,7 @@ function todayKey(date = new Date()) {
 function normalizeState(savedState) {
   const today = todayKey();
   const next = { ...structuredClone(defaultState), ...savedState };
-  const validTabs = ["home", "feed", "explore", "friends", "growth"];
+  const validTabs = ["home", "friends", "growth"];
 
   next.fed = Array.isArray(next.fed) ? next.fed : [];
   next.postcards = Array.isArray(next.postcards) ? next.postcards : [];
@@ -818,6 +822,7 @@ function applyAvatar(el, type, text, image = "", zoom = 120, y = 50) {
 function renderAvatarPreview() {
   if (!els.avatarPreview) return;
   applyAvatar(els.avatarPreview, selectedAvatar, formAvatarText(), selectedAvatarImage, selectedAvatarZoom, selectedAvatarY);
+  applyAvatar(els.avatarEditorPreview, selectedAvatar, formAvatarText(), selectedAvatarImage, selectedAvatarZoom, selectedAvatarY);
   if (els.avatarZoom) els.avatarZoom.value = selectedAvatarZoom;
   if (els.avatarY) els.avatarY.value = selectedAvatarY;
 }
@@ -1085,6 +1090,11 @@ els.avatarChoices.forEach((button) => {
 
 els.nameInput.addEventListener("input", renderAvatarPreview);
 
+els.customAvatarButton.addEventListener("click", () => {
+  els.avatarModal.classList.add("active");
+  els.avatarModal.setAttribute("aria-hidden", "false");
+});
+
 els.avatarZoom.addEventListener("input", () => {
   selectedAvatarZoom = Number(els.avatarZoom.value);
   renderAvatarPreview();
@@ -1176,6 +1186,16 @@ els.guideModal.addEventListener("click", (event) => {
   if (event.target === els.guideModal) {
     els.guideModal.classList.remove("active");
     els.guideModal.setAttribute("aria-hidden", "true");
+  }
+});
+els.closeAvatarEditor.addEventListener("click", () => {
+  els.avatarModal.classList.remove("active");
+  els.avatarModal.setAttribute("aria-hidden", "true");
+});
+els.avatarModal.addEventListener("click", (event) => {
+  if (event.target === els.avatarModal) {
+    els.avatarModal.classList.remove("active");
+    els.avatarModal.setAttribute("aria-hidden", "true");
   }
 });
 window.addEventListener("devicemotion", handleMotion);
