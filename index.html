@@ -14,7 +14,7 @@
       <div class="intro-visual" aria-hidden="true">
         <div class="orbit-card card-a">走路</div>
         <div class="orbit-card card-b">食物</div>
-        <div class="orbit-card card-c">进化</div>
+        <div class="orbit-card card-c">旅行</div>
         <div class="pet-3d pet-sprout intro-pet">
           <span class="pet-tail"></span>
           <span class="pet-glow"></span>
@@ -40,7 +40,7 @@
       <div class="intro-copy">
         <p class="eyebrow">MoveQuest 步步兽</p>
         <h1>把每天的步数，变成一只会长大的宠物。</h1>
-        <p>你每走到一个阶段目标，就能解锁一份食物。投喂、摸摸、好友串门都会让宠物回应你；连续运动会推动它进化。</p>
+        <p>你每走到一个阶段目标，就能解锁一份食物。喂饱后，宠物会带着便当去校园旅行，带回明信片；连续照料才会慢慢进化。</p>
       </div>
 
       <div class="intro-steps">
@@ -54,7 +54,7 @@
         </article>
         <article>
           <strong>3</strong>
-          <span>宠物成长进化</span>
+          <span>校园旅行进化</span>
         </article>
       </div>
 
@@ -227,6 +227,40 @@
           <div class="food-list panel-list" id="food-list"></div>
         </section>
 
+        <section class="tab-panel" data-panel="explore">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">校园探索</p>
+              <h3>喂饱后，让宠物带着便当出门。</h3>
+            </div>
+            <span id="campus-snack-count">0 份便当</span>
+          </div>
+
+          <section class="explore-hero">
+            <div>
+              <span class="route-chip">旅行青蛙式轻探索</span>
+              <strong>继续走路，攒旅行便当。</strong>
+              <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
+            </div>
+            <article>
+              <strong id="postcard-count">0</strong>
+              <span>明信片</span>
+            </article>
+          </section>
+
+          <div class="trip-list" id="trip-list"></div>
+
+          <section class="postcard-section">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">相册</p>
+                <h3>宠物今天带回了什么？</h3>
+              </div>
+            </div>
+            <div class="postcard-grid" id="postcard-grid"></div>
+          </section>
+        </section>
+
         <section class="tab-panel" data-panel="friends">
           <div class="section-head">
             <div>
@@ -259,6 +293,13 @@
                 <div class="team-progress"><i id="team-progress"></i></div>
               </div>
               <button type="button" id="team-button">合喂</button>
+            </article>
+            <article>
+              <div>
+                <strong>派宠物串门</strong>
+                <p id="visit-copy">今日喂饱后，可以让它去小雨的小屋玩一会儿。</p>
+              </div>
+              <button type="button" id="visit-button">串门</button>
             </article>
           </section>
 
@@ -334,6 +375,7 @@
       <nav class="bottom-tabs" aria-label="底部功能导航">
         <button class="tab-button active" type="button" data-tab="home"><span>小屋</span></button>
         <button class="tab-button" type="button" data-tab="feed"><span>投喂</span></button>
+        <button class="tab-button" type="button" data-tab="explore"><span>探索</span></button>
         <button class="tab-button" type="button" data-tab="friends"><span>好友</span></button>
         <button class="tab-button" type="button" data-tab="growth"><span>成长</span></button>
       </nav>
