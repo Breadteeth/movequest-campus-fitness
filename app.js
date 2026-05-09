@@ -1,135 +1,185 @@
-const STORAGE_KEY = "movequest-app-demo-v2";
+const STORAGE_KEY = "movequest-app-v4";
 
 const defaultState = {
-  onboarded: false,
+  appReady: false,
+  name: "林澈",
+  school: "杭州大学城",
+  dorm: "6-402",
+  avatar: "A",
   goal: "stress",
-  energy: 72,
-  level: 8,
-  xp: 1180,
-  coins: 460,
-  streak: 6,
-  rankGap: 84,
-  completedTasks: ["stretch"],
+  permissions: {
+    gps: true,
+    health: true,
+    push: true
+  },
+  level: 1,
+  xp: 0,
+  coins: 120,
+  streak: 0,
+  teamScore: 500,
+  rankGap: 80,
+  completedTasks: [],
+  litNodes: [],
   nudged: [],
-  joinedLeagues: ["dorm"],
+  joinedChallenges: [],
   purchased: [],
+  chestOpened: false,
+  feed: [
+    { title: "沛雯点亮了操场补给点", text: "小队积分 +24，今晚还差一次助攻。" },
+    { title: "子豪还没开始运动", text: "发送轻提醒可完成社交任务。" }
+  ],
   run: {
     active: false,
     progress: 0,
     seconds: 0,
     distance: 0,
-    reward: 0
+    combo: 1,
+    visited: []
   }
 };
 
-const tasks = [
+const avatarTitles = {
+  A: "夜跑新人",
+  B: "晨练派",
+  C: "组队达人"
+};
+
+const quests = [
   {
-    id: "stretch",
-    icon: "醒",
+    id: "warmup",
+    icon: "W",
     title: "课间 8 分钟唤醒",
-    meta: "低门槛启动",
-    text: "久坐后做肩颈、髋部和踝关节活动。",
-    reward: { xp: 40, coins: 12, energy: 8 }
+    text: "完成肩颈、髋部和踝关节活动。",
+    reward: { xp: 40, coins: 12 },
+    action: "complete"
   },
   {
-    id: "run2k",
-    icon: "跑",
-    title: "操场跑图 2km",
-    meta: "GPS 任务",
-    text: "边跑边拾取虚拟补给点，完成后计入战队。",
-    reward: { xp: 120, coins: 36, energy: 16 }
+    id: "run",
+    icon: "M",
+    title: "点亮三处补给点",
+    text: "操场、图书馆、宿舍各经过一次。",
+    reward: { xp: 120, coins: 40 },
+    action: "map"
   },
   {
     id: "squad",
-    icon: "队",
-    title: "给 1 位队友助攻",
-    meta: "社交牵引",
-    text: "轻提醒比硬催促更适合宿舍熟人关系。",
-    reward: { xp: 60, coins: 18, energy: 10 }
-  }
-];
-
-const teammates = [
-  { id: "wen", avatar: "雯", name: "沛雯", text: "刚完成 1.8km，等你补最后一棒", status: "在线" },
-  { id: "hao", avatar: "豪", name: "子豪", text: "今天还没动，适合发一个轻提醒", status: "未打卡" },
-  { id: "yi", avatar: "仪", name: "嘉仪", text: "报名了晨跑局，缺一个同伴", status: "组队中" }
-];
-
-const leagues = [
-  { id: "dorm", title: "宿舍杯 7 日连击", text: "4 人组队，按完成次数排名。", tag: "已加入" },
-  { id: "night", title: "夜跑补给赛", text: "经过校园虚拟点位收集金币。", tag: "可加入" },
-  { id: "club", title: "社团燃脂 PK", text: "按社团累计运动分钟数结算。", tag: "可加入" }
-];
-
-const badges = [
-  {
-    id: "starter",
-    icon: "启",
-    title: "运动开机",
-    text: "完成第一个低门槛任务。",
-    unlocked: (state) => state.completedTasks.length >= 1
+    icon: "S",
+    title: "给一位队友助攻",
+    text: "推动宿舍队完成今晚集结。",
+    reward: { xp: 60, coins: 18 },
+    action: "squad"
   },
   {
-    id: "streak",
-    icon: "连",
-    title: "六天不断签",
-    text: "连续运动 6 天。",
-    unlocked: (state) => state.streak >= 6
-  },
-  {
-    id: "map",
-    icon: "图",
-    title: "校园跑图者",
-    text: "完成一次 GPS 跑图。",
-    unlocked: (state) => state.completedTasks.includes("run2k")
-  },
-  {
-    id: "captain",
-    icon: "队",
-    title: "宿舍气氛官",
-    text: "给队友发送助攻提醒。",
-    unlocked: (state) => state.nudged.length > 0
+    id: "chest",
+    icon: "B",
+    title: "打开新手宝箱",
+    text: "领取头像框、金币和赛季 XP。",
+    reward: { xp: 70, coins: 35 },
+    action: "chest"
   }
 ];
 
 const routePoints = [
-  { left: 66, top: 88 },
-  { left: 164, top: 54 },
-  { left: 260, top: 86 },
-  { left: 292, top: 172 },
-  { left: 214, top: 250 },
-  { left: 112, top: 220 },
-  { left: 66, top: 88 }
+  { left: 62, top: 102, node: "track" },
+  { left: 154, top: 54, node: "field" },
+  { left: 276, top: 92, node: "library" },
+  { left: 286, top: 214, node: "library" },
+  { left: 160, top: 262, node: "dorm" },
+  { left: 72, top: 190, node: "dorm" },
+  { left: 62, top: 102, node: "track" }
+];
+
+const teammates = [
+  { id: "wen", avatar: "W", name: "沛雯", status: "刚跑完 1.6km", text: "等你补最后一个补给点。" },
+  { id: "hao", avatar: "H", name: "子豪", status: "未打卡", text: "轻提醒后通常 10 分钟内上线。" },
+  { id: "yi", avatar: "Y", name: "嘉仪", status: "组队中", text: "想约一个图书馆东门出发。" }
+];
+
+const challenges = [
+  { id: "relay", title: "宿舍接力 4 人局", text: "每人完成 1 个补给点，小队额外 +60。", tag: "缺 1 人" },
+  { id: "night", title: "21:30 夜跑冲榜", text: "结算前完成跑图，金币翻倍。", tag: "限时" },
+  { id: "club", title: "社团燃脂赛", text: "按社团总分钟数累计赛季声望。", tag: "可加入" }
+];
+
+const badges = [
+  { id: "start", icon: "GO", title: "开局上路", text: "完成账号创建。", unlocked: (s) => s.appReady },
+  { id: "warm", icon: "W", title: "运动开机", text: "完成第一次低门槛任务。", unlocked: (s) => s.completedTasks.includes("warmup") },
+  { id: "map", icon: "M", title: "校园跑图者", text: "点亮全部补给点。", unlocked: (s) => s.completedTasks.includes("run") },
+  { id: "team", icon: "S", title: "宿舍助攻手", text: "给队友发送一次助攻。", unlocked: (s) => s.completedTasks.includes("squad") },
+  { id: "box", icon: "B", title: "宝箱猎手", text: "打开新手宝箱。", unlocked: (s) => s.chestOpened },
+  { id: "rank", icon: "TOP", title: "冲榜新人", text: "小队排名进入前三。", unlocked: (s) => s.rankGap <= 0 }
+];
+
+const shopItems = [
+  { id: "meal", title: "健康餐 5 元券", price: 180, text: "晚训后可兑换。" },
+  { id: "skin", title: "荧光跑道皮肤", price: 260, text: "跑图页展示限定轨迹。" },
+  { id: "frame", title: "新手冲榜头像框", price: 220, text: "战队榜单展示。" }
 ];
 
 const els = {
-  startApp: document.getElementById("start-app"),
+  shell: document.querySelector(".phone-shell"),
   screens: [...document.querySelectorAll(".screen")],
   tabs: [...document.querySelectorAll(".tab")],
-  taskStack: document.getElementById("task-stack"),
-  taskProgress: document.getElementById("task-progress"),
-  energyScore: document.getElementById("energy-score"),
+  authForm: document.getElementById("auth-form"),
+  nameInput: document.getElementById("name-input"),
+  schoolSelect: document.getElementById("school-select"),
+  dormSelect: document.getElementById("dorm-select"),
+  timeSelect: document.getElementById("time-select"),
+  avatarButtons: [...document.querySelectorAll("[data-avatar]")],
+  goalButtons: [...document.querySelectorAll("[data-goal]")],
+  permissionButtons: [...document.querySelectorAll("[data-permission]")],
+  saveProfile: document.getElementById("save-profile"),
+  enterApp: document.getElementById("enter-app"),
+  homeName: document.getElementById("home-name"),
+  homeSchool: document.getElementById("home-school"),
+  playerAvatar: document.getElementById("player-avatar"),
+  playerTitle: document.getElementById("player-title"),
   levelLabel: document.getElementById("level-label"),
+  xpBar: document.getElementById("xp-bar"),
+  nextReward: document.getElementById("next-reward"),
   streakLabel: document.getElementById("streak-label"),
-  coinsLabel: document.getElementById("coins-label"),
-  rankLabel: document.getElementById("rank-label"),
-  onlineLabel: document.getElementById("online-label"),
-  runToggle: document.getElementById("run-toggle"),
+  coinLabel: document.getElementById("coin-label"),
+  teamRankLabel: document.getElementById("team-rank-label"),
+  storyProgress: document.getElementById("story-progress"),
+  taskProgress: document.getElementById("task-progress"),
+  questList: document.getElementById("quest-list"),
+  openChest: document.getElementById("open-chest"),
+  chestTitle: document.getElementById("chest-title"),
+  chestDesc: document.getElementById("chest-desc"),
   runState: document.getElementById("run-state"),
   distanceLabel: document.getElementById("distance-label"),
   timeLabel: document.getElementById("time-label"),
-  runReward: document.getElementById("run-reward"),
-  playerDot: document.getElementById("player-dot"),
-  teammateList: document.getElementById("teammate-list"),
-  leagueList: document.getElementById("league-list"),
+  comboLabel: document.getElementById("combo-label"),
+  runnerDot: document.getElementById("runner-dot"),
+  boostTitle: document.getElementById("boost-title"),
+  boostCopy: document.getElementById("boost-copy"),
+  boostButton: document.getElementById("boost-button"),
+  runToggle: document.getElementById("run-toggle"),
+  teamName: document.getElementById("team-name"),
   rankGap: document.getElementById("rank-gap"),
-  squadProgress: document.getElementById("squad-progress"),
+  teamProgress: document.getElementById("team-progress"),
+  teamFeed: document.getElementById("team-feed"),
+  teammateList: document.getElementById("teammate-list"),
   nudgeAll: document.getElementById("nudge-all"),
-  passLevel: document.getElementById("pass-level"),
-  passProgress: document.getElementById("pass-progress"),
+  challengeList: document.getElementById("challenge-list"),
+  seasonLabel: document.getElementById("season-label"),
+  passTitle: document.getElementById("pass-title"),
+  passXp: document.getElementById("pass-xp"),
+  passTrack: document.getElementById("pass-track"),
+  badgeCount: document.getElementById("badge-count"),
   badgeGrid: document.getElementById("badge-grid"),
+  walletLabel: document.getElementById("wallet-label"),
+  shopList: document.getElementById("shop-list"),
+  sideRank: document.getElementById("side-rank"),
+  sideGap: document.getElementById("side-gap"),
+  sideRowRank: document.getElementById("side-row-rank"),
+  sideScore: document.getElementById("side-score"),
+  rewardModal: document.getElementById("reward-modal"),
+  rewardTitle: document.getElementById("reward-title"),
+  rewardCopy: document.getElementById("reward-copy"),
+  closeReward: document.getElementById("close-reward"),
   toastRegion: document.getElementById("toast-region"),
-  choiceCards: [...document.querySelectorAll(".choice-card")]
+  confettiLayer: document.getElementById("confetti-layer")
 };
 
 let state = loadState();
@@ -137,15 +187,79 @@ let runTimer = null;
 
 function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...structuredClone(defaultState), ...JSON.parse(raw) } : structuredClone(defaultState);
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? mergeState(JSON.parse(stored)) : structuredClone(defaultState);
   } catch {
     return structuredClone(defaultState);
   }
 }
 
+function mergeState(stored) {
+  return {
+    ...structuredClone(defaultState),
+    ...stored,
+    permissions: { ...defaultState.permissions, ...(stored.permissions || {}) },
+    run: { ...defaultState.run, ...(stored.run || {}) }
+  };
+}
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function switchScreen(name) {
+  els.screens.forEach((screen) => {
+    screen.classList.toggle("active", screen.dataset.screen === name);
+  });
+  els.shell.classList.toggle("app-ready", ["home", "map", "squad", "rewards"].includes(name));
+  els.tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.tabTarget === name));
+}
+
+function addXp(amount) {
+  state.xp += amount;
+  const nextLevel = Math.floor(state.xp / 160) + 1;
+  if (nextLevel > state.level) {
+    state.level = nextLevel;
+    showReward("升级了", `你升到 Lv.${state.level}，新的赛季奖励已解锁。`);
+  }
+}
+
+function completeQuest(id) {
+  if (state.completedTasks.includes(id)) return;
+  const quest = quests.find((item) => item.id === id);
+  state.completedTasks.push(id);
+  addXp(quest.reward.xp);
+  state.coins += quest.reward.coins;
+  state.teamScore += id === "squad" ? 34 : 18;
+  state.rankGap = Math.max(0, state.rankGap - (id === "run" ? 38 : 18));
+  if (state.completedTasks.length >= 2 && state.streak === 0) state.streak = 1;
+  showToast("任务完成", `+${quest.reward.xp} XP，+${quest.reward.coins} 金币。`);
+  popConfetti(16);
+  saveState();
+  render();
+}
+
+function canOpenChest() {
+  return state.completedTasks.filter((id) => id !== "chest").length >= 2 && !state.chestOpened;
+}
+
+function openChest() {
+  if (state.chestOpened) {
+    showToast("宝箱已开启", "奖励已经放进赛季背包。");
+    return;
+  }
+  if (!canOpenChest()) {
+    showToast("还差一点", "先完成任意 2 个任务。");
+    return;
+  }
+  state.chestOpened = true;
+  state.coins += 80;
+  addXp(90);
+  if (!state.completedTasks.includes("chest")) state.completedTasks.push("chest");
+  showReward("新手宝箱开启", "获得 80 金币、90 XP 和新手头像框。");
+  popConfetti(28);
+  saveState();
+  render();
 }
 
 function showToast(title, text) {
@@ -153,118 +267,82 @@ function showToast(title, text) {
   toast.className = "toast";
   toast.innerHTML = `<strong>${title}</strong><p>${text}</p>`;
   els.toastRegion.appendChild(toast);
-  setTimeout(() => toast.remove(), 2400);
+  setTimeout(() => toast.remove(), 2600);
 }
 
-function switchScreen(name) {
-  els.screens.forEach((screen) => {
-    screen.classList.toggle("active", screen.dataset.screen === name);
-  });
-
-  document.querySelector(".phone-safe-area").classList.toggle("app-ready", name !== "onboarding");
-
-  els.tabs.forEach((tab) => {
-    tab.classList.toggle("active", tab.dataset.tabTarget === name);
-  });
+function showReward(title, text) {
+  els.rewardTitle.textContent = title;
+  els.rewardCopy.textContent = text;
+  els.rewardModal.classList.add("active");
+  els.rewardModal.setAttribute("aria-hidden", "false");
 }
 
-function completeTask(taskId) {
-  if (state.completedTasks.includes(taskId)) {
-    return;
+function closeReward() {
+  els.rewardModal.classList.remove("active");
+  els.rewardModal.setAttribute("aria-hidden", "true");
+}
+
+function popConfetti(count = 18) {
+  const colors = ["#d8ff4f", "#ff6a4a", "#4776ff", "#ffc94a", "#61d9c3"];
+  for (let i = 0; i < count; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.top = `${Math.random() * 32}%`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = `${Math.random() * 160}ms`;
+    els.confettiLayer.appendChild(piece);
+    setTimeout(() => piece.remove(), 1200);
   }
-
-  const task = tasks.find((item) => item.id === taskId);
-  state.completedTasks.push(taskId);
-  state.xp += task.reward.xp;
-  state.coins += task.reward.coins;
-  state.energy = Math.min(100, state.energy + task.reward.energy);
-  state.rankGap = Math.max(0, state.rankGap - 24);
-
-  if (state.completedTasks.length === tasks.length) {
-    state.streak += 1;
-    showToast("今日全清", "宿舍战队获得双倍积分，连续天数 +1。");
-  } else {
-    showToast("任务完成", `获得 ${task.reward.xp} XP 和 ${task.reward.coins} 金币。`);
-  }
-
-  saveState();
-  render();
 }
 
-function renderTasks() {
-  els.taskProgress.textContent = `${state.completedTasks.length}/${tasks.length}`;
-  els.taskStack.innerHTML = tasks.map((task) => {
-    const done = state.completedTasks.includes(task.id);
-    return `
-      <article class="task-card ${done ? "completed" : ""}">
-        <span class="task-icon">${task.icon}</span>
-        <div>
-          <span class="task-meta">${task.meta}</span>
-          <h4>${task.title}</h4>
-          <p>${task.text}</p>
-        </div>
-        <button class="task-button" type="button" data-task="${task.id}" ${done ? "disabled" : ""}>
-          ${done ? "已完成" : "完成"}
-        </button>
-      </article>
-    `;
-  }).join("");
-
-  document.querySelectorAll("[data-task]").forEach((button) => {
-    button.addEventListener("click", () => completeTask(button.dataset.task));
-  });
+function formatTime(seconds) {
+  const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const sec = String(seconds % 60).padStart(2, "0");
+  return `${min}:${sec}`;
 }
 
-function renderStats() {
-  const passPercent = Math.min(100, Math.round((state.xp % 240) / 240 * 100) + 28);
-  els.energyScore.textContent = state.energy;
-  els.levelLabel.textContent = `Lv.${state.level}`;
-  els.streakLabel.textContent = `连续 ${state.streak} 天`;
-  els.coinsLabel.textContent = state.coins;
-  els.rankLabel.textContent = state.rankGap <= 0 ? "#1" : "#2";
-  els.onlineLabel.textContent = teammates.filter((item) => item.status !== "未打卡").length;
-  els.rankGap.textContent = state.rankGap;
-  els.squadProgress.style.width = `${Math.min(100, 88 - state.rankGap / 3)}%`;
-  els.passLevel.textContent = `等级 ${state.level}`;
-  els.passProgress.style.width = `${passPercent}%`;
+function runPoint() {
+  const index = Math.min(routePoints.length - 1, Math.floor(state.run.progress * (routePoints.length - 1)));
+  return routePoints[index];
 }
 
-function renderRun() {
-  els.runState.textContent = state.run.active ? "记录中" : "未开始";
-  els.runToggle.textContent = state.run.active ? "暂停" : "开始";
-  els.distanceLabel.textContent = `${state.run.distance.toFixed(2)} km`;
-  els.timeLabel.textContent = formatTime(state.run.seconds);
-  els.runReward.textContent = `${state.run.reward} XP`;
-
-  const pointIndex = Math.min(routePoints.length - 1, Math.floor(state.run.progress * (routePoints.length - 1)));
-  const point = routePoints[pointIndex];
-  els.playerDot.style.left = `${point.left}px`;
-  els.playerDot.style.top = `${point.top}px`;
+function visitNode(node) {
+  const nodeMap = { field: "操场", library: "图书馆", dorm: "宿舍" };
+  if (!nodeMap[node] || state.run.visited.includes(node)) return;
+  state.run.visited.push(node);
+  if (!state.litNodes.includes(node)) state.litNodes.push(node);
+  state.coins += node === "dorm" ? 20 : 12;
+  state.teamScore += 18;
+  state.rankGap = Math.max(0, state.rankGap - 12);
+  showToast(`${nodeMap[node]}已点亮`, "补给奖励已入账，小队积分上升。");
+  popConfetti(10);
 }
 
 function tickRun() {
   state.run.seconds += 4;
-  state.run.progress = Math.min(1, state.run.progress + 0.08);
-  state.run.distance = Math.min(2, state.run.progress * 2);
-  state.run.reward = Math.round(state.run.progress * 120);
-
+  state.run.progress = Math.min(1, state.run.progress + 0.07);
+  state.run.distance = Math.min(1.8, state.run.progress * 1.8);
+  state.run.combo = Math.min(5, Math.floor(state.run.progress * 6) + 1);
+  visitNode(runPoint().node);
   if (state.run.progress >= 1) {
     stopRun();
-    if (!state.completedTasks.includes("run2k")) {
-      completeTask("run2k");
-    }
-    showToast("跑图完成", "模拟 GPS 轨迹已结算，虚拟补给点奖励已进入账户。");
+    ["field", "library", "dorm"].forEach(visitNode);
+    if (!state.completedTasks.includes("run")) completeQuest("run");
+    showReward("跑图完成", "三处补给点已点亮，宿舍队排名上升。");
   }
-
   saveState();
   render();
 }
 
 function startRun() {
+  if (state.run.progress >= 1) {
+    state.run = structuredClone(defaultState.run);
+  }
   state.run.active = true;
   runTimer = setInterval(tickRun, 700);
   saveState();
-  renderRun();
+  render();
 }
 
 function stopRun() {
@@ -274,28 +352,174 @@ function stopRun() {
     runTimer = null;
   }
   saveState();
-  renderRun();
+  render();
 }
 
-function formatTime(seconds) {
-  const minutes = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const secs = String(seconds % 60).padStart(2, "0");
-  return `${minutes}:${secs}`;
+function boostRun() {
+  if (!state.run.active) {
+    startRun();
+  }
+  state.run.progress = Math.min(1, state.run.progress + 0.12);
+  state.run.combo = Math.min(5, state.run.combo + 1);
+  state.coins += 8;
+  showToast("冲刺成功", `连击提升到 x${state.run.combo}。`);
+  tickRun();
+}
+
+function nudgeTeammate(id) {
+  if (state.nudged.includes(id)) return;
+  state.nudged.push(id);
+  state.coins += 14;
+  state.teamScore += 26;
+  state.rankGap = Math.max(0, state.rankGap - 18);
+  state.feed.unshift({ title: "你发起了一次战队集结", text: "队友上线后双方都能获得金币。" });
+  if (!state.completedTasks.includes("squad")) completeQuest("squad");
+  showToast("助攻已发送", "队友收到轻提醒，小队积分上升。");
+  saveState();
+  render();
+}
+
+function joinChallenge(id) {
+  if (state.joinedChallenges.includes(id)) return;
+  state.joinedChallenges.push(id);
+  state.teamScore += 22;
+  state.rankGap = Math.max(0, state.rankGap - 10);
+  state.feed.unshift({ title: "你加入了限时挑战", text: "完成跑图后获得额外结算奖励。" });
+  showToast("挑战加入", "限时奖励已加入今日任务池。");
+  saveState();
+  render();
+}
+
+function buyItem(id) {
+  const item = shopItems.find((entry) => entry.id === id);
+  if (state.purchased.includes(id)) {
+    showToast("已拥有", "这个奖励已经在背包里。");
+    return;
+  }
+  if (state.coins < item.price) {
+    showToast("金币不足", "完成跑图或战队任务可继续获得金币。");
+    return;
+  }
+  state.coins -= item.price;
+  state.purchased.push(id);
+  showReward("兑换成功", `${item.title} 已加入你的背包。`);
+  saveState();
+  render();
+}
+
+function resetApp() {
+  stopRun();
+  state = structuredClone(defaultState);
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+  switchScreen("auth");
+  showToast("已重新开始", "从创建校园账号开始体验。");
+}
+
+function renderProfileSelections() {
+  els.avatarButtons.forEach((button) => {
+    button.classList.toggle("selected", button.dataset.avatar === state.avatar);
+  });
+  els.goalButtons.forEach((button) => {
+    button.classList.toggle("selected", button.dataset.goal === state.goal);
+  });
+  els.permissionButtons.forEach((button) => {
+    button.classList.toggle("active", Boolean(state.permissions[button.dataset.permission]));
+  });
+}
+
+function renderHome() {
+  const completedCount = state.completedTasks.length;
+  const storyCount = state.litNodes.filter((node) => ["field", "library", "dorm"].includes(node)).length;
+  const xpProgress = Math.min(100, Math.round((state.xp % 160) / 160 * 100));
+  els.homeName.textContent = state.name;
+  els.homeSchool.textContent = state.school;
+  els.playerAvatar.textContent = state.avatar;
+  els.playerAvatar.className = `player-avatar avatar-${state.avatar.toLowerCase()}`;
+  els.playerTitle.textContent = avatarTitles[state.avatar];
+  els.levelLabel.textContent = `Lv.${state.level}`;
+  els.xpBar.style.width = `${xpProgress}%`;
+  els.nextReward.textContent = state.chestOpened ? "今晚继续跑图，冲击宿舍杯前三。" : "完成 2 个任务，打开新手宝箱。";
+  els.streakLabel.textContent = `${state.streak} 天`;
+  els.coinLabel.textContent = state.coins;
+  els.teamRankLabel.textContent = state.rankGap <= 0 ? "#3" : "#4";
+  els.storyProgress.textContent = `${storyCount} / 3 已点亮`;
+  els.taskProgress.textContent = `${completedCount}/${quests.length}`;
+  els.openChest.classList.toggle("ready", canOpenChest());
+  els.chestTitle.textContent = state.chestOpened ? "宝箱已开启" : "新手宝箱";
+  els.chestDesc.textContent = state.chestOpened ? "奖励已放进赛季背包。" : canOpenChest() ? "可以开启，领取新手奖励。" : "完成 2 个任务后开启。";
+}
+
+function renderQuests() {
+  els.questList.innerHTML = quests.map((quest) => {
+    const done = state.completedTasks.includes(quest.id);
+    const buttonText = done ? "已完成" : quest.action === "map" ? "出发" : quest.action === "squad" ? "助攻" : quest.action === "chest" ? "开启" : "完成";
+    return `
+      <article class="quest-card ${done ? "done" : ""}">
+        <span class="quest-icon">${quest.icon}</span>
+        <div>
+          <h4>${quest.title}</h4>
+          <p>${quest.text}</p>
+        </div>
+        <button class="quest-claim" type="button" data-quest="${quest.id}" ${done ? "disabled" : ""}>${buttonText}</button>
+      </article>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-quest]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const quest = quests.find((item) => item.id === button.dataset.quest);
+      if (quest.action === "complete") completeQuest(quest.id);
+      if (quest.action === "map") switchScreen("map");
+      if (quest.action === "squad") switchScreen("squad");
+      if (quest.action === "chest") openChest();
+    });
+  });
+}
+
+function renderMap() {
+  const point = runPoint();
+  els.runState.textContent = state.run.active ? "记录中" : state.run.progress >= 1 ? "已完成" : "待出发";
+  els.runToggle.textContent = state.run.active ? "暂停" : state.run.progress >= 1 ? "重新跑图" : "开始跑图";
+  els.distanceLabel.textContent = `${state.run.distance.toFixed(2)} km`;
+  els.timeLabel.textContent = formatTime(state.run.seconds);
+  els.comboLabel.textContent = `x${state.run.combo}`;
+  els.runnerDot.textContent = state.avatar;
+  els.runnerDot.style.left = `${point.left}px`;
+  els.runnerDot.style.top = `${point.top}px`;
+
+  document.querySelectorAll(".zone").forEach((zone) => zone.classList.remove("completed"));
+  if (state.litNodes.includes("field")) document.querySelector(".zone-a").classList.add("completed");
+  if (state.litNodes.includes("library")) document.querySelector(".zone-b").classList.add("completed");
+  if (state.litNodes.includes("dorm")) document.querySelector(".zone-c").classList.add("completed");
+
+  const next = ["field", "library", "dorm"].find((node) => !state.litNodes.includes(node));
+  const label = { field: "操场补给点", library: "图书馆补给点", dorm: "宿舍补给点" }[next] || "全地图点亮";
+  els.boostTitle.textContent = label;
+  els.boostCopy.textContent = next ? "冲刺后更快到达，获得金币和小队积分。" : "可以重新跑图刷连击和金币。";
 }
 
 function renderSquad() {
+  els.teamName.textContent = `${state.dorm} 动量队`;
+  els.rankGap.textContent = state.rankGap;
+  els.teamProgress.style.width = `${Math.min(100, 68 + (80 - state.rankGap) * 0.38)}%`;
+  els.teamFeed.innerHTML = state.feed.slice(0, 3).map((item) => `
+    <article class="feed-bubble">
+      <strong>${item.title}</strong>
+      <p>${item.text}</p>
+    </article>
+  `).join("");
+
   els.teammateList.innerHTML = teammates.map((mate) => {
     const nudged = state.nudged.includes(mate.id);
     return `
       <article class="teammate-card">
-        <span class="avatar">${mate.avatar}</span>
+        <span class="teammate-avatar">${mate.avatar}</span>
         <div>
           <h4>${mate.name} · ${mate.status}</h4>
           <p>${mate.text}</p>
         </div>
-        <button class="mini-button" type="button" data-nudge="${mate.id}" ${nudged ? "disabled" : ""}>
-          ${nudged ? "已助攻" : "助攻"}
-        </button>
+        <button class="mini-action" type="button" data-nudge="${mate.id}" ${nudged ? "disabled" : ""}>${nudged ? "已助攻" : "助攻"}</button>
       </article>
     `;
   }).join("");
@@ -304,140 +528,155 @@ function renderSquad() {
     button.addEventListener("click", () => nudgeTeammate(button.dataset.nudge));
   });
 
-  els.leagueList.innerHTML = leagues.map((league) => {
-    const joined = state.joinedLeagues.includes(league.id);
+  els.challengeList.innerHTML = challenges.map((challenge) => {
+    const joined = state.joinedChallenges.includes(challenge.id);
     return `
-      <article class="league-card">
-        <div class="league-card-top">
+      <article class="challenge-card">
+        <div class="challenge-card-top">
           <div>
-            <h4>${league.title}</h4>
-            <p>${league.text}</p>
+            <strong>${challenge.title}</strong>
+            <p>${challenge.text}</p>
           </div>
-          <span class="league-tag">${joined ? "已加入" : league.tag}</span>
+          <span class="challenge-tag">${joined ? "进行中" : challenge.tag}</span>
         </div>
-        <button class="mini-button" type="button" data-league="${league.id}" ${joined ? "disabled" : ""}>
-          ${joined ? "进行中" : "加入"}
-        </button>
+        <button class="mini-action" type="button" data-challenge="${challenge.id}" ${joined ? "disabled" : ""}>${joined ? "已加入" : "加入"}</button>
       </article>
     `;
   }).join("");
 
-  document.querySelectorAll("[data-league]").forEach((button) => {
-    button.addEventListener("click", () => joinLeague(button.dataset.league));
+  document.querySelectorAll("[data-challenge]").forEach((button) => {
+    button.addEventListener("click", () => joinChallenge(button.dataset.challenge));
   });
 }
 
-function nudgeTeammate(id) {
-  if (state.nudged.includes(id)) {
-    return;
-  }
-  state.nudged.push(id);
-  state.coins += 10;
-  state.xp += 30;
-  if (!state.completedTasks.includes("squad")) {
-    completeTask("squad");
-  } else {
-    saveState();
-    render();
-  }
-  showToast("助攻已发送", "对方收到轻提醒，你获得社交协作奖励。");
-}
-
-function joinLeague(id) {
-  if (state.joinedLeagues.includes(id)) {
-    return;
-  }
-  state.joinedLeagues.push(id);
-  state.rankGap = Math.max(0, state.rankGap - 12);
-  saveState();
-  render();
-  showToast("挑战已加入", "新的战队任务会出现在今日任务流中。");
-}
-
-function renderBadges() {
+function renderRewards() {
+  const unlocked = badges.filter((badge) => badge.unlocked(state));
+  const passPercent = Math.min(100, Math.round((state.xp / 640) * 100));
+  els.seasonLabel.textContent = `Lv.${state.level}`;
+  els.passTitle.textContent = state.level >= 3 ? "冲榜段位" : "新手段位";
+  els.passXp.textContent = `${state.xp} XP`;
+  els.passTrack.style.width = `${passPercent}%`;
+  els.badgeCount.textContent = `${unlocked.length}/${badges.length}`;
+  els.walletLabel.textContent = `${state.coins} 金币`;
   els.badgeGrid.innerHTML = badges.map((badge) => {
-    const unlocked = badge.unlocked(state);
+    const has = badge.unlocked(state);
     return `
-      <article class="badge-card ${unlocked ? "unlocked" : "locked"}">
+      <article class="badge-card ${has ? "unlocked" : "locked"}">
         <span class="badge-icon">${badge.icon}</span>
         <div class="badge-card-top">
           <h4>${badge.title}</h4>
-          <span class="badge-state">${unlocked ? "已解锁" : "未解锁"}</span>
+          <span class="badge-state">${has ? "已解锁" : "未解锁"}</span>
         </div>
         <p>${badge.text}</p>
       </article>
     `;
   }).join("");
+
+  els.shopList.innerHTML = shopItems.map((item) => {
+    const bought = state.purchased.includes(item.id);
+    return `
+      <button class="shop-item" type="button" data-shop="${item.id}">
+        <div>
+          <span>${item.text}</span>
+          <strong>${item.title}</strong>
+        </div>
+        <strong>${bought ? "已拥有" : `${item.price} 金币`}</strong>
+      </button>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-shop]").forEach((button) => {
+    button.addEventListener("click", () => buyItem(button.dataset.shop));
+  });
 }
 
-function buyItem(type) {
-  const price = type === "meal" ? 180 : 260;
-  if (state.purchased.includes(type)) {
-    showToast("已兑换", "这个奖励已经在你的背包里。");
-    return;
-  }
-  if (state.coins < price) {
-    showToast("金币不足", "完成今日任务或跑图可以继续获得金币。");
-    return;
-  }
-  state.coins -= price;
-  state.purchased.push(type);
-  saveState();
-  render();
-  showToast("兑换成功", type === "meal" ? "健康餐券已加入账户。" : "队伍跑道皮肤已解锁。");
+function renderSidePanel() {
+  const rank = state.rankGap <= 0 ? 3 : 4;
+  els.sideRank.textContent = `#${rank}`;
+  els.sideRowRank.textContent = rank;
+  els.sideGap.textContent = state.rankGap <= 0 ? "已进入前三" : `差 ${state.rankGap} 分进前三`;
+  els.sideScore.textContent = state.teamScore;
 }
 
 function render() {
-  renderStats();
-  renderTasks();
-  renderRun();
+  renderProfileSelections();
+  renderHome();
+  renderQuests();
+  renderMap();
   renderSquad();
-  renderBadges();
+  renderRewards();
+  renderSidePanel();
 }
 
-els.choiceCards.forEach((button) => {
+els.authForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  state.name = els.nameInput.value.trim() || "林澈";
+  state.school = els.schoolSelect.value;
+  saveState();
+  switchScreen("profile");
+});
+
+els.avatarButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    els.choiceCards.forEach((card) => card.classList.remove("selected"));
-    button.classList.add("selected");
-    state.goal = button.dataset.goal;
+    state.avatar = button.dataset.avatar;
     saveState();
+    renderProfileSelections();
   });
 });
 
-els.startApp.addEventListener("click", () => {
-  state.onboarded = true;
+els.goalButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    state.goal = button.dataset.goal;
+    saveState();
+    renderProfileSelections();
+  });
+});
+
+els.saveProfile.addEventListener("click", () => {
+  state.dorm = els.dormSelect.value;
   saveState();
+  switchScreen("permission");
+});
+
+els.permissionButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const key = button.dataset.permission;
+    state.permissions[key] = !state.permissions[key];
+    saveState();
+    renderProfileSelections();
+  });
+});
+
+els.enterApp.addEventListener("click", () => {
+  state.appReady = true;
+  state.feed.unshift({ title: `${state.name} 加入了 ${state.dorm} 动量队`, text: "新手主线已开启，今晚目标是点亮三处补给点。" });
+  saveState();
+  render();
   switchScreen("home");
+  showReward("账号创建成功", "新手任务已解锁，先完成今晚第一关。");
 });
 
 els.tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    switchScreen(tab.dataset.tabTarget);
-  });
+  tab.addEventListener("click", () => switchScreen(tab.dataset.tabTarget));
 });
 
 document.querySelectorAll("[data-tab-target]").forEach((button) => {
-  if (button.classList.contains("tab")) {
-    return;
+  if (!button.classList.contains("tab")) {
+    button.addEventListener("click", () => switchScreen(button.dataset.tabTarget));
   }
-  button.addEventListener("click", () => switchScreen(button.dataset.tabTarget));
 });
 
-document.querySelector("[data-action='reset']").addEventListener("click", () => {
-  stopRun();
-  state = structuredClone(defaultState);
-  saveState();
-  render();
-  switchScreen("onboarding");
-  showToast("演示已重置", "新手引导、任务和奖励回到初始状态。");
+els.openChest.addEventListener("click", openChest);
+els.closeReward.addEventListener("click", closeReward);
+els.rewardModal.addEventListener("click", (event) => {
+  if (event.target === els.rewardModal) closeReward();
 });
 
 els.runToggle.addEventListener("click", () => {
-  if (state.run.progress >= 1) {
-    state.run = structuredClone(defaultState.run);
-  }
   state.run.active ? stopRun() : startRun();
 });
+
+els.boostButton.addEventListener("click", boostRun);
 
 els.nudgeAll.addEventListener("click", () => {
   teammates.forEach((mate) => {
@@ -445,23 +684,16 @@ els.nudgeAll.addEventListener("click", () => {
       state.nudged.push(mate.id);
     }
   });
-  state.coins += 24;
-  state.xp += 60;
-  if (!state.completedTasks.includes("squad")) {
-    state.completedTasks.push("squad");
-  }
+  state.teamScore += 48;
+  state.rankGap = Math.max(0, state.rankGap - 28);
+  state.coins += 30;
+  state.feed.unshift({ title: "全队集结成功", text: "队友状态刷新，小队获得集结奖励。" });
+  if (!state.completedTasks.includes("squad")) completeQuest("squad");
+  showReward("集结成功", "全队收到提醒，金币和小队积分已结算。");
   saveState();
   render();
-  showToast("已催练全队", "用轻提醒推动熟人圈一起完成今天的运动。");
 });
 
-document.querySelectorAll("[data-shop]").forEach((button) => {
-  button.addEventListener("click", () => buyItem(button.dataset.shop));
-});
-
-if (state.run.active) {
-  startRun();
-}
-
+if (state.run.active) startRun();
 render();
-switchScreen(state.onboarded ? "home" : "onboarding");
+switchScreen(state.appReady ? "home" : "auth");
