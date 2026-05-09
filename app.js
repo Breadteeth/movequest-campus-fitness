@@ -1,4 +1,4 @@
-const STORAGE_KEY = "movequest-pet-v4";
+const STORAGE_KEY = "movequest-pet-v5";
 const EXTRA_SNACK_STEPS = 420;
 
 const petTypes = {
@@ -30,6 +30,16 @@ const petTypes = {
       { name: "小河狸", min: 0, days: 0, copy: "精力很多，但需要你带它出门。" },
       { name: "冲浪狸", min: 180, days: 3, copy: "尾巴更有力，投喂后会弹起来。" },
       { name: "浪花狸", min: 520, days: 7, copy: "完成高强度目标后，会解锁浪花纹。" }
+    ]
+  },
+  cat: {
+    label: "星尾猫",
+    defaultName: "奶盖",
+    trait: "好奇、爱探索，适合晚饭后散步。",
+    stages: [
+      { name: "奶油猫", min: 0, days: 0, copy: "刚住进小屋，会自己在房间里巡逻。" },
+      { name: "星尾猫", min: 180, days: 3, copy: "尾巴会亮起星点，适合夜跑后去探索。" },
+      { name: "月光猫", min: 520, days: 7, copy: "能在校园夜路上找到隐藏明信片。" }
     ]
   }
 };
@@ -133,8 +143,13 @@ const defaultState = {
   adopted: false,
   activeTab: "home",
   day: todayKey(),
+  account: "campus01",
+  password: "move2026",
   name: "阿澈",
   avatar: "leaf",
+  avatarImage: "",
+  avatarZoom: 120,
+  avatarY: 50,
   petType: "sprout",
   petName: "芽芽",
   plan: "daily",
@@ -167,11 +182,17 @@ const els = {
   screens: [...document.querySelectorAll(".screen")],
   introStart: document.getElementById("intro-start"),
   setupForm: document.getElementById("setup-form"),
+  accountInput: document.getElementById("account-input"),
+  passwordInput: document.getElementById("password-input"),
   nameInput: document.getElementById("name-input"),
   petInput: document.getElementById("pet-input"),
   goalSelect: document.getElementById("goal-select"),
   petChoices: [...document.querySelectorAll("[data-pet-choice]")],
   avatarChoices: [...document.querySelectorAll("[data-avatar-choice]")],
+  avatarUpload: document.getElementById("avatar-upload"),
+  avatarPreview: document.getElementById("avatar-preview"),
+  avatarZoom: document.getElementById("avatar-zoom"),
+  avatarY: document.getElementById("avatar-y"),
   userAvatar: document.getElementById("user-avatar"),
   userName: document.getElementById("user-name"),
   userLevel: document.getElementById("user-level"),
@@ -224,6 +245,7 @@ const els = {
   stageList: document.getElementById("stage-list"),
   achievementCount: document.getElementById("achievement-count"),
   achievementGrid: document.getElementById("achievement-grid"),
+  pathSteps: [...document.querySelectorAll("[data-path-step]")],
   tabButtons: [...document.querySelectorAll("[data-tab]")],
   panels: [...document.querySelectorAll("[data-panel]")],
   badges: {
@@ -236,6 +258,9 @@ const els = {
   resultTitle: document.getElementById("result-title"),
   resultCopy: document.getElementById("result-copy"),
   closeResult: document.getElementById("close-result"),
+  helpButton: document.getElementById("help-button"),
+  guideModal: document.getElementById("guide-modal"),
+  closeGuide: document.getElementById("close-guide"),
   toastRegion: document.getElementById("toast-region"),
   confettiLayer: document.getElementById("confetti-layer")
 };
@@ -243,6 +268,9 @@ const els = {
 let state = loadState();
 let selectedPetType = state.petType;
 let selectedAvatar = state.avatar;
+let selectedAvatarImage = state.avatarImage || "";
+let selectedAvatarZoom = state.avatarZoom || 120;
+let selectedAvatarY = state.avatarY || 50;
 let collectTimer = null;
 let lastMotionAt = 0;
 
@@ -307,6 +335,10 @@ function selectedPet() {
 
 function avatarText() {
   return (state.name || els.nameInput.value || "我").trim().slice(0, 1) || "我";
+}
+
+function formAvatarText() {
+  return (els.nameInput.value || state.name || "我").trim().slice(0, 1) || "我";
 }
 
 function userLevel() {
@@ -758,15 +790,36 @@ function selectPet(type) {
   els.petInput.value = pet.defaultName;
 }
 
-function selectAvatar(type) {
+function selectAvatar(type, clearImage = true) {
   selectedAvatar = type;
+  if (clearImage) selectedAvatarImage = "";
   els.avatarChoices.forEach((button) => button.classList.toggle("selected", button.dataset.avatarChoice === type));
+  renderAvatarPreview();
 }
 
-function applyAvatar(el, type, text) {
+function applyAvatar(el, type, text, image = "", zoom = 120, y = 50) {
   if (!el) return;
+  if (image) {
+    el.className = "user-avatar avatar-custom";
+    el.textContent = "";
+    el.style.backgroundImage = `url("${image}")`;
+    el.style.backgroundSize = `${zoom}%`;
+    el.style.backgroundPosition = `50% ${y}%`;
+    return;
+  }
+
   el.className = `user-avatar avatar-${type}`;
   el.textContent = text;
+  el.style.removeProperty("background-image");
+  el.style.removeProperty("background-size");
+  el.style.removeProperty("background-position");
+}
+
+function renderAvatarPreview() {
+  if (!els.avatarPreview) return;
+  applyAvatar(els.avatarPreview, selectedAvatar, formAvatarText(), selectedAvatarImage, selectedAvatarZoom, selectedAvatarY);
+  if (els.avatarZoom) els.avatarZoom.value = selectedAvatarZoom;
+  if (els.avatarY) els.avatarY.value = selectedAvatarY;
 }
 
 function renderFoodList() {
@@ -908,6 +961,30 @@ function renderEvolution() {
   renderStages();
 }
 
+function renderPath() {
+  const available = availableIndexes().length > 0;
+  const steps = {
+    walk: {
+      done: state.steps > 0,
+      active: !state.completed && !available
+    },
+    feed: {
+      done: fedCount() > 0,
+      active: !state.completed && available
+    },
+    explore: {
+      done: state.postcards.length > 0 || state.trips > 0,
+      active: state.completed
+    }
+  };
+
+  els.pathSteps.forEach((item) => {
+    const status = steps[item.dataset.pathStep];
+    item.classList.toggle("done", Boolean(status?.done));
+    item.classList.toggle("active", Boolean(status?.active));
+  });
+}
+
 function render() {
   const currentPlan = plan();
   const available = availableIndexes();
@@ -921,15 +998,17 @@ function render() {
   els.shell.dataset.stage = String(stage.index);
   els.shell.classList.toggle("walking", state.collecting);
   els.pet3d.style.setProperty("--growth", `${Math.min(1.16, 1 + state.growth / 1200)}`);
+  els.accountInput.value = state.account;
+  els.passwordInput.value = state.password;
   els.nameInput.value = state.name;
   els.goalSelect.value = state.plan;
   if (state.adopted) els.petInput.value = state.petName;
-  applyAvatar(els.userAvatar, state.avatar, avatarText());
-  applyAvatar(els.profileAvatar, state.avatar, avatarText());
+  applyAvatar(els.userAvatar, state.avatar, avatarText(), state.avatarImage, state.avatarZoom, state.avatarY);
+  applyAvatar(els.profileAvatar, state.avatar, avatarText(), state.avatarImage, state.avatarZoom, state.avatarY);
   els.userName.textContent = state.name;
-  els.userLevel.textContent = `Lv.${userLevel()} 运动饲养员`;
+  els.userLevel.textContent = `@${state.account} · Lv.${userLevel()}`;
   els.profileName.textContent = state.name;
-  els.profileTitle.textContent = `Lv.${userLevel()} · ${petType().label}搭档`;
+  els.profileTitle.textContent = `@${state.account} · Lv.${userLevel()} · ${petType().label}搭档`;
   els.profileDays.textContent = state.streak;
   els.profileBadge.textContent = state.completed ? "可去校园探索" : available.length ? "有食物待喂" : "今日照顾中";
   els.goalLabel.textContent = currentPlan.label;
@@ -978,6 +1057,7 @@ function render() {
   renderBadges();
   renderAchievements();
   renderEvolution();
+  renderPath();
   setTab(state.activeTab);
 }
 
@@ -1003,18 +1083,56 @@ els.avatarChoices.forEach((button) => {
   button.addEventListener("click", () => selectAvatar(button.dataset.avatarChoice));
 });
 
+els.nameInput.addEventListener("input", renderAvatarPreview);
+
+els.avatarZoom.addEventListener("input", () => {
+  selectedAvatarZoom = Number(els.avatarZoom.value);
+  renderAvatarPreview();
+});
+
+els.avatarY.addEventListener("input", () => {
+  selectedAvatarY = Number(els.avatarY.value);
+  renderAvatarPreview();
+});
+
+els.avatarUpload.addEventListener("change", () => {
+  const file = els.avatarUpload.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    selectedAvatarImage = String(reader.result || "");
+    selectedAvatarZoom = Number(els.avatarZoom.value || 120);
+    selectedAvatarY = Number(els.avatarY.value || 50);
+    renderAvatarPreview();
+  });
+  reader.readAsDataURL(file);
+});
+
 els.profileChip.addEventListener("click", () => setTab("growth"));
 
 els.setupForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  const account = els.accountInput.value.trim() || "campus01";
+  const password = els.passwordInput.value.trim();
+  if (password.length < 6) {
+    showToast("密码太短", "为了像真实 App 一样完整，请设置至少 6 位密码。");
+    return;
+  }
+
   state = {
     ...structuredClone(defaultState),
     introSeen: true,
     adopted: true,
     activeTab: "home",
     day: todayKey(),
+    account,
+    password,
     name: els.nameInput.value.trim() || "阿澈",
     avatar: selectedAvatar,
+    avatarImage: selectedAvatarImage,
+    avatarZoom: selectedAvatarZoom,
+    avatarY: selectedAvatarY,
     petType: selectedPetType,
     petName: els.petInput.value.trim() || selectedPet().defaultName,
     plan: els.goalSelect.value
@@ -1046,11 +1164,29 @@ els.closeResult.addEventListener("click", closeResult);
 els.resultModal.addEventListener("click", (event) => {
   if (event.target === els.resultModal) closeResult();
 });
+els.helpButton.addEventListener("click", () => {
+  els.guideModal.classList.add("active");
+  els.guideModal.setAttribute("aria-hidden", "false");
+});
+els.closeGuide.addEventListener("click", () => {
+  els.guideModal.classList.remove("active");
+  els.guideModal.setAttribute("aria-hidden", "true");
+});
+els.guideModal.addEventListener("click", (event) => {
+  if (event.target === els.guideModal) {
+    els.guideModal.classList.remove("active");
+    els.guideModal.setAttribute("aria-hidden", "true");
+  }
+});
 window.addEventListener("devicemotion", handleMotion);
 
 selectedPetType = state.petType;
 selectedAvatar = state.avatar;
+selectedAvatarImage = state.avatarImage || "";
+selectedAvatarZoom = state.avatarZoom || 120;
+selectedAvatarY = state.avatarY || 50;
 selectPet(selectedPetType);
-selectAvatar(selectedAvatar);
+selectAvatar(selectedAvatar, false);
+renderAvatarPreview();
 switchScreen(state.adopted ? "app" : state.introSeen ? "adopt" : "intro");
 render();
