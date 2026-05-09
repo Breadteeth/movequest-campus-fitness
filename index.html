@@ -3,354 +3,251 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoveQuest 校园动量引擎</title>
-  <meta
-    name="description"
-    content="一款面向大学生的游戏化运动激励工具原型，通过战队、成就、赛季和 AI 计划提升运动频率。"
-  >
+  <title>MoveQuest 校园运动激励 App Demo</title>
+  <meta name="description" content="MoveQuest 是一款面向大学生的游戏化运动激励工具 Demo，通过任务、战队、成就和运动数据模拟提升运动频率。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23151818'/%3E%3Cpath d='M18 38c0-13 9-16 12-28 7 5 16 14 16 28 0 10-7 18-14 18s-14-8-14-18z' fill='%23c8f05e'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
+  <main class="demo-shell">
+    <section class="phone-frame" aria-label="MoveQuest 移动端产品 Demo">
+      <div class="phone-safe-area">
+        <header class="app-status">
+          <span>9:41</span>
+          <span class="status-icons">5G 100%</span>
+        </header>
 
-  <header class="topbar">
-    <a class="brand" href="#hero" aria-label="MoveQuest 首页">
-      <span class="brand-mark">MQ</span>
-      <span>
-        <strong>MoveQuest</strong>
-        <small>校园动量引擎</small>
-      </span>
-    </a>
-
-    <nav class="topnav">
-      <a href="#dashboard">核心面板</a>
-      <a href="#social">社交激励</a>
-      <a href="#season">赛季成长</a>
-      <a href="#design">设计逻辑</a>
-    </nav>
-
-    <div class="topbar-actions">
-      <button class="ghost-button" type="button" data-action="scroll-plan">AI 生成计划</button>
-      <button class="primary-button" type="button" data-action="focus-quests">开始今日任务</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero section-shell" id="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Gameful Fitness Product for College Students</p>
-        <h1>把“想运动”变成一场能上瘾、能社交、能升级的校园挑战。</h1>
-        <p class="hero-text">
-          MoveQuest 通过战队排名、即时奖励、赛季成就和 AI 智能计划，解决大学生运动难坚持、难反馈、难找到同伴的核心问题。
-        </p>
-
-        <div class="hero-metrics">
-          <article>
-            <span class="metric-label">连续打卡</span>
-            <strong id="hero-streak">12 天</strong>
-          </article>
-          <article>
-            <span class="metric-label">本周活跃率</span>
-            <strong id="hero-activity">86%</strong>
-          </article>
-          <article>
-            <span class="metric-label">战队贡献</span>
-            <strong id="hero-contribution">+320</strong>
-          </article>
-        </div>
-
-        <div class="hero-actions">
-          <button class="primary-button" type="button" data-action="focus-quests">立即打卡</button>
-          <button class="secondary-button" type="button" data-action="scroll-social">查看社交玩法</button>
-        </div>
-
-        <div class="hero-points">
-          <span>即时反馈</span>
-          <span>好友互相拉动</span>
-          <span>碎片时间也能完成</span>
-        </div>
-      </div>
-
-      <aside class="hero-dashboard">
-        <div class="hero-card hero-score">
-          <div class="ring-shell">
-            <div class="ring-core">
-              <strong id="level-value">Lv.7</strong>
-              <span id="xp-value">780 XP</span>
+        <section class="screen active" id="screen-onboarding" data-screen="onboarding">
+          <div class="onboarding-art" aria-hidden="true">
+            <div class="campus-map">
+              <span class="path-dot dot-one"></span>
+              <span class="path-dot dot-two"></span>
+              <span class="path-dot dot-three"></span>
+              <span class="runner-token">MQ</span>
             </div>
           </div>
-          <div class="hero-score-copy">
-            <p>今日动量值</p>
-            <strong id="daily-score">68 / 100</strong>
-            <small>再完成 1 个任务即可解锁双倍奖励</small>
+          <div class="onboarding-copy">
+            <p class="kicker">MoveQuest</p>
+            <h1>今晚先完成 12 分钟任务，再把宿舍排名推上去。</h1>
+            <p>用校园任务、熟人组队、等级徽章和轻量奖励，把运动变成每天愿意打开一次的小游戏。</p>
           </div>
-        </div>
-
-        <div class="hero-card hero-rail">
-          <div class="hero-card-head">
-            <span>今晚 20:00 战队联赛</span>
-            <strong>宿舍杯冲刺</strong>
+          <div class="onboarding-steps" aria-label="新手引导步骤">
+            <button class="choice-card selected" type="button" data-goal="stress">
+              <span>考试周减压</span>
+              <strong>轻强度，不断签</strong>
+            </button>
+            <button class="choice-card" type="button" data-goal="fatloss">
+              <span>减脂塑形</span>
+              <strong>晚饭后燃一下</strong>
+            </button>
+            <button class="choice-card" type="button" data-goal="social">
+              <span>找人一起练</span>
+              <strong>宿舍队优先</strong>
+            </button>
           </div>
-          <ul class="mini-timeline">
-            <li>
-              <span class="timeline-dot active"></span>
-              <div>
-                <strong>快走 2km</strong>
-                <small>预计 18 分钟，适合晚课后完成</small>
-              </div>
-            </li>
-            <li>
-              <span class="timeline-dot"></span>
-              <div>
-                <strong>完成即得 Battle Pass 碎片</strong>
-                <small>可用于兑换食堂健康餐券</small>
-              </div>
-            </li>
-          </ul>
-        </div>
+          <button class="primary-action" type="button" id="start-app">进入今日任务</button>
+        </section>
 
-        <div class="hero-card hero-social">
-          <div class="hero-card-head">
-            <span>好友动态脉冲</span>
-            <strong id="social-pulse">17 位好友本周已打卡</strong>
+        <section class="screen" id="screen-home" data-screen="home">
+          <div class="app-header">
+            <div>
+              <p class="kicker">晚上好，林澈</p>
+              <h2>今日动量</h2>
+            </div>
+            <button class="icon-button" type="button" data-action="reset" aria-label="重置演示" title="重置演示">R</button>
           </div>
-          <div class="pulse-stack">
-            <span>沛雯刚完成夜跑 3km</span>
-            <span>你的小队排名升至第 2</span>
-            <span>晨练挑战还差 1 人即可组队成功</span>
+
+          <div class="hero-panel">
+            <div class="level-ring" aria-label="等级进度">
+              <span id="level-label">Lv.8</span>
+              <strong id="energy-score">72</strong>
+              <small>动量</small>
+            </div>
+            <div class="hero-summary">
+              <span>宿舍 6-402</span>
+              <strong id="streak-label">连续 6 天</strong>
+              <p>再完成 1 个任务，战队积分翻倍。</p>
+            </div>
           </div>
-        </div>
-      </aside>
-    </section>
 
-    <section class="overview-strip section-shell">
-      <article class="overview-card warm">
-        <span>核心洞察 01</span>
-        <strong>大学生不是不想运动，而是动力断档。</strong>
-        <p>MoveQuest 用“分钟级任务 + 奖励前置”降低开始门槛。</p>
-      </article>
-      <article class="overview-card mint">
-        <span>核心洞察 02</span>
-        <strong>坚持不是靠自律，而是靠群体氛围。</strong>
-        <p>用宿舍、社团、班级为最小社交单位，触发同伴牵引。</p>
-      </article>
-      <article class="overview-card sand">
-        <span>核心洞察 03</span>
-        <strong>成就感要可视、可炫耀、可兑换。</strong>
-        <p>把运动记录做成赛季成长和可分享的身份徽章。</p>
-      </article>
-    </section>
-
-    <section class="dashboard-grid section-shell" id="dashboard">
-      <article class="panel panel-large" id="quests-panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Daily Loop</p>
-            <h2>今日任务清单</h2>
+          <div class="quick-stats">
+            <article>
+              <span>金币</span>
+              <strong id="coins-label">460</strong>
+            </article>
+            <article>
+              <span>排名</span>
+              <strong id="rank-label">#2</strong>
+            </article>
+            <article>
+              <span>队友在线</span>
+              <strong id="online-label">3</strong>
+            </article>
           </div>
-          <div class="pill-group">
-            <span class="pill accent">碎片时间友好</span>
-            <span class="pill">即时结算</span>
+
+          <div class="section-head">
+            <h3>今天只做这三件事</h3>
+            <span id="task-progress">1/3</span>
           </div>
-        </div>
+          <div class="task-stack" id="task-stack"></div>
 
-        <div class="progress-inline">
-          <div class="progress-copy">
-            <strong id="quest-progress-text">已完成 1 / 3</strong>
-            <small>完成全部任务可触发“战队翻倍夜”</small>
+          <button class="primary-action sticky-action" type="button" data-tab-target="run">开始操场跑图</button>
+        </section>
+
+        <section class="screen" id="screen-run" data-screen="run">
+          <div class="app-header compact">
+            <div>
+              <p class="kicker">GPS Demo</p>
+              <h2>操场跑图</h2>
+            </div>
+            <span class="live-pill" id="run-state">未开始</span>
           </div>
-          <div class="progress-bar">
-            <span id="quest-progress-bar"></span>
-          </div>
-        </div>
 
-        <div class="quest-list" id="quest-list"></div>
-      </article>
-
-      <article class="panel" id="plan-panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">AI Coach</p>
-            <h2>智能计划生成器</h2>
-          </div>
-          <span class="pill success">按课表和状态实时推荐</span>
-        </div>
-
-        <form class="plan-form" id="plan-form">
-          <label>
-            本周目标
-            <select name="goal">
-              <option value="fatloss">减脂塑形</option>
-              <option value="endurance">提高体能</option>
-              <option value="stress">缓解压力</option>
-              <option value="muscle">轻力量增肌</option>
-            </select>
-          </label>
-          <label>
-            今日可用时间
-            <select name="time">
-              <option value="15">15 分钟</option>
-              <option value="25" selected>25 分钟</option>
-              <option value="40">40 分钟</option>
-              <option value="60">60 分钟</option>
-            </select>
-          </label>
-          <label>
-            当前状态
-            <select name="mood">
-              <option value="low">有点累，需要轻启动</option>
-              <option value="steady" selected>状态正常，适合稳步推进</option>
-              <option value="high">精力充沛，想冲刺一下</option>
-            </select>
-          </label>
-          <button class="primary-button block-button" type="submit">生成今天的任务路线</button>
-        </form>
-
-        <div class="plan-output" id="plan-output" aria-live="polite"></div>
-      </article>
-
-      <article class="panel" id="social">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Social Driver</p>
-            <h2>战队联赛</h2>
-          </div>
-          <span class="pill warning">宿舍 / 社团 / 班级均可组队</span>
-        </div>
-
-        <div class="challenge-list" id="challenge-list"></div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Campus Feed</p>
-            <h2>好友激励流</h2>
-          </div>
-          <span class="pill">完成后自动冒泡</span>
-        </div>
-
-        <div class="feed-list" id="feed-list"></div>
-      </article>
-
-      <article class="panel panel-wide" id="season">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Season System</p>
-            <h2>赛季成长地图</h2>
-          </div>
-          <span class="pill accent">连续性比强度更重要</span>
-        </div>
-
-        <div class="season-layout">
-          <div class="season-track">
-            <div class="season-track-fill" id="season-track-fill"></div>
-            <div class="season-steps">
+          <div class="route-card">
+            <div class="route-map" id="route-map" aria-label="模拟校园运动轨迹">
+              <div class="route-line"></div>
+              <span class="route-pin start">起</span>
+              <span class="route-pin end">终</span>
+              <span class="player-dot" id="player-dot"></span>
+              <span class="coin coin-one">+5</span>
+              <span class="coin coin-two">+8</span>
+              <span class="coin coin-three">+12</span>
+            </div>
+            <div class="run-metrics">
               <article>
-                <span>Lv.5</span>
-                <strong>校运新秀</strong>
-                <small>解锁 AI 节奏计划</small>
-              </article>
-              <article class="active-step">
-                <span>Lv.7</span>
-                <strong>宿舍领跑者</strong>
-                <small>可发起 4 人挑战房</small>
+                <span>距离</span>
+                <strong id="distance-label">0.00 km</strong>
               </article>
               <article>
-                <span>Lv.9</span>
-                <strong>社团主理人</strong>
-                <small>开启实体奖励兑换</small>
+                <span>时长</span>
+                <strong id="time-label">00:00</strong>
+              </article>
+              <article>
+                <span>奖励</span>
+                <strong id="run-reward">0 XP</strong>
               </article>
             </div>
           </div>
 
-          <div class="calendar-block">
-            <div class="calendar-copy">
-              <strong>近两周运动热力</strong>
-              <small>点击今天可补登一次训练</small>
+          <div class="game-mission">
+            <div>
+              <span class="mission-icon">⚡</span>
+              <strong>冲刺点：图书馆东门</strong>
+              <p>经过虚拟补给点时自动拾取金币，完成后可给战队贡献积分。</p>
             </div>
-            <div class="calendar-grid" id="calendar-grid"></div>
+            <button class="primary-action" type="button" id="run-toggle">开始</button>
           </div>
-        </div>
-      </article>
+        </section>
 
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Achievement</p>
-            <h2>身份徽章</h2>
+        <section class="screen" id="screen-squad" data-screen="squad">
+          <div class="app-header compact">
+            <div>
+              <p class="kicker">Squad League</p>
+              <h2>宿舍战队</h2>
+            </div>
+            <span class="live-pill">本周赛季</span>
           </div>
-          <span class="pill success">可分享至班群 / 朋友圈</span>
-        </div>
 
-        <div class="badge-list" id="badge-list"></div>
-      </article>
-
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">Leaderboard</p>
-            <h2>社交牵引指数</h2>
+          <div class="squad-card">
+            <div class="squad-title">
+              <div>
+                <span>6-402 动量小队</span>
+                <strong>距离第 1 名还差 <b id="rank-gap">84</b> 分</strong>
+              </div>
+              <button class="mini-button" type="button" id="nudge-all">一键催练</button>
+            </div>
+            <div class="squad-progress"><span id="squad-progress"></span></div>
           </div>
-          <span class="pill">越互动越容易坚持</span>
-        </div>
 
-        <div class="leaderboard">
-          <div class="leaderboard-row">
-            <span>你所在宿舍 6-402</span>
-            <strong>第 2 名</strong>
+          <div class="teammate-list" id="teammate-list"></div>
+
+          <div class="section-head">
+            <h3>可加入挑战</h3>
+            <span>2 个名额</span>
           </div>
-          <div class="leaderboard-bar"><span style="width: 84%"></span></div>
+          <div class="league-list" id="league-list"></div>
+        </section>
 
-          <div class="leaderboard-row">
-            <span>本周互相督促次数</span>
-            <strong id="support-count">23 次</strong>
+        <section class="screen" id="screen-badges" data-screen="badges">
+          <div class="app-header compact">
+            <div>
+              <p class="kicker">Achievement</p>
+              <h2>赛季成就</h2>
+            </div>
+            <span class="live-pill">S3 校园夜跑</span>
           </div>
-          <div class="leaderboard-bar alt"><span id="support-bar" style="width: 72%"></span></div>
 
-          <div class="leaderboard-row">
-            <span>完成率高于校内用户</span>
-            <strong>78%</strong>
+          <div class="pass-card">
+            <div>
+              <span>Battle Pass</span>
+              <strong id="pass-level">等级 8</strong>
+            </div>
+            <div class="pass-track"><span id="pass-progress"></span></div>
+            <p>解锁头像框、队伍皮肤、食堂健康餐券和品牌联名优惠。</p>
           </div>
-          <div class="leaderboard-bar muted"><span style="width: 78%"></span></div>
-        </div>
-      </article>
-    </section>
 
-    <section class="design-grid section-shell" id="design">
-      <article class="design-card">
-        <span>1</span>
-        <h3>低门槛开始</h3>
-        <p>任务默认从 8 到 25 分钟切入，让用户先获得一次“小赢”，而不是背上完整健身计划的压力。</p>
-      </article>
-      <article class="design-card">
-        <span>2</span>
-        <h3>社交关系颗粒度更小</h3>
-        <p>不是泛泛的社区，而是宿舍、班级、社团三类熟人圈子，更容易形成轻微的群体压力和归属感。</p>
-      </article>
-      <article class="design-card">
-        <span>3</span>
-        <h3>奖励系统前置</h3>
-        <p>完成前就能看到会得到什么：战队积分、等级、皮肤、食堂券，减少“做了也没感觉”的挫败感。</p>
-      </article>
-      <article class="design-card">
-        <span>4</span>
-        <h3>AI 不是花哨功能</h3>
-        <p>AI 只负责一件事：根据课表空档、疲劳度和目标，把今天该做什么直接给到，降低决策成本。</p>
-      </article>
-    </section>
+          <div class="badge-grid" id="badge-grid"></div>
 
-    <section class="final-cta section-shell">
-      <div>
-        <p class="eyebrow">Product Positioning</p>
-        <h2>一款不是记录运动，而是让大学生更容易持续运动的产品。</h2>
-      </div>
-      <div class="cta-actions">
-        <button class="secondary-button" type="button" data-action="scroll-plan">体验 AI 计划</button>
-        <button class="ghost-button" type="button" id="reset-demo">重置演示数据</button>
+          <div class="shop-preview">
+            <div class="section-head">
+              <h3>金币兑换</h3>
+              <span>商业化入口</span>
+            </div>
+            <button class="shop-item" type="button" data-shop="meal">
+              <span>健康餐 5 元券</span>
+              <strong>180 金币</strong>
+            </button>
+            <button class="shop-item" type="button" data-shop="skin">
+              <span>队伍跑道皮肤</span>
+              <strong>260 金币</strong>
+            </button>
+          </div>
+        </section>
+
+        <nav class="bottom-tabs" aria-label="底部导航">
+          <button class="tab active" type="button" data-tab-target="home" aria-label="今日">⌂<span>今日</span></button>
+          <button class="tab" type="button" data-tab-target="run" aria-label="跑图">◉<span>跑图</span></button>
+          <button class="tab" type="button" data-tab-target="squad" aria-label="战队">☷<span>战队</span></button>
+          <button class="tab" type="button" data-tab-target="badges" aria-label="成就">◇<span>成就</span></button>
+        </nav>
       </div>
     </section>
+
+    <aside class="strategy-board" aria-label="产品设计说明">
+      <div class="board-header">
+        <p class="kicker">Product Decision</p>
+        <h2>交付形态：移动 App 优先，网页用于测评演示</h2>
+        <p>运动激励需要随身记录、提醒、GPS/健康数据和熟人社交，所以正式产品应是 App；本链接提供可直接打开的 App 式 Demo。</p>
+      </div>
+
+      <div class="board-grid">
+        <article>
+          <span>新用户路径</span>
+          <strong>目标选择 → 今日任务 → 跑图奖励 → 战队反馈 → 成就沉淀</strong>
+          <p>Demo 不强制注册，真实产品可用手机号/校园邮箱/微信授权登录，并在绑定学校后进入宿舍或社团推荐。</p>
+        </article>
+        <article>
+          <span>功能层级</span>
+          <strong>今日、跑图、战队、成就四个主 Tab</strong>
+          <p>首页解决“今天做什么”；跑图承接 GPS 运动；战队负责社交牵引；成就页承接长期留存和商业化。</p>
+        </article>
+        <article>
+          <span>游戏化机制</span>
+          <strong>任务、金币、虚拟补给点、Battle Pass、徽章、排行榜</strong>
+          <p>避免空洞打卡，把运动过程做成可见进度和即时奖励。Demo 用模拟 GPS 展示最直观的跑图玩法。</p>
+        </article>
+        <article>
+          <span>商业化</span>
+          <strong>校园权益兑换 + 赛季通行证 + 品牌挑战赛</strong>
+          <p>优先从低压力权益开始，例如健康餐券、运动装备券、校内场馆权益，不破坏学生用户信任。</p>
+        </article>
+      </div>
+
+      <div class="validation-card">
+        <span>验收重点</span>
+        <p>改版会检查移动端 390px、桌面端 1440px、首屏是否直接可用、文字是否溢出、底部导航和关键按钮是否可交互。</p>
+      </div>
+    </aside>
   </main>
 
   <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
