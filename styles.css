@@ -2063,9 +2063,191 @@ select {
 .trip-list,
 .friend-board,
 .achievement-grid,
+.branch-picker,
 .stage-list {
   display: grid;
   gap: 10px;
+}
+
+.evolution-preview {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.branch-preview-card {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 148px;
+  padding: 14px;
+  overflow: hidden;
+  border-radius: 30px;
+  box-shadow: var(--soft-shadow);
+}
+
+.branch-mint {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(255, 255, 255, 0.78), transparent 28%),
+    linear-gradient(145deg, #dff8cd, #a6ead3);
+}
+
+.branch-sky {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.78), transparent 26%),
+    linear-gradient(145deg, #dceff8, #cfd9ff);
+}
+
+.branch-sun {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.78), transparent 26%),
+    linear-gradient(145deg, #fff0cf, #f7d6a3);
+}
+
+.branch-preview-card span,
+.branch-condition-card span {
+  color: #188464;
+  font-size: 12px;
+  font-weight: 1000;
+}
+
+.branch-preview-card strong,
+.branch-condition-card strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  font-size: 21px;
+  line-height: 1.16;
+  letter-spacing: -0.05em;
+}
+
+.branch-preview-card p,
+.branch-condition-card p {
+  display: -webkit-box;
+  margin: 7px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.branch-pet {
+  position: relative;
+  display: block;
+  width: 92px;
+  height: 92px;
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.78), transparent 20%),
+    linear-gradient(145deg, #eefb91, #65c98f);
+  box-shadow:
+    0 18px 34px rgba(43, 54, 49, 0.16),
+    inset -14px -16px 24px rgba(23, 33, 31, 0.1),
+    inset 14px 14px 24px rgba(255, 255, 255, 0.44);
+  animation: branch-preview-float 3.2s ease-in-out infinite;
+}
+
+.branch-shape-sphere {
+  border-radius: 50%;
+}
+
+.branch-shape-cube {
+  border-radius: 26px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.52), transparent 42%),
+    linear-gradient(145deg, #f8fdff, #79cfe9);
+  transform: rotate(7deg);
+}
+
+.branch-shape-capsule {
+  width: 76px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.78), transparent 20%),
+    linear-gradient(145deg, #fff0cf, #ed9566);
+}
+
+.branch-pet i,
+.branch-pet b {
+  position: absolute;
+  top: 40px;
+  width: 8px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.branch-pet i {
+  left: 29px;
+}
+
+.branch-pet b {
+  right: 29px;
+}
+
+.branch-pet em {
+  position: absolute;
+  left: 50%;
+  bottom: 25px;
+  width: 28px;
+  height: 14px;
+  border-bottom: 4px solid var(--ink);
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.branch-condition-card {
+  padding: 13px 14px;
+  border-radius: 26px;
+  background: rgba(246, 244, 235, 0.9);
+}
+
+.branch-picker {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 10px;
+}
+
+.branch-picker button {
+  min-width: 0;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 22px;
+  background: rgba(246, 244, 235, 0.9);
+  text-align: left;
+}
+
+.branch-picker button.active {
+  background: linear-gradient(145deg, #dff47c, #a9ead2);
+  box-shadow: var(--soft-shadow);
+}
+
+.branch-picker span,
+.branch-picker strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.branch-picker span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 1000;
+}
+
+.branch-picker strong {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+@keyframes branch-preview-float {
+  50% {
+    transform: translateY(-7px) rotate(2deg);
+  }
 }
 
 .food-card,
@@ -2631,6 +2813,37 @@ select {
   .postcard-grid,
   .achievement-grid {
     grid-template-columns: 1fr;
+  }
+
+  .branch-preview-card {
+    grid-template-columns: 86px minmax(0, 1fr);
+    min-height: 132px;
+  }
+
+  .branch-pet {
+    width: 78px;
+    height: 78px;
+  }
+
+  .branch-shape-capsule {
+    width: 64px;
+  }
+
+  .branch-pet i,
+  .branch-pet b {
+    top: 34px;
+  }
+
+  .branch-pet i {
+    left: 24px;
+  }
+
+  .branch-pet b {
+    right: 24px;
+  }
+
+  .branch-pet em {
+    bottom: 20px;
   }
 
   .pet-float {
