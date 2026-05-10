@@ -214,6 +214,7 @@ const achievements = [
 
 const defaultState = {
   introSeen: false,
+  welcomeSeen: false,
   adopted: false,
   activeTab: "home",
   day: todayKey(),
@@ -586,6 +587,25 @@ function switchScreen(name) {
   els.screens.forEach((screen) => {
     screen.classList.toggle("active", screen.dataset.screen === name);
   });
+}
+
+function openGuide({ markSeen = false } = {}) {
+  els.guideModal.classList.add("active");
+  els.guideModal.setAttribute("aria-hidden", "false");
+  if (markSeen && !state.welcomeSeen) {
+    state.welcomeSeen = true;
+    saveState();
+  }
+}
+
+function closeGuide() {
+  els.guideModal.classList.remove("active");
+  els.guideModal.setAttribute("aria-hidden", "true");
+}
+
+function maybeShowWelcomeGuide() {
+  if (state.welcomeSeen) return;
+  window.setTimeout(() => openGuide({ markSeen: true }), 260);
 }
 
 function setAuthMode(mode) {
@@ -1791,6 +1811,7 @@ els.setupForm.addEventListener("submit", (event) => {
     switchScreen("app");
     render();
     refreshWeather();
+    maybeShowWelcomeGuide();
     showToast("登录成功", `${state.petName}已经在小屋等你。`);
     return;
   }
@@ -1809,6 +1830,7 @@ els.setupForm.addEventListener("submit", (event) => {
   state = {
     ...structuredClone(defaultState),
     introSeen: true,
+    welcomeSeen: false,
     adopted: true,
     activeTab: "home",
     day: todayKey(),
@@ -1827,7 +1849,8 @@ els.setupForm.addEventListener("submit", (event) => {
   switchScreen("app");
   render();
   refreshWeather(true);
-  showResult("蛋", "领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，食物就会自动解锁。`);
+  maybeShowWelcomeGuide();
+  showToast("领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，食物就会自动解锁。`);
 });
 
 els.motionButton.addEventListener("click", toggleCollecting);
@@ -1872,18 +1895,11 @@ els.closeResult.addEventListener("click", closeResult);
 els.resultModal.addEventListener("click", (event) => {
   if (event.target === els.resultModal) closeResult();
 });
-els.helpButton.addEventListener("click", () => {
-  els.guideModal.classList.add("active");
-  els.guideModal.setAttribute("aria-hidden", "false");
-});
-els.closeGuide.addEventListener("click", () => {
-  els.guideModal.classList.remove("active");
-  els.guideModal.setAttribute("aria-hidden", "true");
-});
+els.helpButton.addEventListener("click", () => openGuide());
+els.closeGuide.addEventListener("click", closeGuide);
 els.guideModal.addEventListener("click", (event) => {
   if (event.target === els.guideModal) {
-    els.guideModal.classList.remove("active");
-    els.guideModal.setAttribute("aria-hidden", "true");
+    closeGuide();
   }
 });
 els.closeAvatarEditor.addEventListener("click", () => {
