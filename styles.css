@@ -123,6 +123,13 @@ p {
   animation: page-in 260ms ease both;
 }
 
+.app-screen {
+  height: 100dvh;
+  min-height: 0;
+  padding: 14px 14px 0;
+  overflow: hidden;
+}
+
 @keyframes page-in {
   from {
     opacity: 0;
@@ -869,10 +876,10 @@ select {
 
 .tab-panel {
   display: none;
-  height: calc(100dvh - 92px);
-  min-height: 560px;
+  height: calc(100dvh - 78px);
+  min-height: 0;
   overflow: auto;
-  padding: 0 0 132px;
+  padding: 0 0 88px;
   scrollbar-width: none;
 }
 
@@ -950,8 +957,8 @@ select {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
   position: relative;
-  height: 150px;
-  margin-top: 8px;
+  height: 132px;
+  margin-top: 6px;
   overflow: hidden;
   border-radius: 28px;
   background:
@@ -1014,7 +1021,7 @@ select {
 
 .pet-touch-area {
   left: 50%;
-  bottom: -34px;
+  bottom: -42px;
   display: grid;
   place-items: center;
   width: 210px;
@@ -1028,7 +1035,7 @@ select {
   position: relative;
   width: 210px;
   height: 206px;
-  scale: calc(var(--growth) * 0.52);
+  scale: calc(var(--growth) * 0.45);
   animation: pet-idle 4.8s ease-in-out infinite;
   filter: drop-shadow(0 18px 22px rgba(43, 54, 49, 0.18));
   transform-style: preserve-3d;
@@ -1447,10 +1454,10 @@ select {
 .walk-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 104px;
-  gap: 9px;
+  gap: 8px;
   align-items: center;
-  margin-top: 8px;
-  padding: 10px;
+  margin-top: 7px;
+  padding: 9px;
   border-radius: 22px;
   background:
     radial-gradient(circle at 90% 16%, rgba(217, 243, 106, 0.36), transparent 34%),
@@ -1470,7 +1477,7 @@ select {
 }
 
 .walk-card strong {
-  margin: 4px 0 10px;
+  margin: 3px 0 8px;
   overflow-wrap: anywhere;
   font-size: 15px;
   letter-spacing: -0.04em;
@@ -1497,7 +1504,7 @@ select {
 }
 
 .motion-button {
-  min-height: 50px;
+  min-height: 46px;
   padding: 0 12px;
   background: linear-gradient(145deg, #ccecf6, #d9f36a);
 }
@@ -1563,8 +1570,8 @@ select {
 
 .feature-grid {
   display: grid;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 8px;
+  margin-top: 7px;
 }
 
 .home-feature-grid,
@@ -1578,10 +1585,10 @@ select {
   display: grid;
   align-content: space-between;
   min-width: 0;
-  min-height: 86px;
+  min-height: 76px;
   overflow: hidden;
-  padding: 12px;
-  border-radius: 24px;
+  padding: 11px;
+  border-radius: 22px;
   color: var(--ink);
   text-align: left;
   box-shadow: var(--soft-shadow);
@@ -1611,7 +1618,7 @@ select {
   display: inline-grid;
   place-items: center;
   width: fit-content;
-  min-height: 27px;
+  min-height: 24px;
   padding: 0 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.58);
@@ -1623,14 +1630,14 @@ select {
 .feature-entry strong {
   display: block;
   overflow-wrap: anywhere;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.12;
   letter-spacing: -0.06em;
 }
 
 .feature-entry small {
   display: block;
-  margin-top: 7px;
+  margin-top: 5px;
   overflow: hidden;
   color: rgba(23, 33, 31, 0.58);
   font-size: 12px;
@@ -1896,6 +1903,11 @@ select {
   padding: 16px;
   background: rgba(23, 33, 31, 0.24);
   backdrop-filter: blur(14px);
+}
+
+.guide-modal {
+  align-items: center;
+  padding: 18px 14px;
 }
 
 .result-modal {
@@ -3015,18 +3027,25 @@ select {
 }
 
 .guide-card {
-  padding: 16px;
+  width: min(390px, calc(100vw - 28px));
+  max-height: min(86dvh, 704px);
+  padding: 12px;
   background:
     radial-gradient(circle at 10% 8%, rgba(217, 243, 106, 0.34), transparent 28%),
     radial-gradient(circle at 92% 0%, rgba(166, 234, 211, 0.42), transparent 28%),
     var(--paper);
 }
 
+.guide-card .primary-action {
+  min-height: 50px;
+  margin-top: 0;
+}
+
 .guide-hero {
   position: relative;
   padding: 16px;
   overflow: hidden;
-  border-radius: 30px;
+  border-radius: 28px;
   background:
     radial-gradient(circle at 82% 8%, rgba(255, 255, 255, 0.78), transparent 26%),
     linear-gradient(145deg, #edf7d2, #dff3ec);
@@ -3037,8 +3056,8 @@ select {
   position: absolute;
   right: -22px;
   bottom: -26px;
-  width: 120px;
-  height: 120px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.82), transparent 18%),
@@ -3050,10 +3069,10 @@ select {
 .guide-mark {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 12px;
-  border-radius: 18px;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 10px;
+  border-radius: 16px;
   background: #17211f;
   color: #dff47c;
   font-size: 20px;
@@ -3067,31 +3086,35 @@ select {
 }
 
 .guide-hero h3 {
-  max-width: 270px;
-  margin-bottom: 8px;
+  max-width: 292px;
+  margin-bottom: 7px;
+  font-size: clamp(25px, 6.8vw, 31px);
+  line-height: 1.08;
 }
 
 .guide-hero p:not(.eyebrow) {
-  max-width: 292px;
+  max-width: 300px;
   margin: 0;
   color: #53615c;
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.48;
 }
 
 .guide-feature-list {
   display: grid;
-  gap: 10px;
-  margin: 12px 0;
+  gap: 8px;
+  margin: 10px 0;
 }
 
 .guide-feature-list article {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 11px;
-  align-items: center;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: start;
   min-width: 0;
-  padding: 12px;
+  padding: 10px 11px;
   border: 1px solid rgba(23, 33, 31, 0.06);
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.72);
@@ -3100,26 +3123,31 @@ select {
 .guide-feature-list span {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
+  width: 40px;
+  height: 40px;
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  border-radius: 15px;
   background: linear-gradient(145deg, #dff47c, #a9ead2);
   font-weight: 1000;
 }
 
 .guide-feature-list strong {
   display: block;
+  grid-column: 2;
   min-width: 0;
   overflow-wrap: anywhere;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.25;
 }
 
 .guide-feature-list p {
+  grid-column: 2;
   margin: 4px 0 0;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.42;
+  font-size: 11px;
+  line-height: 1.36;
+  overflow-wrap: anywhere;
 }
 
 .letter-close {
@@ -3329,6 +3357,12 @@ select {
     padding: 14px 14px 96px;
   }
 
+  .app-screen {
+    height: 100dvh;
+    min-height: 0;
+    padding: 14px 14px 0;
+  }
+
   .intro-screen {
     padding: 12px 14px 14px;
   }
@@ -3397,15 +3431,17 @@ select {
   }
 
   .tab-panel {
-    min-height: 560px;
+    height: calc(100dvh - 78px);
+    min-height: 0;
+    padding-bottom: 88px;
   }
 
   .pet-room {
-    height: 150px;
+    height: 132px;
   }
 
   .pet-3d {
-    scale: calc(var(--growth) * 0.52);
+    scale: calc(var(--growth) * 0.45);
   }
 
   .walk-card {
@@ -3413,16 +3449,16 @@ select {
   }
 
   .motion-button {
-    min-height: 50px;
+    min-height: 46px;
   }
 
   .feature-entry {
-    min-height: 86px;
-    padding: 12px;
+    min-height: 76px;
+    padding: 11px;
   }
 
   .feature-entry strong {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .section-head h3 {
