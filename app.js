@@ -169,6 +169,7 @@ const achievements = [
   { id: "feed", title: "第一口", copy: "完成第一次投喂。", done: (s) => s.fed.length > 0 },
   { id: "play", title: "一起玩球", copy: "用步数活力陪宠物玩。", done: (s) => s.played },
   { id: "social", title: "好友串门", copy: "完成一次宠物社交。", done: (s) => s.friendUsed || s.visitSent },
+  { id: "groupWalk", title: "结伴运动", copy: "和好友或校园 NPC 宠物一起运动。", done: (s) => s.groupWalkDone },
   { id: "invite", title: "约走成功", copy: "向好友发起一起走路。", done: (s) => s.inviteSent },
   { id: "postcard", title: "校园明信片", copy: "让宠物完成一次校园探索。", done: (s) => s.postcards.length > 0 },
   { id: "full", title: "今日喂饱", copy: "完成今日所有投喂。", done: (s) => s.completed },
@@ -209,6 +210,10 @@ const defaultState = {
   inviteSent: false,
   visitSent: false,
   teamCompleted: false,
+  groupWalkDone: false,
+  eggState: "none",
+  eggProgress: 0,
+  eggReadyDay: "",
   played: false,
   cleaned: false,
   completed: false,
@@ -302,6 +307,13 @@ const els = {
   friendTitle: document.getElementById("friend-title"),
   friendCopy: document.getElementById("friend-copy"),
   friendButton: document.getElementById("friend-button"),
+  socialWalkSummary: document.getElementById("social-walk-summary"),
+  socialRunTitle: document.getElementById("social-run-title"),
+  socialRunCopy: document.getElementById("social-run-copy"),
+  eggVisual: document.getElementById("egg-visual"),
+  eggTitle: document.getElementById("egg-title"),
+  eggCopy: document.getElementById("egg-copy"),
+  eggProgress: document.getElementById("egg-progress"),
   inviteButton: document.getElementById("invite-button"),
   teamButton: document.getElementById("team-button"),
   teamCopy: document.getElementById("team-copy"),
@@ -403,9 +415,9 @@ const sheetMeta = {
     copy: "每次探索都需要你先完成现实运动。"
   },
   invite: {
-    eyebrow: "好友约走",
-    title: "发出低打扰运动邀请",
-    copy: "社交只负责启动行动，步数仍然要自己走。"
+    eyebrow: "结伴运动",
+    title: "和好友、校园 NPC 宠物一起动起来",
+    copy: "同屏运动动画负责制造陪伴感，真实步数仍然来自你自己。"
   },
   team: {
     eyebrow: "双人协作",
@@ -464,6 +476,8 @@ function normalizeState(savedState) {
     next.inviteSent = false;
     next.visitSent = false;
     next.teamCompleted = false;
+    next.groupWalkDone = false;
+    next.eggReadyDay = "";
     next.played = false;
     next.cleaned = false;
     next.completed = false;
@@ -1079,15 +1093,38 @@ function useFriendSnack() {
 }
 
 function inviteFriendWalk() {
-  if (state.inviteSent) {
-    showToast("已经约好", "小雨会在晚饭后提醒你一起走。");
-    return;
+  const beforeStage = currentStage().index;
+  const gainedSteps = state.groupWalkDone ? 120 : 260;
+  state.inviteSent = true;
+  state.groupWalkDone = true;
+  state.bond = clamp(state.bond + 10, 0, 100);
+  state.growth += 8;
+  state.eggProgress = clamp(state.eggProgress + (state.steps >= 600 ? 34 : 24), 0, 100);
+  addSteps(gainedSteps);
+
+  if (state.eggState === "none") {
+    state.eggState = "warming";
+    state.eggProgress = Math.max(state.eggProgress, 28);
+    popFood({ symbol: "蛋" });
+    setPetReaction("pet-play", 960);
+    showGrowthResult(beforeStage, "蛋", "获得步步蛋", "三只宠物一起跑完一段路，带回了一枚会随步数孵化的步步蛋。");
+  } else if (state.eggProgress >= 100 && state.eggState !== "hatched") {
+    state.eggState = "hatched";
+    state.eggReadyDay = state.day;
+    state.campusSnacks += 2;
+    popFood({ symbol: "生" });
+    setPetReaction("pet-evolve", 1100);
+    showGrowthResult(beforeStage, "生", "步步蛋孵化了", "蛋里跑出一枚校园贴纸宠物，获得 2 份旅行便当。");
+    confetti(24);
+  } else {
+    if (state.eggState === "hatched") state.campusSnacks += 1;
+    popFood({ symbol: "跑" });
+    setPetReaction("pet-walk", 900);
+    showGrowthResult(beforeStage, "跑", "结伴运动完成", state.eggState === "hatched"
+      ? `新伙伴跟着队伍一起跑，带回 1 份旅行便当。`
+      : `你和小雨、风团一起完成 ${gainedSteps} 步热身，步步蛋进度 +${state.steps >= 600 ? 34 : 24}。`);
   }
 
-  state.inviteSent = true;
-  state.bond = clamp(state.bond + 4, 0, 100);
-  showResult("约", "约走已发出", "小雨收到了轻提醒。社交压力被控制在低打扰，但能提升开始运动的概率。");
-  confetti(10);
   saveState();
   render();
 }
@@ -1486,6 +1523,32 @@ function renderWeatherSummary() {
     : "例如晴天会触发“追光弹跳”，雨天会触发“伞下散步”，奖励成长值和亲密度。";
 }
 
+function renderSocialRun() {
+  const eggReady = state.eggState === "hatched";
+  const eggWarming = state.eggState === "warming";
+  els.socialWalkSummary.textContent = eggReady ? "步步蛋已孵化" : eggWarming ? `${state.eggProgress}% 孵化` : "好友 + NPC";
+  els.inviteButton.textContent = eggReady ? "继续结伴" : eggWarming ? "继续孵化" : "开始结伴";
+  els.socialRunTitle.textContent = eggWarming
+    ? "步步蛋正在跟着队伍发光"
+    : eggReady
+      ? "新伙伴也加入了跑道"
+      : "三只宠物在操场集合";
+  els.socialRunCopy.textContent = eggWarming
+    ? "继续完成结伴运动，蛋会随真实步数慢慢孵化。"
+    : eggReady
+      ? "孵化后的贴纸宠物会跟着队伍跑，继续结伴可获得便当和成长值。"
+      : "你、小雨和校园 NPC「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。";
+  els.eggVisual.textContent = eggReady ? "生" : "蛋";
+  els.eggVisual.classList.toggle("hatched", eggReady);
+  els.eggTitle.textContent = eggReady ? "贴纸宠物已孵化" : eggWarming ? "步步蛋孵化中" : "步步蛋";
+  els.eggCopy.textContent = eggReady
+    ? "它会作为结伴运动的小队成员出现，继续运动可获得额外便当。"
+    : eggWarming
+      ? `当前孵化进度 ${state.eggProgress}%。完成结伴运动或更多步数会继续升温。`
+      : "完成结伴运动后，有机会获得一枚蛋。蛋会随每日步数慢慢孵化。";
+  els.eggProgress.style.width = `${eggReady ? 100 : state.eggProgress}%`;
+}
+
 function render() {
   const currentPlan = plan();
   const available = availableIndexes();
@@ -1535,8 +1598,7 @@ function render() {
   els.friendButton.textContent = state.friendUsed ? "已收下" : "收下";
   els.friendTitle.textContent = state.friendUsed ? "团团已经回家" : "小雨的团团在门口";
   els.friendCopy.textContent = state.friendUsed ? `${state.petName}心情变好了，但步数还要自己走。` : "收下蓝莓干，给宠物加一点心情。";
-  els.inviteButton.disabled = state.inviteSent;
-  els.inviteButton.textContent = state.inviteSent ? "已约" : "约走";
+  renderSocialRun();
   const teamTotal = state.steps + 920;
   const teamProgress = clamp((teamTotal / 1500) * 100, 0, 100);
   if (els.teamProgress) els.teamProgress.style.width = `${teamProgress}%`;
