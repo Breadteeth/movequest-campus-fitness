@@ -1,4 +1,5 @@
 const STORAGE_KEY = "movequest-pet-v6";
+const ACCOUNT_PREFIX = "movequest-account-v1:";
 const EXTRA_SNACK_STEPS = 420;
 const WEATHER_CACHE_MS = 18 * 60 * 1000;
 const DEFAULT_CAMPUS_LOCATION = {
@@ -202,7 +203,14 @@ const defaultState = {
 const els = {
   shell: document.querySelector(".app-shell"),
   screens: [...document.querySelectorAll(".screen")],
-  introStart: document.getElementById("intro-start"),
+  loginStart: document.getElementById("login-start"),
+  registerStart: document.getElementById("register-start"),
+  authBack: document.getElementById("auth-back"),
+  authModeButtons: [...document.querySelectorAll("[data-auth-mode]")],
+  authEyebrow: document.getElementById("auth-eyebrow"),
+  authTitle: document.getElementById("auth-title"),
+  authCopy: document.getElementById("auth-copy"),
+  authSubmit: document.getElementById("auth-submit"),
   setupForm: document.getElementById("setup-form"),
   accountInput: document.getElementById("account-input"),
   passwordInput: document.getElementById("password-input"),
@@ -328,6 +336,7 @@ let selectedAvatarY = state.avatarY || 50;
 let collectTimer = null;
 let lastMotionAt = 0;
 let currentSheet = "";
+let authMode = "login";
 
 const sheetMeta = {
   daily: {
@@ -445,6 +454,22 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (state.account) {
+    localStorage.setItem(accountStorageKey(state.account), JSON.stringify(state));
+  }
+}
+
+function accountStorageKey(account) {
+  return `${ACCOUNT_PREFIX}${account.trim().toLowerCase()}`;
+}
+
+function loadAccountState(account) {
+  try {
+    const raw = localStorage.getItem(accountStorageKey(account));
+    return raw ? normalizeState(JSON.parse(raw)) : null;
+  } catch {
+    return null;
+  }
 }
 
 function petType() {
@@ -479,6 +504,30 @@ function switchScreen(name) {
   els.screens.forEach((screen) => {
     screen.classList.toggle("active", screen.dataset.screen === name);
   });
+}
+
+function setAuthMode(mode) {
+  authMode = mode === "register" ? "register" : "login";
+  const isRegister = authMode === "register";
+  const adoptScreen = document.querySelector(".adopt-screen");
+  adoptScreen.dataset.mode = authMode;
+  els.authModeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.authMode === authMode);
+  });
+  els.authEyebrow.textContent = isRegister ? "注册账号" : "登录账号";
+  els.authTitle.textContent = isRegister ? "创建你的校园小屋。" : "回到你的宠物小屋。";
+  els.authCopy.textContent = isRegister
+    ? "设置账号、头像和宠物，今天的步数会从这里开始记录。"
+    : "输入校园账号和密码，继续照顾你的宠物。";
+  els.authSubmit.textContent = isRegister ? "创建账号并进入小屋" : "登录并进入小屋";
+  els.passwordInput.autocomplete = isRegister ? "new-password" : "current-password";
+  els.passwordInput.value = "";
+  if (!els.accountInput.value.trim()) els.accountInput.value = isRegister ? "campus01" : "";
+}
+
+function openAuth(mode) {
+  setAuthMode(mode);
+  switchScreen("adopt");
 }
 
 function clamp(value, min, max) {
@@ -1381,8 +1430,6 @@ function render() {
   els.shell.dataset.stage = String(stage.index);
   els.shell.classList.toggle("walking", state.collecting);
   els.pet3d.style.setProperty("--growth", `${Math.min(1.16, 1 + state.growth / 1200)}`);
-  els.accountInput.value = state.account;
-  els.passwordInput.value = state.password;
   els.nameInput.value = state.name;
   els.goalSelect.value = state.plan;
   if (state.adopted) els.petInput.value = state.petName;
@@ -1459,10 +1506,11 @@ function tiltPet(event) {
   els.petRoom.style.setProperty("--tilt-y", `${x}deg`);
 }
 
-els.introStart.addEventListener("click", () => {
-  state.introSeen = true;
-  saveState();
-  switchScreen("adopt");
+els.loginStart.addEventListener("click", () => openAuth("login"));
+els.registerStart.addEventListener("click", () => openAuth("register"));
+els.authBack.addEventListener("click", () => switchScreen("intro"));
+els.authModeButtons.forEach((button) => {
+  button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
 });
 
 els.petChoices.forEach((button) => {
@@ -1510,8 +1558,43 @@ els.setupForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const account = els.accountInput.value.trim() || "campus01";
   const password = els.passwordInput.value.trim();
+
   if (password.length < 6) {
     showToast("密码太短", "为了像真实 App 一样完整，请设置至少 6 位密码。");
+    return;
+  }
+
+  if (authMode === "login") {
+    const savedAccount = loadAccountState(account);
+    if (!savedAccount) {
+      showToast("账号不存在", "请检查账号，或切换到注册新账号。");
+      return;
+    }
+    if (savedAccount.password !== password) {
+      showToast("密码不正确", "请重新输入旧账号的密码。");
+      return;
+    }
+
+    state = normalizeState(savedAccount);
+    state.collecting = false;
+    selectedPetType = state.petType;
+    selectedAvatar = state.avatar;
+    selectedAvatarImage = state.avatarImage || "";
+    selectedAvatarZoom = state.avatarZoom || 120;
+    selectedAvatarY = state.avatarY || 50;
+    selectPet(selectedPetType);
+    selectAvatar(selectedAvatar, false);
+    renderAvatarPreview();
+    saveState();
+    switchScreen("app");
+    render();
+    refreshWeather();
+    showToast("登录成功", `${state.petName}已经在小屋等你。`);
+    return;
+  }
+
+  if (loadAccountState(account)) {
+    showToast("账号已存在", "请登录旧账号，或换一个校园账号。");
     return;
   }
 
@@ -1615,6 +1698,6 @@ selectedAvatarY = state.avatarY || 50;
 selectPet(selectedPetType);
 selectAvatar(selectedAvatar, false);
 renderAvatarPreview();
-switchScreen(state.adopted ? "app" : state.introSeen ? "adopt" : "intro");
+setAuthMode("login");
+switchScreen("intro");
 render();
-if (state.adopted) refreshWeather();
