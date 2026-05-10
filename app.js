@@ -66,9 +66,9 @@ const evolutionBranches = {
     name: "团聚形态",
     shape: "cube",
     tone: "sky",
-    condition: "完成 2 次好友串门或双人便当",
-    unlock: "适合和同学互相提醒，但步数仍要自己完成。",
-    copy: "宠物会带回更多好友合照，串门奖励更容易出现。"
+    condition: "完成 2 次好友串门或结伴运动",
+    unlock: "适合和同学一起走路、互相提醒。",
+    copy: "宠物会更愿意参加好友活动，也更容易带回合照和小礼物。"
   },
   explore: {
     label: "探索分支",
@@ -169,7 +169,7 @@ const achievements = [
   { id: "feed", title: "第一口", copy: "完成第一次投喂。", done: (s) => s.fed.length > 0 },
   { id: "play", title: "一起玩球", copy: "用步数活力陪宠物玩。", done: (s) => s.played },
   { id: "social", title: "好友串门", copy: "完成一次宠物社交。", done: (s) => s.friendUsed || s.visitSent },
-  { id: "groupWalk", title: "结伴运动", copy: "和好友或校园 NPC 宠物一起运动。", done: (s) => s.groupWalkDone },
+  { id: "groupWalk", title: "结伴运动", copy: "和好友或校园伙伴宠物一起运动。", done: (s) => s.groupWalkDone },
   { id: "invite", title: "约走成功", copy: "向好友发起一起走路。", done: (s) => s.inviteSent },
   { id: "postcard", title: "校园明信片", copy: "让宠物完成一次校园探索。", done: (s) => s.postcards.length > 0 },
   { id: "full", title: "今日喂饱", copy: "完成今日所有投喂。", done: (s) => s.completed },
@@ -387,12 +387,12 @@ const sheetMeta = {
   daily: {
     eyebrow: "今日计划",
     title: "今天只需要按三步走",
-    copy: "先走路解锁食物，再投喂，喂饱后继续探索校园。"
+    copy: "先积累步数，再投喂宠物，喂饱后就能出门探索。"
   },
   weather: {
     eyebrow: "天气建议",
     title: "按今天的天气安排运动",
-    copy: "真实天气会影响建议，也会影响随机宠物事件。"
+    copy: "天气会影响运动建议，也可能触发不同的宠物事件。"
   },
   feed: {
     eyebrow: "小屋投喂",
@@ -402,22 +402,22 @@ const sheetMeta = {
   care: {
     eyebrow: "小屋互动",
     title: "摸摸、玩球和洗澡都在这里",
-    copy: "日常互动可以提升亲密度，但运动节点仍然是核心来源。"
+    copy: "运动后获得活力，就能陪宠物做更多互动。"
   },
   explore: {
     eyebrow: "校园探索",
-    title: "已合并到校园来信",
-    copy: "探索和明信片放在同一个抽屉里。"
+    title: "派宠物去校园地点",
+    copy: "喂饱后继续走路攒便当，再让宠物带回校园来信。"
   },
   postcards: {
     eyebrow: "校园来信",
     title: "派宠物探索，再读它带回来的信",
-    copy: "每次探索都需要你先完成现实运动。"
+    copy: "每一次出门，都从你今天走过的步数开始。"
   },
   invite: {
     eyebrow: "结伴运动",
-    title: "和好友、校园 NPC 宠物一起动起来",
-    copy: "同屏运动动画负责制造陪伴感，真实步数仍然来自你自己。"
+    title: "和好友、校园伙伴一起动起来",
+    copy: "几只宠物会一起出发，但真正让队伍前进的是你的今日步数。"
   },
   team: {
     eyebrow: "双人协作",
@@ -432,12 +432,12 @@ const sheetMeta = {
   friendsBoard: {
     eyebrow: "好友小屋",
     title: "协作、串门和动态放在一起",
-    copy: "社交负责启动行动，但不会替代自己的步数。"
+    copy: "好友可以提醒和陪伴你，但自己的步数仍要自己完成。"
   },
   achievements: {
     eyebrow: "成就墙",
     title: "每个徽章都对应一次真实行动",
-    copy: "成就不是虚拟积分，而是运动、照顾和社交行为的记录。"
+    copy: "每枚徽章都会记录一次运动、照顾或社交行为。"
   },
   stages: {
     eyebrow: "进化图鉴",
@@ -564,8 +564,8 @@ function setAuthMode(mode) {
   els.authEyebrow.textContent = isRegister ? "注册账号" : "登录账号";
   els.authTitle.textContent = isRegister ? "创建你的校园小屋。" : "回到你的宠物小屋。";
   els.authCopy.textContent = isRegister
-    ? "设置账号、头像和宠物，今天的步数会从这里开始记录。"
-    : "输入校园账号和密码，继续照顾你的宠物。";
+    ? "创建一个测试账号，选择头像和宠物。请不要使用常用真实账号或真实密码。"
+    : "输入你创建过的账号和密码，继续照顾你的宠物。";
   els.authSubmit.textContent = isRegister ? "创建账号并进入小屋" : "登录并进入小屋";
   els.passwordInput.autocomplete = isRegister ? "new-password" : "current-password";
   els.passwordInput.value = "";
@@ -924,7 +924,7 @@ function addSteps(amount) {
     const earned = extraSnacks - state.walkBonusesClaimed;
     state.walkBonusesClaimed = extraSnacks;
     state.campusSnacks += earned;
-    showToast("找到旅行便当", `继续散步获得 ${earned} 份便当，可用于校园探索。`);
+    showToast("获得探索便当", `继续散步获得 ${earned} 份便当，可用于校园探索。`);
   }
 
   maybeTriggerWeatherEvent(amount);
@@ -1021,7 +1021,7 @@ function feed(index) {
       state.careDays += 1;
       state.campusSnacks += 1;
       state.completionLoggedDay = state.day;
-      showToast("今日照料完成", "获得 1 份旅行便当，宠物可以去校园探索。");
+      showToast("今日照料完成", "获得 1 份探索便当，宠物可以去校园探索。");
     }
   }
 
@@ -1114,14 +1114,14 @@ function inviteFriendWalk() {
     state.campusSnacks += 2;
     popFood({ symbol: "生" });
     setPetReaction("pet-evolve", 1100);
-    showGrowthResult(beforeStage, "生", "步步蛋孵化了", "蛋里跑出一枚校园贴纸宠物，获得 2 份旅行便当。");
+    showGrowthResult(beforeStage, "生", "步步蛋孵化了", "蛋里跑出一枚校园贴纸宠物，获得 2 份探索便当。");
     confetti(24);
   } else {
     if (state.eggState === "hatched") state.campusSnacks += 1;
     popFood({ symbol: "跑" });
     setPetReaction("pet-walk", 900);
     showGrowthResult(beforeStage, "跑", "结伴运动完成", state.eggState === "hatched"
-      ? `新伙伴跟着队伍一起跑，带回 1 份旅行便当。`
+      ? `新伙伴跟着队伍一起跑，带回 1 份探索便当。`
       : `你和小雨、风团一起完成 ${gainedSteps} 步热身，步步蛋进度 +${state.steps >= 600 ? 34 : 24}。`);
   }
 
@@ -1149,7 +1149,7 @@ function completeTeamChallenge() {
   state.campusSnacks += 1;
   popFood({ symbol: "盒" });
   setPetReaction("pet-fed", 900);
-  showGrowthResult(beforeStage, "盒", "双人便当完成", `${state.petName}和团团一起吃了便当，获得 1 份旅行便当，成长值 +10。`);
+  showGrowthResult(beforeStage, "盒", "双人便当完成", `${state.petName}和团团一起吃了便当，获得 1 份探索便当，成长值 +10。`);
   confetti(18);
   saveState();
   render();
@@ -1190,7 +1190,7 @@ function startTrip(locationId) {
   }
 
   if (state.campusSnacks < location.cost) {
-    showToast("便当不够", "完成今日投喂或继续散步，可以获得旅行便当。");
+    showToast("便当不够", "完成今日投喂或继续散步，可以获得探索便当。");
     return;
   }
 
@@ -1505,7 +1505,7 @@ function renderWeatherSummary() {
     els.weatherAdvice.textContent = state.weather.advice;
     els.weatherIntensity.textContent = "待生成";
     els.weatherBonus.textContent = "运动后有概率触发";
-    els.weatherEventCopy.textContent = "获取天气后，系统会根据晴雨冷热推荐更合适的校园运动路线。";
+    els.weatherEventCopy.textContent = "获取天气后，会根据晴雨冷热推荐更适合今天的校园运动路线。";
     return;
   }
 
@@ -1520,13 +1520,13 @@ function renderWeatherSummary() {
   els.weatherBonus.textContent = state.weatherEventDay === state.day ? state.weatherEventTitle || "已触发" : "运动后有概率触发";
   els.weatherEventCopy.textContent = state.weatherEventDay === state.day
     ? state.weatherEventCopy
-    : "例如晴天会触发“追光弹跳”，雨天会触发“伞下散步”，奖励成长值和亲密度。";
+    : "例如晴天可能追光弹跳，雨天可能伞下散步，宠物会获得额外成长。";
 }
 
 function renderSocialRun() {
   const eggReady = state.eggState === "hatched";
   const eggWarming = state.eggState === "warming";
-  els.socialWalkSummary.textContent = eggReady ? "步步蛋已孵化" : eggWarming ? `${state.eggProgress}% 孵化` : "好友 + NPC";
+  els.socialWalkSummary.textContent = eggReady ? "步步蛋已孵化" : eggWarming ? `${state.eggProgress}% 孵化` : "好友 + 校园伙伴";
   els.inviteButton.textContent = eggReady ? "继续结伴" : eggWarming ? "继续孵化" : "开始结伴";
   els.socialRunTitle.textContent = eggWarming
     ? "步步蛋正在跟着队伍发光"
@@ -1537,7 +1537,7 @@ function renderSocialRun() {
     ? "继续完成结伴运动，蛋会随真实步数慢慢孵化。"
     : eggReady
       ? "孵化后的贴纸宠物会跟着队伍跑，继续结伴可获得便当和成长值。"
-      : "你、小雨和校园 NPC「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。";
+      : "你、小雨和校园伙伴「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。";
   els.eggVisual.textContent = eggReady ? "生" : "蛋";
   els.eggVisual.classList.toggle("hatched", eggReady);
   els.eggTitle.textContent = eggReady ? "贴纸宠物已孵化" : eggWarming ? "步步蛋孵化中" : "步步蛋";
@@ -1545,7 +1545,7 @@ function renderSocialRun() {
     ? "它会作为结伴运动的小队成员出现，继续运动可获得额外便当。"
     : eggWarming
       ? `当前孵化进度 ${state.eggProgress}%。完成结伴运动或更多步数会继续升温。`
-      : "完成结伴运动后，有机会获得一枚蛋。蛋会随每日步数慢慢孵化。";
+      : "完成结伴运动后，可能获得一枚步步蛋。之后每天走路，都能让它继续孵化。";
   els.eggProgress.style.width = `${eggReady ? 100 : state.eggProgress}%`;
 }
 
@@ -1585,7 +1585,7 @@ function render() {
       : "食物已全部解锁";
   els.walkTitle.textContent = state.completed ? "带它去校园探索" : available.length ? "有食物可以投喂" : currentPlan.copy;
   els.motionLabel.textContent = state.collecting ? "暂停采集" : state.completed ? "继续散步" : "开始走动";
-  els.motionSubtitle.textContent = state.completed ? "攒旅行便当和明信片" : available.length ? "去投喂页喂一口" : "走到节点解锁食物";
+  els.motionSubtitle.textContent = state.completed ? "攒探索便当和校园来信" : available.length ? "去投喂页喂一口" : "走到节点解锁食物";
   els.motionButton.disabled = false;
   els.playAction.disabled = state.careEnergy <= 0;
   els.playCost.textContent = state.careEnergy;
@@ -1691,7 +1691,7 @@ els.setupForm.addEventListener("submit", (event) => {
   const password = els.passwordInput.value.trim();
 
   if (password.length < 6) {
-    showToast("密码太短", "为了像真实 App 一样完整，请设置至少 6 位密码。");
+    showToast("密码太短", "这是测试 Demo，请使用临时密码，至少 6 位。");
     return;
   }
 
@@ -1750,7 +1750,7 @@ els.setupForm.addEventListener("submit", (event) => {
   switchScreen("app");
   render();
   refreshWeather(true);
-  showResult("蛋", "领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，再去投喂页喂它。`);
+  showResult("蛋", "领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，食物就会自动解锁。`);
 });
 
 els.motionButton.addEventListener("click", toggleCollecting);
