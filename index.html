@@ -11,37 +11,32 @@
 <body>
   <main class="app-shell" data-pet="sprout" data-mood="calm" data-stage="0">
     <section class="screen intro-screen active" data-screen="intro">
+      <div class="intro-brand">
+        <span class="app-mark">步</span>
+        <span>MoveQuest 步步兽</span>
+      </div>
+
       <div class="intro-visual" aria-hidden="true">
-        <div class="orbit-card card-a">走路</div>
-        <div class="orbit-card card-b">食物</div>
-        <div class="orbit-card card-c">旅行</div>
-        <div class="pet-3d pet-sprout intro-pet">
-          <span class="pet-shadow"></span>
-          <span class="pet-tail"></span>
-          <span class="pet-glow"></span>
-          <span class="pet-ear ear-left"></span>
-          <span class="pet-ear ear-right"></span>
-          <span class="pet-crown"></span>
-          <span class="pet-body"></span>
-          <span class="pet-belly"></span>
-          <span class="pet-arm arm-left"></span>
-          <span class="pet-arm arm-right"></span>
-          <span class="pet-pattern pattern-a"></span>
-          <span class="pet-pattern pattern-b"></span>
-          <span class="pet-muzzle"></span>
-          <span class="pet-nose"></span>
-          <span class="pet-face"><i></i><b></b><em></em></span>
-          <span class="pet-cheek cheek-left"></span>
-          <span class="pet-cheek cheek-right"></span>
-          <span class="pet-foot foot-left"></span>
-          <span class="pet-foot foot-right"></span>
+        <div class="orbit-card card-a">天气</div>
+        <div class="orbit-card card-b">投喂</div>
+        <div class="orbit-card card-c">来信</div>
+        <div class="intro-ring"></div>
+        <div class="intro-orb-pet">
+          <span class="intro-eye eye-left"></span>
+          <span class="intro-eye eye-right"></span>
+          <span class="intro-mouth"></span>
+        </div>
+        <div class="intro-path">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
 
       <div class="intro-copy">
-        <p class="eyebrow">MoveQuest 步步兽</p>
-        <h1>把每天的步数，变成一只会长大的宠物。</h1>
-        <p>你每走到一个阶段目标，就能解锁一份食物。喂饱后，宠物会带着便当去校园旅行，带回明信片；连续照料才会慢慢进化。</p>
+        <p class="eyebrow">校园运动养成 App</p>
+        <h1>登录小屋，把今天的步数喂给你的宠物。</h1>
+        <p>走到阶段步数，解锁食物和互动；喂饱后，宠物会去校园探索，带回明信片和成长事件。</p>
       </div>
 
       <div class="intro-steps">
@@ -59,16 +54,26 @@
         </article>
       </div>
 
-      <button class="primary-action" type="button" id="intro-start">开始领养</button>
+      <section class="auth-gateway" aria-label="账号入口">
+        <button class="primary-action" type="button" id="login-start">登录旧账号</button>
+        <button class="secondary-action" type="button" id="register-start">注册新账号</button>
+        <small>每次进入都需要登录；新账号会创建一间新的宠物小屋。</small>
+      </section>
     </section>
 
-    <section class="screen adopt-screen" data-screen="adopt">
-      <header class="simple-head">
-        <p class="eyebrow">选择伙伴</p>
-        <h1>先选一只愿意陪你走路的小家伙。</h1>
+    <section class="screen adopt-screen" data-screen="adopt" data-mode="register">
+      <header class="simple-head auth-head">
+        <button class="back-auth" type="button" id="auth-back">返回</button>
+        <p class="eyebrow" id="auth-eyebrow">注册账号</p>
+        <h1 id="auth-title">创建你的校园小屋。</h1>
+        <p id="auth-copy">设置账号、头像和宠物，今天的步数会从这里开始记录。</p>
+        <div class="auth-switch" aria-label="切换登录注册">
+          <button class="active" type="button" data-auth-mode="login">登录</button>
+          <button type="button" data-auth-mode="register">注册</button>
+        </div>
       </header>
 
-      <section class="pet-picker" id="pet-picker" aria-label="选择宠物">
+      <section class="pet-picker register-only" id="pet-picker" aria-label="选择宠物">
         <button class="pet-choice selected" type="button" data-pet-choice="sprout">
           <span class="pet-mini mini-sprout"></span>
           <strong>青团球</strong>
@@ -95,18 +100,18 @@
         <div class="account-grid">
           <label>
             校园账号
-            <input id="account-input" maxlength="16" value="campus01" autocomplete="username">
+            <input id="account-input" maxlength="16" placeholder="例如 campus01" value="campus01" autocomplete="username">
           </label>
           <label>
             登录密码
-            <input id="password-input" type="password" minlength="6" maxlength="18" value="move2026" autocomplete="new-password">
+            <input id="password-input" type="password" minlength="6" maxlength="18" placeholder="至少 6 位" autocomplete="current-password">
           </label>
         </div>
-        <label>
+        <label class="register-only">
           你的昵称
           <input id="name-input" maxlength="8" value="阿澈" autocomplete="off">
         </label>
-        <div class="profile-setup">
+        <div class="profile-setup register-only">
           <span>你的头像</span>
           <section class="avatar-summary-card">
             <span class="user-avatar avatar-leaf" id="avatar-preview">澈</span>
@@ -123,11 +128,11 @@
             <button class="avatar-choice" type="button" data-avatar-choice="star"><span>星</span><small>坚持</small></button>
           </div>
         </div>
-        <label>
+        <label class="register-only">
           宠物名字
           <input id="pet-input" maxlength="8" value="团团" autocomplete="off">
         </label>
-        <label>
+        <label class="register-only">
           今日运动目标
           <select id="goal-select">
             <option value="easy">课间散步：600 步，解锁 3 次投喂</option>
@@ -135,7 +140,7 @@
             <option value="hard">操场一圈：2000 步，解锁 5 次投喂</option>
           </select>
         </label>
-        <button class="primary-action" type="submit">领养并进入小屋</button>
+        <button class="primary-action" type="submit" id="auth-submit">创建账号并进入小屋</button>
       </form>
     </section>
 
