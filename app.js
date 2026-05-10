@@ -51,6 +51,36 @@ const petTypes = {
   }
 };
 
+const evolutionBranches = {
+  speed: {
+    label: "疾行分支",
+    name: "风轨形态",
+    shape: "sphere",
+    tone: "mint",
+    condition: "累计 3 天完成今日目标",
+    unlock: "适合操场快走、晨跑和连续打卡。",
+    copy: "宠物会在小屋里留下短短的光轨，运动时更容易触发额外活力。"
+  },
+  social: {
+    label: "社交分支",
+    name: "团聚形态",
+    shape: "cube",
+    tone: "sky",
+    condition: "完成 2 次好友串门或双人便当",
+    unlock: "适合和同学互相提醒，但步数仍要自己完成。",
+    copy: "宠物会带回更多好友合照，串门奖励更容易出现。"
+  },
+  explore: {
+    label: "探索分支",
+    name: "星旅形态",
+    shape: "capsule",
+    tone: "sun",
+    condition: "收集 3 张校园明信片",
+    unlock: "适合晚饭后散步、图书馆和食堂路线。",
+    copy: "宠物会更常发现隐藏地点，明信片会出现更丰富的来信。"
+  }
+};
+
 const plans = {
   easy: {
     label: "课间散步",
@@ -282,6 +312,8 @@ const els = {
   evolutionTitle: document.getElementById("evolution-title"),
   evolutionCopy: document.getElementById("evolution-copy"),
   evolutionProgress: document.getElementById("evolution-progress"),
+  evolutionPreview: document.getElementById("evolution-preview"),
+  branchPicker: document.getElementById("branch-picker"),
   stageList: document.getElementById("stage-list"),
   achievementCount: document.getElementById("achievement-count"),
   achievementGrid: document.getElementById("achievement-grid"),
@@ -337,6 +369,7 @@ let collectTimer = null;
 let lastMotionAt = 0;
 let currentSheet = "";
 let authMode = "login";
+let previewBranchId = "speed";
 
 const sheetMeta = {
   daily: {
@@ -1328,6 +1361,42 @@ function renderAchievements() {
 
 function renderStages() {
   const current = currentStage();
+  const branches = Object.entries(evolutionBranches);
+  const selectedBranch = evolutionBranches[previewBranchId] || evolutionBranches.speed;
+  const selectedEntry = branches.find(([id]) => id === previewBranchId) || branches[0];
+
+  els.evolutionPreview.innerHTML = `
+    <article class="branch-preview-card branch-${selectedBranch.tone}">
+      <div class="branch-pet branch-shape-${selectedBranch.shape}" aria-hidden="true">
+        <i></i><b></b><em></em>
+      </div>
+      <div>
+        <span>未来预览</span>
+        <strong>${selectedBranch.name}</strong>
+        <p>${selectedBranch.copy}</p>
+      </div>
+    </article>
+    <article class="branch-condition-card">
+      <span>解锁条件</span>
+      <strong>${selectedBranch.condition}</strong>
+      <p>${selectedBranch.unlock}</p>
+    </article>
+  `;
+
+  els.branchPicker.innerHTML = branches.map(([id, branch]) => `
+    <button class="${id === selectedEntry[0] ? "active" : ""}" type="button" data-branch="${id}">
+      <span>${branch.label}</span>
+      <strong>${branch.name}</strong>
+    </button>
+  `).join("");
+
+  els.branchPicker.querySelectorAll("[data-branch]").forEach((button) => {
+    button.addEventListener("click", () => {
+      previewBranchId = button.dataset.branch;
+      renderStages();
+    });
+  });
+
   els.stageList.innerHTML = petType().stages.map((stage, index) => {
     const reached = stageReached(stage);
     const active = current.index === index;
