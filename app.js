@@ -12,44 +12,79 @@ const petTypes = {
   sprout: {
     label: "青团球",
     defaultName: "团团",
+    shape: "sphere",
     trait: "圆滚滚、反应快，适合从课间散步开始。",
     stages: [
-      { name: "小圆球", min: 0, days: 0, copy: "刚被领养，只会轻轻弹一下。" },
-      { name: "弹弹球", min: 180, days: 3, copy: "会追着你的步数左右滚动。" },
-      { name: "光环球", min: 520, days: 7, copy: "连续运动后会出现柔光轨迹。" }
+      { name: "小圆球", min: 0, days: 0, scale: 0.82, accent: "leaf", copy: "刚被领养，只会轻轻弹一下。" },
+      { name: "弹弹球", min: 180, days: 3, scale: 0.96, accent: "spark", copy: "会追着你的步数左右滚动。" },
+      { name: "光环球", min: 520, days: 7, scale: 1.1, accent: "halo", copy: "连续运动后会出现柔光轨迹。" }
     ]
   },
   cloud: {
     label: "云方块",
     defaultName: "方方",
+    shape: "cube",
     trait: "轻盈、爱跳，适合碎片化走动。",
     stages: [
-      { name: "小方块", min: 0, days: 0, copy: "像一块软糖，开心时会转角。" },
-      { name: "旋转方", min: 180, days: 3, copy: "会在小屋里做轻微翻转。" },
-      { name: "晴空方", min: 520, days: 7, copy: "能把运动后的心情变成天空色。" }
+      { name: "小方块", min: 0, days: 0, scale: 0.82, accent: "leaf", copy: "像一块软糖，开心时会转角。" },
+      { name: "旋转方", min: 180, days: 3, scale: 0.96, accent: "spark", copy: "会在小屋里做轻微翻转。" },
+      { name: "晴空方", min: 520, days: 7, scale: 1.1, accent: "halo", copy: "能把运动后的心情变成天空色。" }
     ]
   },
   otter: {
     label: "橘三角",
     defaultName: "角角",
+    shape: "pyramid",
     trait: "活泼、能量高，适合操场挑战。",
     stages: [
-      { name: "小三角", min: 0, days: 0, copy: "站得很稳，等你带它出门。" },
-      { name: "冲刺角", min: 180, days: 3, copy: "投喂后会像箭头一样弹起。" },
-      { name: "浪花角", min: 520, days: 7, copy: "完成高强度目标后，会解锁流线光纹。" }
+      { name: "小三角", min: 0, days: 0, scale: 0.82, accent: "leaf", copy: "站得很稳，等你带它出门。" },
+      { name: "冲刺角", min: 180, days: 3, scale: 0.96, accent: "spark", copy: "投喂后会像箭头一样弹起。" },
+      { name: "浪花角", min: 520, days: 7, scale: 1.1, accent: "halo", copy: "完成高强度目标后，会解锁流线光纹。" }
     ]
   },
   cat: {
     label: "星胶囊",
     defaultName: "星星",
+    shape: "capsule",
     trait: "好奇、爱探索，适合晚饭后散步。",
     stages: [
-      { name: "小胶囊", min: 0, days: 0, copy: "刚住进小屋，会慢慢巡游。" },
-      { name: "星光囊", min: 180, days: 3, copy: "夜晚走路后会亮起星点。" },
-      { name: "月光囊", min: 520, days: 7, copy: "能在校园夜路上找到隐藏明信片。" }
+      { name: "小胶囊", min: 0, days: 0, scale: 0.82, accent: "leaf", copy: "刚住进小屋，会慢慢巡游。" },
+      { name: "星光囊", min: 180, days: 3, scale: 0.96, accent: "spark", copy: "夜晚走路后会亮起星点。" },
+      { name: "月光囊", min: 520, days: 7, scale: 1.1, accent: "halo", copy: "能在校园夜路上找到隐藏明信片。" }
     ]
   }
 };
+
+const chromaEffects = [
+  {
+    id: "fresh",
+    name: "晨露光",
+    days: 1,
+    className: "effect-fresh",
+    copy: "完成 1 天照料后解锁，宠物身边会出现轻微晨光。"
+  },
+  {
+    id: "spark",
+    name: "星点尾迹",
+    days: 3,
+    className: "effect-spark",
+    copy: "连续坚持后解锁，运动时会留下细小星点。"
+  },
+  {
+    id: "aurora",
+    name: "极光外圈",
+    days: 7,
+    className: "effect-aurora",
+    copy: "一周照料后解锁，小屋里会出现柔和炫彩外圈。"
+  },
+  {
+    id: "rainbow",
+    name: "彩虹冲刺",
+    days: 14,
+    className: "effect-rainbow",
+    copy: "长期坚持后解锁，结伴运动会出现彩虹速度线。"
+  }
+];
 
 const evolutionBranches = {
   speed: {
@@ -1396,55 +1431,78 @@ function renderAchievements() {
   `).join("");
 }
 
+function petPreviewMarkup(stage, index, options = {}) {
+  const type = petType();
+  const stageAccent = stage.accent || (index === 2 ? "halo" : index === 1 ? "spark" : "leaf");
+  const effectClass = options.effectClass || "";
+  const classes = [
+    "stage-pet",
+    `stage-shape-${type.shape || "sphere"}`,
+    `stage-level-${index + 1}`,
+    `stage-accent-${stageAccent}`,
+    effectClass
+  ].filter(Boolean).join(" ");
+  const scale = Number(stage.scale || 1);
+  return `
+    <div class="${classes}" style="--stage-scale:${scale}" aria-hidden="true">
+      <i></i><b></b><em></em><small></small>
+    </div>
+  `;
+}
+
 function renderStages() {
   const current = currentStage();
-  const branches = Object.entries(evolutionBranches);
-  const selectedBranch = evolutionBranches[previewBranchId] || evolutionBranches.speed;
-  const selectedEntry = branches.find(([id]) => id === previewBranchId) || branches[0];
+  const nextEffect = chromaEffects.find((effect) => state.careDays < effect.days);
 
   els.evolutionPreview.innerHTML = `
-    <article class="branch-preview-card branch-${selectedBranch.tone}">
-      <div class="branch-pet branch-shape-${selectedBranch.shape}" aria-hidden="true">
-        <i></i><b></b><em></em>
-      </div>
+    <article class="branch-preview-card branch-mint">
+      ${petPreviewMarkup(current, current.index, { effectClass: state.careDays >= 7 ? "effect-aurora" : state.careDays >= 3 ? "effect-spark" : state.careDays >= 1 ? "effect-fresh" : "" })}
       <div>
-        <span>未来预览</span>
-        <strong>${selectedBranch.name}</strong>
-        <p>${selectedBranch.copy}</p>
+        <span>当前形态</span>
+        <strong>${petType().label} · ${current.name}</strong>
+        <p>${current.copy}</p>
       </div>
     </article>
     <article class="branch-condition-card">
-      <span>解锁条件</span>
-      <strong>${selectedBranch.condition}</strong>
-      <p>${selectedBranch.unlock}</p>
+      <span>炫彩打卡</span>
+      <strong>${nextEffect ? `再照料 ${nextEffect.days - state.careDays} 天解锁${nextEffect.name}` : "全部炫彩效果已预览"}</strong>
+      <p>每天完成投喂会累计照料天数，逐步解锁光效、尾迹和运动特效。</p>
     </article>
   `;
 
-  els.branchPicker.innerHTML = branches.map(([id, branch]) => `
-    <button class="${id === selectedEntry[0] ? "active" : ""}" type="button" data-branch="${id}">
-      <span>${branch.label}</span>
-      <strong>${branch.name}</strong>
-    </button>
-  `).join("");
-
-  els.branchPicker.querySelectorAll("[data-branch]").forEach((button) => {
-    button.addEventListener("click", () => {
-      previewBranchId = button.dataset.branch;
-      renderStages();
-    });
-  });
-
-  els.stageList.innerHTML = petType().stages.map((stage, index) => {
+  els.branchPicker.innerHTML = petType().stages.map((stage, index) => {
     const reached = stageReached(stage);
     const active = current.index === index;
+    const daysLeft = Math.max(0, (stage.days || 0) - state.careDays);
+    const growthLeft = Math.max(0, stage.min - state.growth);
     return `
-      <article class="${reached ? "reached" : ""} ${active ? "active" : ""}">
+      <button class="${active ? "active" : ""} ${reached ? "unlocked" : ""}" type="button" data-stage-preview="${index}">
+        ${petPreviewMarkup(stage, index)}
+        <span>${index + 1} 阶形态</span>
         <strong>${stage.name}</strong>
-        <span>${stage.days || 0} 天照料 · ${stage.min} 成长值</span>
-        <p>${stage.copy}</p>
-      </article>
+        <small>${reached ? "已解锁" : `还差 ${daysLeft} 天 · ${growthLeft} 成长`}</small>
+      </button>
     `;
   }).join("");
+
+  els.stageList.innerHTML = `
+    <section class="effect-preview-grid" aria-label="炫彩效果预览">
+      ${chromaEffects.map((effect) => {
+        const unlocked = state.careDays >= effect.days;
+        const sampleStage = petType().stages[Math.min(2, Math.max(0, current.index))];
+        return `
+          <article class="${unlocked ? "unlocked" : ""}">
+            ${petPreviewMarkup(sampleStage, Math.min(2, current.index), { effectClass: effect.className })}
+            <div>
+              <strong>${effect.name}</strong>
+              <span>${effect.days} 天照料 ${unlocked ? "已解锁" : "解锁"}</span>
+              <p>${effect.copy}</p>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </section>
+  `;
 }
 
 function renderEvolution() {
