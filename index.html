@@ -322,9 +322,9 @@
 
           <section class="feature-grid social-feature-grid compact-feature-grid" aria-label="好友玩法">
             <button class="feature-entry accent-walk" type="button" data-open-panel="invite">
-              <span>约走</span>
-              <strong>约同学一起走</strong>
-              <small>低打扰提醒</small>
+              <span>结伴</span>
+              <strong>宠物一起运动</strong>
+              <small id="social-walk-summary">好友 + NPC</small>
             </button>
             <button class="feature-entry accent-card" type="button" data-open-panel="friendsBoard">
               <span>社交</span>
@@ -352,7 +352,7 @@
             <button class="feature-entry accent-card" type="button" data-open-panel="achievements">
               <span>成就</span>
               <strong>打开成就墙</strong>
-              <small id="achievement-count">0/11</small>
+              <small id="achievement-count">0/12</small>
             </button>
             <button class="feature-entry accent-trip" type="button" data-open-panel="stages">
               <span>图鉴</span>
@@ -517,13 +517,29 @@
         </section>
 
         <section class="sheet-content" data-sheet-content="invite">
-          <article class="detail-action-card">
-            <div>
-              <strong>约小雨一起走</strong>
-              <p>发出一条轻提醒，约 20 分钟后一起完成下一段路。</p>
+          <section class="social-run-card">
+            <div class="run-track" aria-hidden="true">
+              <span class="track-line line-a"></span>
+              <span class="track-line line-b"></span>
+              <span class="runner-pet runner-me"><i></i><b></b><em></em></span>
+              <span class="runner-pet runner-friend"><i></i><b></b><em></em></span>
+              <span class="runner-pet runner-npc"><i></i><b></b><em></em></span>
             </div>
-            <button type="button" id="invite-button">约走</button>
-          </article>
+            <div>
+              <span class="route-chip">结伴运动</span>
+              <strong id="social-run-title">三只宠物在操场集合</strong>
+              <p id="social-run-copy">你、小雨和校园 NPC「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。</p>
+            </div>
+            <button type="button" id="invite-button">开始结伴</button>
+          </section>
+          <section class="egg-card">
+            <span class="egg-visual" id="egg-visual">蛋</span>
+            <div>
+              <strong id="egg-title">步步蛋</strong>
+              <p id="egg-copy">完成结伴运动后，有机会获得一枚蛋。蛋会随每日步数慢慢孵化。</p>
+              <div class="egg-progress"><i id="egg-progress"></i></div>
+            </div>
+          </section>
         </section>
 
         <section class="sheet-content" data-sheet-content="team">
