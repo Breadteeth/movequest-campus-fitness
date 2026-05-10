@@ -144,7 +144,9 @@ p {
 }
 
 .primary-action,
+.secondary-action,
 .upload-action,
+.back-auth,
 .help-button,
 .quiet-action,
 .motion-button,
@@ -173,6 +175,11 @@ p {
   background: linear-gradient(135deg, #dff47c 0%, #a9ead2 100%);
 }
 
+.secondary-action {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .simple-head h1,
 .intro-copy h1 {
   margin: 0;
@@ -187,25 +194,132 @@ p {
 
 .intro-screen {
   display: none;
-  padding-top: 34px;
+  padding-top: 24px;
 }
 
 .intro-screen.active {
   display: grid;
   align-content: center;
-  gap: 24px;
+  gap: 18px;
+}
+
+.intro-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  padding: 8px 14px 8px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--soft-shadow);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 1000;
+}
+
+.app-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #dff47c, #5ad289);
+  color: white;
+  font-size: 18px;
 }
 
 .intro-visual {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 300px;
+  min-height: 286px;
   border-radius: 44px;
   background:
-    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.92), transparent 18%),
-    linear-gradient(145deg, #d9f3ff, #e7f8ce 58%, #f8ead7);
+    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.95), transparent 18%),
+    radial-gradient(circle at 24% 78%, rgba(217, 243, 106, 0.58), transparent 26%),
+    linear-gradient(145deg, #d9f3ff, #e8f8d1 58%, #f8ead7);
   box-shadow: var(--shadow);
+}
+
+.intro-ring {
+  position: absolute;
+  width: 172px;
+  height: 172px;
+  border: 1px solid rgba(255, 255, 255, 0.76);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.75), transparent 18%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.24), transparent 62%);
+  animation: intro-ring 7s ease-in-out infinite;
+}
+
+.intro-orb-pet {
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.78), transparent 20%),
+    linear-gradient(145deg, #dff47c, #53c58a);
+  box-shadow:
+    0 24px 42px rgba(59, 89, 67, 0.22),
+    inset -16px -18px 28px rgba(23, 33, 31, 0.1),
+    inset 16px 16px 26px rgba(255, 255, 255, 0.42);
+  animation: intro-orb 3.8s ease-in-out infinite;
+}
+
+.intro-eye {
+  position: absolute;
+  top: 50px;
+  width: 11px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.eye-left {
+  left: 36px;
+}
+
+.eye-right {
+  right: 36px;
+}
+
+.intro-mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 31px;
+  width: 34px;
+  height: 18px;
+  border-bottom: 5px solid var(--ink);
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.intro-path {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  display: flex;
+  gap: 10px;
+  transform: translateX(-50%);
+}
+
+.intro-path span {
+  width: 34px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(23, 33, 31, 0.12);
+  animation: path-pulse 1.8s ease-in-out infinite;
+}
+
+.intro-path span:nth-child(2) {
+  animation-delay: 180ms;
+}
+
+.intro-path span:nth-child(3) {
+  animation-delay: 360ms;
 }
 
 .orbit-card {
@@ -242,6 +356,95 @@ p {
   color: var(--muted);
   font-size: 15px;
   line-height: 1.7;
+}
+
+.auth-gateway {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-gateway small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.auth-head {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+
+.auth-head > p:last-of-type {
+  margin: 2px 0 6px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.back-auth {
+  width: fit-content;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.auth-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: var(--soft-shadow);
+}
+
+.auth-switch button {
+  min-height: 42px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 1000;
+}
+
+.auth-switch button.active {
+  background: linear-gradient(135deg, #dff47c, #a9ead2);
+  color: var(--ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.adopt-screen[data-mode="login"] .register-only {
+  display: none;
+}
+
+@keyframes intro-ring {
+  50% {
+    transform: scale(1.05) rotate(8deg);
+  }
+}
+
+@keyframes intro-orb {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  48% {
+    transform: translateY(-12px) scale(1.04, 0.98);
+  }
+
+  68% {
+    transform: translateY(2px) scale(0.98, 1.03);
+  }
+}
+
+@keyframes path-pulse {
+  50% {
+    opacity: 0.38;
+    transform: translateY(3px);
+  }
 }
 
 .intro-steps {
