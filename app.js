@@ -1,45 +1,51 @@
 const STORAGE_KEY = "movequest-pet-v6";
 const EXTRA_SNACK_STEPS = 420;
+const WEATHER_CACHE_MS = 18 * 60 * 1000;
+const DEFAULT_CAMPUS_LOCATION = {
+  latitude: 30.2741,
+  longitude: 120.1551,
+  place: "默认校园"
+};
 
 const petTypes = {
   sprout: {
-    label: "芽芽兽",
-    defaultName: "芽芽",
-    trait: "慢热、稳定，适合从课间散步开始。",
+    label: "青团球",
+    defaultName: "团团",
+    trait: "圆滚滚、反应快，适合从课间散步开始。",
     stages: [
-      { name: "幼芽期", min: 0, days: 0, copy: "刚被领养，最需要稳定投喂。" },
-      { name: "伸展期", min: 180, days: 3, copy: "耳朵长出嫩叶，会主动跟着你晃。" },
-      { name: "花冠期", min: 520, days: 7, copy: "连续运动后开出光花，房间也会更亮。" }
+      { name: "小圆球", min: 0, days: 0, copy: "刚被领养，只会轻轻弹一下。" },
+      { name: "弹弹球", min: 180, days: 3, copy: "会追着你的步数左右滚动。" },
+      { name: "光环球", min: 520, days: 7, copy: "连续运动后会出现柔光轨迹。" }
     ]
   },
   cloud: {
-    label: "云团兽",
-    defaultName: "团团",
-    trait: "轻盈、爱撒娇，适合碎片化走动。",
+    label: "云方块",
+    defaultName: "方方",
+    trait: "轻盈、爱跳，适合碎片化走动。",
     stages: [
-      { name: "小云团", min: 0, days: 0, copy: "像一团软软的云，走一走就会飘起来。" },
-      { name: "蓬蓬云", min: 180, days: 3, copy: "身体变得更蓬松，心情好时会发光。" },
-      { name: "晴空云", min: 520, days: 7, copy: "能把小屋变成晴天，适合连续打卡。" }
+      { name: "小方块", min: 0, days: 0, copy: "像一块软糖，开心时会转角。" },
+      { name: "旋转方", min: 180, days: 3, copy: "会在小屋里做轻微翻转。" },
+      { name: "晴空方", min: 520, days: 7, copy: "能把运动后的心情变成天空色。" }
     ]
   },
   otter: {
-    label: "河狸兽",
-    defaultName: "栗栗",
+    label: "橘三角",
+    defaultName: "角角",
     trait: "活泼、能量高，适合操场挑战。",
     stages: [
-      { name: "小河狸", min: 0, days: 0, copy: "精力很多，但需要你带它出门。" },
-      { name: "冲浪狸", min: 180, days: 3, copy: "尾巴更有力，投喂后会弹起来。" },
-      { name: "浪花狸", min: 520, days: 7, copy: "完成高强度目标后，会解锁浪花纹。" }
+      { name: "小三角", min: 0, days: 0, copy: "站得很稳，等你带它出门。" },
+      { name: "冲刺角", min: 180, days: 3, copy: "投喂后会像箭头一样弹起。" },
+      { name: "浪花角", min: 520, days: 7, copy: "完成高强度目标后，会解锁流线光纹。" }
     ]
   },
   cat: {
-    label: "星尾猫",
-    defaultName: "奶盖",
+    label: "星胶囊",
+    defaultName: "星星",
     trait: "好奇、爱探索，适合晚饭后散步。",
     stages: [
-      { name: "奶油猫", min: 0, days: 0, copy: "刚住进小屋，会自己在房间里巡逻。" },
-      { name: "星尾猫", min: 180, days: 3, copy: "尾巴会亮起星点，适合夜跑后去探索。" },
-      { name: "月光猫", min: 520, days: 7, copy: "能在校园夜路上找到隐藏明信片。" }
+      { name: "小胶囊", min: 0, days: 0, copy: "刚住进小屋，会慢慢巡游。" },
+      { name: "星光囊", min: 180, days: 3, copy: "夜晚走路后会亮起星点。" },
+      { name: "月光囊", min: 520, days: 7, copy: "能在校园夜路上找到隐藏明信片。" }
     ]
   }
 };
@@ -128,6 +134,7 @@ const tripLocations = [
 const achievements = [
   { id: "adopt", title: "领养伙伴", copy: "选择一只宠物。", done: (s) => s.adopted },
   { id: "walk", title: "带它出门", copy: "开始一次走动采集。", done: (s) => s.steps > 0 },
+  { id: "weather", title: "顺天气运动", copy: "根据天气完成一次运动建议。", done: (s) => s.weatherEventDay === s.day },
   { id: "feed", title: "第一口", copy: "完成第一次投喂。", done: (s) => s.fed.length > 0 },
   { id: "play", title: "一起玩球", copy: "用步数活力陪宠物玩。", done: (s) => s.played },
   { id: "social", title: "好友串门", copy: "完成一次宠物社交。", done: (s) => s.friendUsed || s.visitSent },
@@ -151,7 +158,7 @@ const defaultState = {
   avatarZoom: 120,
   avatarY: 50,
   petType: "sprout",
-  petName: "芽芽",
+  petName: "团团",
   plan: "daily",
   steps: 0,
   totalSteps: 0,
@@ -174,6 +181,21 @@ const defaultState = {
   played: false,
   cleaned: false,
   completed: false,
+  weather: {
+    temp: null,
+    code: null,
+    wind: null,
+    precipitation: null,
+    label: "获取中",
+    advice: "获取天气后，会给出更适合今天的运动建议。",
+    intensity: "轻松走",
+    source: "未定位",
+    place: "校园天气",
+    updatedAt: 0
+  },
+  weatherEventDay: "",
+  weatherEventTitle: "",
+  weatherEventCopy: "",
   collecting: false
 };
 
@@ -203,6 +225,18 @@ const els = {
   goalLabel: document.getElementById("goal-label"),
   petName: document.getElementById("pet-name"),
   streakLabel: document.getElementById("streak-label"),
+  dailySummary: document.getElementById("daily-summary"),
+  weatherChip: document.getElementById("weather-chip"),
+  weatherCompactTitle: document.getElementById("weather-compact-title"),
+  weatherSummary: document.getElementById("weather-summary"),
+  weatherOrb: document.getElementById("weather-orb"),
+  weatherPlace: document.getElementById("weather-place"),
+  weatherTitle: document.getElementById("weather-title"),
+  weatherAdvice: document.getElementById("weather-advice"),
+  weatherIntensity: document.getElementById("weather-intensity"),
+  weatherBonus: document.getElementById("weather-bonus"),
+  weatherEventCopy: document.getElementById("weather-event-copy"),
+  refreshWeather: document.getElementById("refresh-weather"),
   stepsLabel: document.getElementById("steps-label"),
   fedLabel: document.getElementById("fed-label"),
   stageLabel: document.getElementById("stage-label"),
@@ -296,20 +330,35 @@ let lastMotionAt = 0;
 let currentSheet = "";
 
 const sheetMeta = {
+  daily: {
+    eyebrow: "今日计划",
+    title: "今天只需要按三步走",
+    copy: "先走路解锁食物，再投喂，喂饱后继续探索校园。"
+  },
+  weather: {
+    eyebrow: "天气建议",
+    title: "按今天的天气安排运动",
+    copy: "真实天气会影响建议，也会影响随机宠物事件。"
+  },
   feed: {
     eyebrow: "小屋投喂",
-    title: "走到节点，再喂一口",
-    copy: "每份食物都对应真实步数，不会一次性刷完。"
+    title: "投喂和互动都在这里",
+    copy: "走到节点解锁食物，活力可以用来陪宠物玩。"
+  },
+  care: {
+    eyebrow: "小屋互动",
+    title: "摸摸、玩球和洗澡都在这里",
+    copy: "日常互动可以提升亲密度，但运动节点仍然是核心来源。"
   },
   explore: {
     eyebrow: "校园探索",
-    title: "喂饱后，派它去校园走走",
-    copy: "继续散步攒便当，宠物会带回地点明信片。"
+    title: "已合并到校园来信",
+    copy: "探索和明信片放在同一个抽屉里。"
   },
   postcards: {
-    eyebrow: "小屋相册",
-    title: "打开宠物寄回来的信",
-    copy: "点击明信片，可以读到它今天写给你的内容。"
+    eyebrow: "校园来信",
+    title: "派宠物探索，再读它带回来的信",
+    copy: "每次探索都需要你先完成现实运动。"
   },
   invite: {
     eyebrow: "好友约走",
@@ -327,9 +376,9 @@ const sheetMeta = {
     copy: "喂饱后开放，带回一张社交明信片。"
   },
   friendsBoard: {
-    eyebrow: "好友动态",
-    title: "看看同学的今日进度",
-    copy: "只展示轻量状态，避免排名压力太强。"
+    eyebrow: "好友小屋",
+    title: "协作、串门和动态放在一起",
+    copy: "社交负责启动行动，但不会替代自己的步数。"
   },
   achievements: {
     eyebrow: "成就墙",
@@ -358,6 +407,7 @@ function normalizeState(savedState) {
   next.fed = Array.isArray(next.fed) ? next.fed : [];
   next.postcards = Array.isArray(next.postcards) ? next.postcards : [];
   next.stamps = Array.isArray(next.stamps) ? next.stamps : [];
+  next.weather = { ...structuredClone(defaultState.weather), ...(savedState?.weather || {}) };
   next.activeTab = validTabs.includes(next.activeTab) ? next.activeTab : "home";
   next.day = next.day || today;
 
@@ -375,6 +425,9 @@ function normalizeState(savedState) {
     next.played = false;
     next.cleaned = false;
     next.completed = false;
+    next.weatherEventDay = "";
+    next.weatherEventTitle = "";
+    next.weatherEventCopy = "";
     next.collecting = false;
   }
 
@@ -482,6 +535,183 @@ function moodText() {
   if (state.collecting) return `${state.petName}在等你走到下一个投喂节点。`;
   if (next) return `再走 ${next.steps - state.steps} 步，解锁下一份食物。`;
   return "食物都解锁了，把它们喂给宠物吧。";
+}
+
+function weatherKind(code = 0, precipitation = 0, wind = 0, temp = 22) {
+  if (precipitation > 0.1 || [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(Number(code))) {
+    return "rain";
+  }
+  if (wind >= 28) return "wind";
+  if (temp >= 31) return "hot";
+  if (temp <= 7) return "cold";
+  if ([0, 1].includes(Number(code))) return "sun";
+  if ([2, 3, 45, 48].includes(Number(code))) return "cloud";
+  return "mild";
+}
+
+function weatherLabel(kind) {
+  const labels = {
+    sun: "晴",
+    cloud: "多云",
+    rain: "有雨",
+    wind: "风大",
+    hot: "偏热",
+    cold: "偏冷",
+    mild: "适合运动"
+  };
+  return labels[kind] || labels.mild;
+}
+
+function weatherSuggestion(weather = state.weather) {
+  const temp = Number(weather.temp ?? 22);
+  const wind = Number(weather.wind ?? 0);
+  const precipitation = Number(weather.precipitation ?? 0);
+  const kind = weatherKind(weather.code, precipitation, wind, temp);
+  const suggestions = {
+    sun: {
+      intensity: "户外快走",
+      advice: "天气适合出门。建议走到教学楼或操场边，完成一段 10 分钟快走。",
+      eventTitle: "追光弹跳",
+      eventCopy: `${state.petName}追着阳光滚了一圈，成长值 +12。`
+    },
+    cloud: {
+      intensity: "舒适散步",
+      advice: "云量适中，适合课间走一段。建议用碎片时间凑齐下一个投喂节点。",
+      eventTitle: "云影转圈",
+      eventCopy: `${state.petName}踩着云影转了一圈，亲密度 +8。`
+    },
+    rain: {
+      intensity: "室内路线",
+      advice: "外面可能下雨。建议走教学楼连廊、宿舍楼道或室内场馆，避免湿滑路面。",
+      eventTitle: "伞下散步",
+      eventCopy: `${state.petName}听着雨声慢慢弹跳，成长值 +10。`
+    },
+    wind: {
+      intensity: "低风阻路线",
+      advice: "风比较大。建议选择楼宇之间或室内路线，降低强度，完成短段步行即可。",
+      eventTitle: "顺风滑行",
+      eventCopy: `${state.petName}被风轻轻推着滑了一小段，获得 1 份便当。`
+    },
+    hot: {
+      intensity: "避暑慢走",
+      advice: "天气偏热。建议避开午后，选择傍晚树荫路线，带水，降低强度。",
+      eventTitle: "冰饮休息",
+      eventCopy: `${state.petName}喝到一口冰饮，心情明显变好了。`
+    },
+    cold: {
+      intensity: "热身短走",
+      advice: "天气偏冷。建议先热身，再走宿舍到食堂这类短路线，注意保暖。",
+      eventTitle: "围巾蹦跳",
+      eventCopy: `${state.petName}裹着小围巾蹦了一下，亲密度 +8。`
+    },
+    mild: {
+      intensity: "轻松快走",
+      advice: "天气稳定。建议完成一段校园快走，把下一个食物节点走出来。",
+      eventTitle: "稳定节奏",
+      eventCopy: `${state.petName}跟上了你的节奏，成长值 +10。`
+    }
+  };
+  return { kind, label: weatherLabel(kind), ...suggestions[kind] };
+}
+
+function updateWeatherState(payload, source, place) {
+  const nextWeather = {
+    ...state.weather,
+    temp: payload.temp,
+    code: payload.code,
+    wind: payload.wind,
+    precipitation: payload.precipitation,
+    source,
+    place,
+    updatedAt: Date.now()
+  };
+  const suggestion = weatherSuggestion(nextWeather);
+  state.weather = {
+    ...nextWeather,
+    label: suggestion.label,
+    advice: suggestion.advice,
+    intensity: suggestion.intensity
+  };
+}
+
+function fallbackWeather(reason = "定位不可用") {
+  updateWeatherState(
+    {
+      temp: 23,
+      code: 2,
+      wind: 9,
+      precipitation: 0
+    },
+    reason,
+    DEFAULT_CAMPUS_LOCATION.place
+  );
+  saveState();
+  render();
+}
+
+async function fetchWeatherByCoords(latitude, longitude, source = "当前位置") {
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+    current: "temperature_2m,precipitation,weather_code,wind_speed_10m",
+    timezone: "auto"
+  });
+  const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`);
+  if (!response.ok) throw new Error("weather request failed");
+  const data = await response.json();
+  const current = data.current || {};
+  updateWeatherState(
+    {
+      temp: Math.round(Number(current.temperature_2m ?? 23)),
+      code: Number(current.weather_code ?? 2),
+      wind: Math.round(Number(current.wind_speed_10m ?? 9)),
+      precipitation: Number(current.precipitation ?? 0)
+    },
+    source,
+    source
+  );
+  saveState();
+  render();
+}
+
+function refreshWeather(force = false) {
+  if (!force && Date.now() - Number(state.weather.updatedAt || 0) < WEATHER_CACHE_MS) return;
+
+  if (!navigator.geolocation) {
+    fallbackWeather("默认校园");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      fetchWeatherByCoords(position.coords.latitude, position.coords.longitude, "当前位置").catch(() => {
+        fetchWeatherByCoords(DEFAULT_CAMPUS_LOCATION.latitude, DEFAULT_CAMPUS_LOCATION.longitude, "默认校园").catch(() => fallbackWeather("天气服务不可用"));
+      });
+    },
+    () => {
+      fetchWeatherByCoords(DEFAULT_CAMPUS_LOCATION.latitude, DEFAULT_CAMPUS_LOCATION.longitude, "默认校园").catch(() => fallbackWeather("默认校园"));
+    },
+    { enableHighAccuracy: false, timeout: 3800, maximumAge: WEATHER_CACHE_MS }
+  );
+}
+
+function maybeTriggerWeatherEvent(amount) {
+  if (state.weatherEventDay === state.day || state.steps < 180 || amount < 60) return;
+  const suggestion = weatherSuggestion();
+  const baseChance = ["rain", "wind", "hot", "cold"].includes(suggestion.kind) ? 0.28 : 0.2;
+  const stepBonus = clamp(amount / 900, 0, 0.18);
+  if (Math.random() > baseChance + stepBonus) return;
+
+  const beforeStage = currentStage().index;
+  state.weatherEventDay = state.day;
+  state.weatherEventTitle = suggestion.eventTitle;
+  state.weatherEventCopy = suggestion.eventCopy;
+  state.bond = clamp(state.bond + 8, 0, 100);
+  state.growth += suggestion.kind === "wind" ? 8 : 10;
+  if (suggestion.kind === "wind") state.campusSnacks += 1;
+  setPetReaction("pet-play", 980);
+  showGrowthResult(beforeStage, "天", suggestion.eventTitle, suggestion.eventCopy);
+  confetti(16);
 }
 
 function showToast(title, text) {
@@ -601,6 +831,7 @@ function addSteps(amount) {
     showToast("找到旅行便当", `继续散步获得 ${earned} 份便当，可用于校园探索。`);
   }
 
+  maybeTriggerWeatherEvent(amount);
   saveState();
   render();
 }
@@ -890,6 +1121,7 @@ function sendPetVisit() {
 
 function setTab(tab) {
   state.activeTab = tab;
+  els.shell.dataset.activeTab = tab;
   els.tabButtons.forEach((button) => button.classList.toggle("active", button.dataset.tab === tab));
   els.panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === tab));
   saveState();
@@ -963,7 +1195,7 @@ function renderFoodList() {
 }
 
 function renderExplore() {
-  els.campusSnackCount.textContent = `${state.campusSnacks} 份便当`;
+  els.campusSnackCount.textContent = String(state.campusSnacks);
   els.postcardCount.textContent = state.postcards.length;
   els.tripList.innerHTML = tripLocations.map((location) => {
     const enoughSteps = state.steps >= location.minSteps;
@@ -994,7 +1226,7 @@ function renderExplore() {
     button.addEventListener("click", () => startTrip(button.dataset.trip));
   });
 
-  const recentPostcards = state.postcards.slice(-6).reverse();
+  const recentPostcards = state.postcards.slice(-4).reverse();
   els.postcardGrid.innerHTML = recentPostcards.length
     ? recentPostcards.map((card) => `
       <button class="postcard-card" type="button" data-postcard="${card.id}">
@@ -1017,6 +1249,7 @@ function renderExplore() {
 }
 
 function renderBadges() {
+  if (!els.badges.walk || !els.badges.feed || !els.badges.full) return;
   const walked = state.steps > 0;
   const fed = fedCount() > 0;
   const full = state.completed;
@@ -1103,6 +1336,38 @@ function renderPath() {
   });
 }
 
+function renderWeatherSummary() {
+  const suggestion = weatherSuggestion();
+  const hasWeather = state.weather.temp !== null && state.weather.temp !== undefined;
+  const tempText = hasWeather ? `${state.weather.temp}°` : "--";
+  if (!hasWeather) {
+    els.weatherChip.textContent = "天气";
+    els.weatherCompactTitle.textContent = "获取中";
+    els.weatherSummary.textContent = "自动生成运动建议";
+    els.weatherOrb.textContent = "--";
+    els.weatherPlace.textContent = "校园天气";
+    els.weatherTitle.textContent = "正在获取天气";
+    els.weatherAdvice.textContent = state.weather.advice;
+    els.weatherIntensity.textContent = "待生成";
+    els.weatherBonus.textContent = "运动后有概率触发";
+    els.weatherEventCopy.textContent = "获取天气后，系统会根据晴雨冷热推荐更合适的校园运动路线。";
+    return;
+  }
+
+  els.weatherChip.textContent = state.weather.label || suggestion.label;
+  els.weatherCompactTitle.textContent = `${suggestion.intensity}`;
+  els.weatherSummary.textContent = `${tempText} · ${suggestion.label}`;
+  els.weatherOrb.textContent = tempText;
+  els.weatherPlace.textContent = state.weather.place || "校园天气";
+  els.weatherTitle.textContent = `${suggestion.label} · ${suggestion.intensity}`;
+  els.weatherAdvice.textContent = state.weather.advice || suggestion.advice;
+  els.weatherIntensity.textContent = suggestion.intensity;
+  els.weatherBonus.textContent = state.weatherEventDay === state.day ? state.weatherEventTitle || "已触发" : "运动后有概率触发";
+  els.weatherEventCopy.textContent = state.weatherEventDay === state.day
+    ? state.weatherEventCopy
+    : "例如晴天会触发“追光弹跳”，雨天会触发“伞下散步”，奖励成长值和亲密度。";
+}
+
 function render() {
   const currentPlan = plan();
   const available = availableIndexes();
@@ -1130,6 +1395,7 @@ function render() {
   els.floatPetName.textContent = state.petName;
   els.floatPetStatus.textContent = state.completed ? "想去校园探索" : available.length ? "等你投喂" : "在小屋等你";
   els.streakLabel.textContent = state.streak;
+  els.dailySummary.textContent = `${state.steps}/${currentPlan.target} 步 · ${fedCount()}/${milestones().length} 已喂`;
   els.stepsLabel.textContent = state.steps;
   els.fedLabel.textContent = `${fedCount()}/${milestones().length}`;
   els.walkProgress.style.width = `${progress}%`;
@@ -1143,10 +1409,11 @@ function render() {
   els.motionSubtitle.textContent = state.completed ? "攒旅行便当和明信片" : available.length ? "去投喂页喂一口" : "走到节点解锁食物";
   els.motionButton.disabled = false;
   els.playAction.disabled = state.careEnergy <= 0;
-  els.playCost.textContent = state.careEnergy > 0 ? `剩 ${state.careEnergy} 活力` : "走到节点获得";
+  els.playCost.textContent = state.careEnergy;
   els.cleanAction.disabled = fedCount() === 0 || state.cleaned;
   els.cleanAction.querySelector("small").textContent = state.cleaned ? "今日已完成" : fedCount() > 0 ? "洗香香 +成长" : "投喂后解锁";
-  els.foodCount.textContent = state.completed ? "今日已喂饱" : `${available.length} 份可喂`;
+  els.foodCount.textContent = state.completed ? "0" : String(available.length);
+  renderWeatherSummary();
   els.moodBubble.textContent = moodText();
   els.friendButton.disabled = state.friendUsed;
   els.friendButton.textContent = state.friendUsed ? "已收下" : "收下";
@@ -1156,13 +1423,19 @@ function render() {
   els.inviteButton.textContent = state.inviteSent ? "已约" : "约走";
   const teamTotal = state.steps + 920;
   const teamProgress = clamp((teamTotal / 1500) * 100, 0, 100);
-  els.teamProgress.style.width = `${teamProgress}%`;
-  els.teamButton.disabled = state.teamCompleted;
-  els.teamButton.textContent = state.teamCompleted ? "已完成" : "合喂";
-  els.teamCopy.textContent = state.teamCompleted ? "双人便当已完成，今天的好友协作达成。" : `你和小雨合计 ${Math.min(teamTotal, 1500)}/1500 步，可一起做便当。`;
-  els.visitButton.disabled = state.visitSent;
-  els.visitButton.textContent = state.visitSent ? "已串门" : "串门";
-  els.visitCopy.textContent = state.visitSent
+  if (els.teamProgress) els.teamProgress.style.width = `${teamProgress}%`;
+  if (els.teamButton) {
+    els.teamButton.disabled = state.teamCompleted;
+    els.teamButton.textContent = state.teamCompleted ? "已完成" : "合喂";
+  }
+  if (els.teamCopy) {
+    els.teamCopy.textContent = state.teamCompleted ? "双人便当已完成，今天的好友协作达成。" : `你和小雨合计 ${Math.min(teamTotal, 1500)}/1500 步，可一起做便当。`;
+  }
+  if (els.visitButton) {
+    els.visitButton.disabled = state.visitSent;
+    els.visitButton.textContent = state.visitSent ? "已串门" : "串门";
+  }
+  if (els.visitCopy) els.visitCopy.textContent = state.visitSent
     ? `${state.petName}带回了一张好友小屋合照。`
     : state.completed
       ? `${state.petName}已经吃饱，可以去小雨的小屋玩一会儿。`
@@ -1262,18 +1535,23 @@ els.setupForm.addEventListener("submit", (event) => {
   saveState();
   switchScreen("app");
   render();
+  refreshWeather(true);
   showResult("蛋", "领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，再去投喂页喂它。`);
 });
 
 els.motionButton.addEventListener("click", toggleCollecting);
+els.refreshWeather.addEventListener("click", () => {
+  showToast("正在刷新天气", "会根据当前位置或默认校园生成建议。");
+  refreshWeather(true);
+});
 els.petButton.addEventListener("click", patPet);
 els.patAction.addEventListener("click", patPet);
 els.playAction.addEventListener("click", playWithPet);
 els.cleanAction.addEventListener("click", cleanPet);
 els.friendButton.addEventListener("click", useFriendSnack);
 els.inviteButton.addEventListener("click", inviteFriendWalk);
-els.teamButton.addEventListener("click", completeTeamChallenge);
-els.visitButton.addEventListener("click", sendPetVisit);
+if (els.teamButton) els.teamButton.addEventListener("click", completeTeamChallenge);
+if (els.visitButton) els.visitButton.addEventListener("click", sendPetVisit);
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.tab));
 });
@@ -1339,3 +1617,4 @@ selectAvatar(selectedAvatar, false);
 renderAvatarPreview();
 switchScreen(state.adopted ? "app" : state.introSeen ? "adopt" : "intro");
 render();
+if (state.adopted) refreshWeather();
