@@ -71,23 +71,23 @@
       <section class="pet-picker" id="pet-picker" aria-label="选择宠物">
         <button class="pet-choice selected" type="button" data-pet-choice="sprout">
           <span class="pet-mini mini-sprout"></span>
-          <strong>芽芽兽</strong>
-          <small>适合慢慢建立习惯</small>
+          <strong>青团球</strong>
+          <small>圆滚滚，适合从散步开始</small>
         </button>
         <button class="pet-choice" type="button" data-pet-choice="cloud">
           <span class="pet-mini mini-cloud"></span>
-          <strong>云团兽</strong>
-          <small>喜欢课间散步</small>
+          <strong>云方块</strong>
+          <small>轻轻跳，喜欢课间走动</small>
         </button>
         <button class="pet-choice" type="button" data-pet-choice="otter">
           <span class="pet-mini mini-otter"></span>
-          <strong>河狸兽</strong>
-          <small>适合操场挑战</small>
+          <strong>橘三角</strong>
+          <small>弹性强，适合操场挑战</small>
         </button>
         <button class="pet-choice" type="button" data-pet-choice="cat">
           <span class="pet-mini mini-cat"></span>
-          <strong>星尾猫</strong>
-          <small>喜欢夜跑和探索</small>
+          <strong>星胶囊</strong>
+          <small>会发光，适合晚饭后散步</small>
         </button>
       </section>
 
@@ -125,7 +125,7 @@
         </div>
         <label>
           宠物名字
-          <input id="pet-input" maxlength="8" value="芽芽" autocomplete="off">
+          <input id="pet-input" maxlength="8" value="团团" autocomplete="off">
         </label>
         <label>
           今日运动目标
@@ -150,53 +150,21 @@
         </button>
         <button class="help-button" type="button" id="help-button">玩法</button>
         <div class="streak-pill">
-          <span>连续</span>
+          <span>连击</span>
           <strong id="streak-label">0</strong>
         </div>
       </header>
 
-      <section class="pet-title-card">
-        <div>
-          <p class="eyebrow" id="goal-label">校园快走</p>
-          <h2><span id="pet-name">芽芽</span>的小屋</h2>
-        </div>
-        <span id="profile-badge">今日照顾中</span>
-      </section>
-
-      <section class="stats-panel">
-        <article>
-          <span>今日步数</span>
-          <strong id="steps-label">0</strong>
-        </article>
-        <article>
-          <span>已投喂</span>
-          <strong id="fed-label">0/4</strong>
-        </article>
-        <article>
-          <span>进化</span>
-          <strong id="stage-label">幼崽</strong>
-        </article>
-      </section>
-
       <div class="tab-panels">
         <section class="tab-panel active" data-panel="home">
-          <section class="daily-path" aria-label="今日运动主线">
-            <article data-path-step="walk">
-              <span>1</span>
-              <strong>走路</strong>
-              <small>先把真实步数走出来</small>
-            </article>
-            <article data-path-step="feed">
-              <span>2</span>
-              <strong>投喂</strong>
-              <small>步数到节点再喂食</small>
-            </article>
-            <article data-path-step="explore">
-              <span>3</span>
-              <strong>探索</strong>
-              <small>喂饱后派宠物出门</small>
-            </article>
+          <section class="pet-title-card">
+            <div>
+              <p class="eyebrow" id="goal-label">校园快走</p>
+              <h2><span id="pet-name">芽芽</span>的小屋</h2>
+            </div>
+            <span id="profile-badge">今日照顾中</span>
           </section>
+
           <section class="pet-room" id="pet-room" aria-label="虚拟宠物小屋">
             <div class="room-sky">
               <span class="soft-cloud cloud-a"></span>
@@ -205,6 +173,69 @@
             </div>
             <button class="pet-touch-area" type="button" id="pet-button" aria-label="摸摸宠物">
               <div class="pet-3d" id="pet-3d">
+                <svg class="pet-illustration" viewBox="0 0 240 220" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="petBodyGradient" x1="50" y1="32" x2="188" y2="186" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="var(--pet-a)" />
+                      <stop offset="1" stop-color="var(--pet-b)" />
+                    </linearGradient>
+                    <linearGradient id="petSideGradient" x1="78" y1="54" x2="178" y2="186" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="rgba(255,255,255,0.82)" />
+                      <stop offset="1" stop-color="rgba(23,33,31,0.12)" />
+                    </linearGradient>
+                    <linearGradient id="petWarmGradient" x1="70" y1="34" x2="184" y2="182" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="var(--pet-c)" />
+                      <stop offset="1" stop-color="var(--pet-b)" />
+                    </linearGradient>
+                    <filter id="petSoftShadow" x="-20%" y="-20%" width="140%" height="150%">
+                      <feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#3a4a42" flood-opacity="0.18" />
+                    </filter>
+                  </defs>
+                  <ellipse cx="120" cy="196" rx="62" ry="12" fill="rgba(64,58,44,0.16)" />
+
+                  <g class="geo-pet geo-sphere" filter="url(#petSoftShadow)">
+                    <circle cx="120" cy="106" r="66" fill="url(#petBodyGradient)" />
+                    <circle cx="92" cy="76" r="19" fill="rgba(255,255,255,0.5)" />
+                    <circle cx="96" cy="109" r="8" fill="#17211f" />
+                    <circle cx="144" cy="109" r="8" fill="#17211f" />
+                    <path d="M106 132 Q120 143 136 132" fill="none" stroke="#17211f" stroke-width="6" stroke-linecap="round" />
+                    <circle cx="78" cy="129" r="9" fill="rgba(255,142,126,0.36)" />
+                    <circle cx="162" cy="129" r="9" fill="rgba(255,142,126,0.36)" />
+                  </g>
+
+                  <g class="geo-pet geo-cube" filter="url(#petSoftShadow)">
+                    <path d="M76 78 L120 50 L166 78 L166 146 L120 176 L76 146 Z" fill="url(#petBodyGradient)" />
+                    <path d="M76 78 L120 108 L120 176 L76 146 Z" fill="rgba(255,255,255,0.22)" />
+                    <path d="M166 78 L120 108 L120 176 L166 146 Z" fill="rgba(23,33,31,0.08)" />
+                    <path d="M76 78 L120 50 L166 78 L120 108 Z" fill="rgba(255,255,255,0.42)" />
+                    <circle cx="103" cy="112" r="7" fill="#17211f" />
+                    <circle cx="137" cy="112" r="7" fill="#17211f" />
+                    <path d="M108 133 Q120 141 133 133" fill="none" stroke="#17211f" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="88" cy="130" r="8" fill="rgba(255,142,126,0.32)" />
+                    <circle cx="152" cy="130" r="8" fill="rgba(255,142,126,0.32)" />
+                  </g>
+
+                  <g class="geo-pet geo-pyramid" filter="url(#petSoftShadow)">
+                    <path d="M120 38 L188 168 L52 168 Z" fill="url(#petWarmGradient)" />
+                    <path d="M120 38 L188 168 L120 146 Z" fill="rgba(23,33,31,0.08)" />
+                    <path d="M120 38 L120 146 L52 168 Z" fill="rgba(255,255,255,0.26)" />
+                    <circle cx="101" cy="126" r="7" fill="#17211f" />
+                    <circle cx="139" cy="126" r="7" fill="#17211f" />
+                    <path d="M108 146 Q120 154 133 146" fill="none" stroke="#17211f" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="88" cy="144" r="8" fill="rgba(255,142,126,0.32)" />
+                    <circle cx="152" cy="144" r="8" fill="rgba(255,142,126,0.32)" />
+                  </g>
+
+                  <g class="geo-pet geo-capsule" filter="url(#petSoftShadow)">
+                    <rect x="66" y="48" width="108" height="132" rx="54" fill="url(#petBodyGradient)" />
+                    <path d="M83 64 C104 42 146 46 161 76 C140 62 107 61 83 64 Z" fill="rgba(255,255,255,0.4)" />
+                    <circle cx="100" cy="111" r="8" fill="#17211f" />
+                    <circle cx="140" cy="111" r="8" fill="#17211f" />
+                    <path d="M107 135 Q120 145 135 135" fill="none" stroke="#17211f" stroke-width="6" stroke-linecap="round" />
+                    <circle cx="84" cy="131" r="8" fill="rgba(255,142,126,0.34)" />
+                    <circle cx="156" cy="131" r="8" fill="rgba(255,142,126,0.34)" />
+                  </g>
+                </svg>
                 <span class="pet-shadow"></span>
                 <span class="pet-tail"></span>
                 <span class="pet-glow"></span>
@@ -243,36 +274,26 @@
             </button>
           </section>
 
-          <section class="interaction-dock" aria-label="宠物互动">
-            <button type="button" id="pat-action">
-              <span>摸摸</span>
-              <small>随时安抚</small>
-            </button>
-            <button type="button" id="play-action">
-              <span>玩球</span>
-              <small id="play-cost">需要 1 活力</small>
-            </button>
-            <button type="button" id="clean-action">
-              <span>洗澡</span>
-              <small>投喂后解锁</small>
-            </button>
-          </section>
-
           <section class="feature-grid home-feature-grid" aria-label="小屋功能">
-            <button class="feature-entry accent-feed" type="button" data-open-panel="feed">
-              <span>投喂</span>
-              <strong>打开食盆</strong>
-              <small id="food-count">0 份可喂</small>
+            <button class="feature-entry accent-plan" type="button" data-open-panel="daily">
+              <span>计划</span>
+              <strong>今日路线</strong>
+              <small id="daily-summary">0/1200 步</small>
             </button>
-            <button class="feature-entry accent-trip" type="button" data-open-panel="explore">
-              <span>探索</span>
-              <strong>派它出门</strong>
-              <small id="campus-snack-count">0 份便当</small>
+            <button class="feature-entry accent-weather" type="button" data-open-panel="weather">
+              <span id="weather-chip">天气</span>
+              <strong id="weather-compact-title">建议获取中</strong>
+              <small id="weather-summary">生成运动建议</small>
+            </button>
+            <button class="feature-entry accent-feed" type="button" data-open-panel="feed">
+              <span>小屋</span>
+              <strong>投喂互动</strong>
+              <small><b id="food-count">0</b> 份可喂 · <b id="play-cost">0</b> 活力</small>
             </button>
             <button class="feature-entry accent-card" type="button" data-open-panel="postcards">
-              <span>相册</span>
-              <strong>读明信片</strong>
-              <small><b id="postcard-count">0</b> 张来信</small>
+              <span>探索</span>
+              <strong>校园来信</strong>
+              <small><b id="campus-snack-count">0</b> 份便当 · <b id="postcard-count">0</b> 封信</small>
             </button>
           </section>
         </section>
@@ -294,26 +315,16 @@
             <button class="quiet-action" type="button" id="friend-button">收下</button>
           </section>
 
-          <section class="feature-grid social-feature-grid" aria-label="好友玩法">
+          <section class="feature-grid social-feature-grid compact-feature-grid" aria-label="好友玩法">
             <button class="feature-entry accent-walk" type="button" data-open-panel="invite">
               <span>约走</span>
-              <strong>约同学一起动</strong>
+              <strong>约同学一起走</strong>
               <small>低打扰提醒</small>
             </button>
-            <button class="feature-entry accent-feed" type="button" data-open-panel="team">
-              <span>协作</span>
-              <strong>双人便当</strong>
-              <small>合计 1500 步</small>
-            </button>
-            <button class="feature-entry accent-trip" type="button" data-open-panel="visit">
-              <span>串门</span>
-              <strong>宠物去好友家</strong>
-              <small>喂饱后开放</small>
-            </button>
             <button class="feature-entry accent-card" type="button" data-open-panel="friendsBoard">
-              <span>动态</span>
-              <strong>看看好友进度</strong>
-              <small>校园轻社交</small>
+              <span>社交</span>
+              <strong>好友小屋</strong>
+              <small>协作和串门</small>
             </button>
           </section>
         </section>
@@ -332,26 +343,11 @@
             <div class="evolution-progress"><i id="evolution-progress"></i></div>
           </section>
 
-          <section class="achievement-strip">
-            <div class="mini-achievement" id="badge-walk">
-              <span>带它出门</span>
-              <strong>0/1</strong>
-            </div>
-            <div class="mini-achievement" id="badge-feed">
-              <span>第一口</span>
-              <strong>0/1</strong>
-            </div>
-            <div class="mini-achievement" id="badge-full">
-              <span>今日喂饱</span>
-              <strong>0/1</strong>
-            </div>
-          </section>
-
           <section class="feature-grid growth-feature-grid" aria-label="成长详情">
             <button class="feature-entry accent-card" type="button" data-open-panel="achievements">
               <span>成就</span>
               <strong>打开成就墙</strong>
-              <small id="achievement-count">0/10</small>
+              <small id="achievement-count">0/11</small>
             </button>
             <button class="feature-entry accent-trip" type="button" data-open-panel="stages">
               <span>图鉴</span>
@@ -402,22 +398,116 @@
           <button type="button" id="close-feature-sheet">收起</button>
         </header>
 
+        <section class="sheet-content" data-sheet-content="daily">
+          <section class="stats-panel">
+            <article>
+              <span>今日步数</span>
+              <strong id="steps-label">0</strong>
+            </article>
+            <article>
+              <span>已投喂</span>
+              <strong id="fed-label">0/4</strong>
+            </article>
+            <article>
+              <span>进化</span>
+              <strong id="stage-label">幼崽</strong>
+            </article>
+          </section>
+
+          <section class="daily-path" aria-label="今日运动主线">
+            <article data-path-step="walk">
+              <span>1</span>
+              <strong>走路</strong>
+              <small>先把真实步数走出来</small>
+            </article>
+            <article data-path-step="feed">
+              <span>2</span>
+              <strong>投喂</strong>
+              <small>步数到节点再喂食</small>
+            </article>
+            <article data-path-step="explore">
+              <span>3</span>
+              <strong>探索</strong>
+              <small>喂饱后派宠物出门</small>
+            </article>
+          </section>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="weather">
+          <article class="weather-card">
+            <div class="weather-orb" id="weather-orb">--</div>
+            <div>
+              <span id="weather-place">校园天气</span>
+              <strong id="weather-title">正在获取天气</strong>
+              <p id="weather-advice">获取后会给出今天更适合的运动方式。</p>
+            </div>
+            <button type="button" id="refresh-weather">刷新</button>
+          </article>
+          <section class="weather-detail-grid">
+            <article>
+              <span>建议强度</span>
+              <strong id="weather-intensity">轻松走</strong>
+            </article>
+            <article>
+              <span>隐藏事件</span>
+              <strong id="weather-bonus">未触发</strong>
+            </article>
+          </section>
+          <article class="detail-action-card weather-action-card">
+            <div>
+              <strong>按天气完成运动，有机会触发额外交互</strong>
+              <p id="weather-event-copy">例如晴天会触发“追光弹跳”，雨天会触发“伞下散步”，奖励成长值和亲密度。</p>
+            </div>
+          </article>
+        </section>
+
         <section class="sheet-content" data-sheet-content="feed">
+          <section class="interaction-dock compact-dock" aria-label="宠物互动">
+            <button type="button" id="pat-action">
+              <span>摸摸</span>
+              <small>随时回应</small>
+            </button>
+            <button type="button" id="play-action">
+              <span>玩球</span>
+              <small>消耗活力</small>
+            </button>
+            <button type="button" id="clean-action">
+              <span>洗澡</span>
+              <small>投喂后解锁</small>
+            </button>
+          </section>
           <div class="food-list panel-list" id="food-list"></div>
         </section>
 
-        <section class="sheet-content" data-sheet-content="explore">
-          <section class="explore-hero">
+        <section class="sheet-content" data-sheet-content="care">
+          <section class="detail-action-card">
             <div>
-              <span class="route-chip">校园探索</span>
-              <strong>继续走路，攒旅行便当。</strong>
-              <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
+              <strong>互动已经合并到“小屋投喂”</strong>
+              <p>为了减少首页入口，你可以在投喂抽屉里完成摸摸、玩球和洗澡。</p>
             </div>
+            <button type="button" data-open-panel="feed">去小屋</button>
           </section>
-          <div class="trip-list" id="trip-list"></div>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="explore">
+          <section class="detail-action-card">
+            <div>
+              <strong>探索已经合并到“校园来信”</strong>
+              <p>出发地点和宠物来信放在同一个抽屉里，减少来回切换。</p>
+            </div>
+            <button type="button" data-open-panel="postcards">去探索</button>
+          </section>
         </section>
 
         <section class="sheet-content" data-sheet-content="postcards">
+          <section class="explore-hero compact-explore-hero">
+            <div>
+              <span class="route-chip">校园探索</span>
+              <strong>先看能不能出门，再读它带回来的信。</strong>
+              <p>喂饱后继续走路会获得便当，便当可派宠物去校园地点。</p>
+            </div>
+          </section>
+          <div class="trip-list" id="trip-list"></div>
           <div class="postcard-grid" id="postcard-grid"></div>
         </section>
 
@@ -434,25 +524,41 @@
         <section class="sheet-content" data-sheet-content="team">
           <article class="detail-action-card">
             <div>
-              <strong>双人投喂挑战</strong>
-              <p id="team-copy">你和小雨合计走到 1500 步，可给两只宠物做便当。</p>
-              <div class="team-progress"><i id="team-progress"></i></div>
+              <strong>双人便当已经合并到“好友小屋”</strong>
+              <p>好友相关玩法统一放在一个抽屉，避免分散。</p>
             </div>
-            <button type="button" id="team-button">合喂</button>
+            <button type="button" data-open-panel="friendsBoard">去好友小屋</button>
           </article>
         </section>
 
         <section class="sheet-content" data-sheet-content="visit">
           <article class="detail-action-card">
             <div>
-              <strong>派宠物串门</strong>
-              <p id="visit-copy">今日喂饱后，可以让它去小雨的小屋玩一会儿。</p>
+              <strong>宠物串门已经合并到“好友小屋”</strong>
+              <p>串门和协作放在一起，能更清楚地看到社交奖励。</p>
             </div>
-            <button type="button" id="visit-button">串门</button>
+            <button type="button" data-open-panel="friendsBoard">去好友小屋</button>
           </article>
         </section>
 
         <section class="sheet-content" data-sheet-content="friendsBoard">
+          <section class="social-action-grid">
+            <article class="detail-action-card">
+              <div>
+                <strong>双人便当</strong>
+                <p id="team-copy">你和小雨合计走到 1500 步，可给两只宠物做便当。</p>
+                <div class="team-progress"><i id="team-progress"></i></div>
+              </div>
+              <button type="button" id="team-button">合喂</button>
+            </article>
+            <article class="detail-action-card">
+              <div>
+                <strong>宠物串门</strong>
+                <p id="visit-copy">今日喂饱后，可以让它去小雨的小屋玩一会儿。</p>
+              </div>
+              <button type="button" id="visit-button">串门</button>
+            </article>
+          </section>
           <section class="friend-board">
             <article>
               <strong>小雨</strong>
@@ -466,6 +572,20 @@
         </section>
 
         <section class="sheet-content" data-sheet-content="achievements">
+          <section class="achievement-strip">
+            <div class="mini-achievement" id="badge-walk">
+              <span>带它出门</span>
+              <strong>0/1</strong>
+            </div>
+            <div class="mini-achievement" id="badge-feed">
+              <span>第一口</span>
+              <strong>0/1</strong>
+            </div>
+            <div class="mini-achievement" id="badge-full">
+              <span>今日喂饱</span>
+              <strong>0/1</strong>
+            </div>
+          </section>
           <div class="achievement-grid" id="achievement-grid"></div>
         </section>
 
