@@ -200,10 +200,6 @@ const els = {
   userLevel: document.getElementById("user-level"),
   profileBadge: document.getElementById("profile-badge"),
   profileChip: document.getElementById("profile-chip"),
-  profileAvatar: document.getElementById("profile-avatar"),
-  profileName: document.getElementById("profile-name"),
-  profileTitle: document.getElementById("profile-title"),
-  profileDays: document.getElementById("profile-days"),
   goalLabel: document.getElementById("goal-label"),
   petName: document.getElementById("pet-name"),
   streakLabel: document.getElementById("streak-label"),
@@ -265,6 +261,26 @@ const els = {
   closeGuide: document.getElementById("close-guide"),
   avatarModal: document.getElementById("avatar-modal"),
   closeAvatarEditor: document.getElementById("close-avatar-editor"),
+  featureSheet: document.getElementById("feature-sheet"),
+  closeFeatureSheet: document.getElementById("close-feature-sheet"),
+  sheetEyebrow: document.getElementById("sheet-eyebrow"),
+  sheetTitle: document.getElementById("sheet-title"),
+  sheetCopy: document.getElementById("sheet-copy"),
+  sheetContents: [...document.querySelectorAll("[data-sheet-content]")],
+  openPanelButtons: [...document.querySelectorAll("[data-open-panel]")],
+  postcardModal: document.getElementById("postcard-modal"),
+  closePostcard: document.getElementById("close-postcard"),
+  letterSymbol: document.getElementById("letter-symbol"),
+  letterPlace: document.getElementById("letter-place"),
+  letterTitle: document.getElementById("letter-title"),
+  letterCopy: document.getElementById("letter-copy"),
+  letterSign: document.getElementById("letter-sign"),
+  petFloat: document.getElementById("pet-float"),
+  petFloatMain: document.getElementById("pet-float-main"),
+  petFloatClose: document.getElementById("pet-float-close"),
+  petFloatRestore: document.getElementById("pet-float-restore"),
+  floatPetName: document.getElementById("float-pet-name"),
+  floatPetStatus: document.getElementById("float-pet-status"),
   toastRegion: document.getElementById("toast-region"),
   confettiLayer: document.getElementById("confetti-layer")
 };
@@ -277,6 +293,55 @@ let selectedAvatarZoom = state.avatarZoom || 120;
 let selectedAvatarY = state.avatarY || 50;
 let collectTimer = null;
 let lastMotionAt = 0;
+let currentSheet = "";
+
+const sheetMeta = {
+  feed: {
+    eyebrow: "小屋投喂",
+    title: "走到节点，再喂一口",
+    copy: "每份食物都对应真实步数，不会一次性刷完。"
+  },
+  explore: {
+    eyebrow: "校园探索",
+    title: "喂饱后，派它去校园走走",
+    copy: "继续散步攒便当，宠物会带回地点明信片。"
+  },
+  postcards: {
+    eyebrow: "小屋相册",
+    title: "打开宠物寄回来的信",
+    copy: "点击明信片，可以读到它今天写给你的内容。"
+  },
+  invite: {
+    eyebrow: "好友约走",
+    title: "发出低打扰运动邀请",
+    copy: "社交只负责启动行动，步数仍然要自己走。"
+  },
+  team: {
+    eyebrow: "双人协作",
+    title: "一起做一份宠物便当",
+    copy: "你和好友合计达标后，两只宠物都能获得奖励。"
+  },
+  visit: {
+    eyebrow: "宠物串门",
+    title: "让宠物去好友小屋玩",
+    copy: "喂饱后开放，带回一张社交明信片。"
+  },
+  friendsBoard: {
+    eyebrow: "好友动态",
+    title: "看看同学的今日进度",
+    copy: "只展示轻量状态，避免排名压力太强。"
+  },
+  achievements: {
+    eyebrow: "成就墙",
+    title: "每个徽章都对应一次真实行动",
+    copy: "成就不是虚拟积分，而是运动、照顾和社交行为的记录。"
+  },
+  stages: {
+    eyebrow: "进化图鉴",
+    title: "宠物不会一天毕业",
+    copy: "进化需要连续照料天数和成长值，适合长期坚持。"
+  }
+};
 
 function todayKey(date = new Date()) {
   const year = date.getFullYear();
@@ -438,6 +503,50 @@ function showResult(symbol, title, copy) {
 function closeResult() {
   els.resultModal.classList.remove("active");
   els.resultModal.setAttribute("aria-hidden", "true");
+}
+
+function openSheet(name) {
+  const meta = sheetMeta[name];
+  if (!meta) return;
+
+  currentSheet = name;
+  els.sheetEyebrow.textContent = meta.eyebrow;
+  els.sheetTitle.textContent = meta.title;
+  els.sheetCopy.textContent = meta.copy;
+  els.sheetContents.forEach((content) => {
+    content.classList.toggle("active", content.dataset.sheetContent === name);
+  });
+  els.featureSheet.classList.add("active");
+  els.featureSheet.setAttribute("aria-hidden", "false");
+}
+
+function closeSheet() {
+  currentSheet = "";
+  els.featureSheet.classList.remove("active");
+  els.featureSheet.setAttribute("aria-hidden", "true");
+}
+
+function openPostcard(cardId) {
+  const card = state.postcards.find((item) => item.id === cardId);
+  if (!card) return;
+
+  els.letterSymbol.textContent = card.symbol;
+  els.letterPlace.textContent = card.place;
+  els.letterTitle.textContent = card.title;
+  els.letterCopy.textContent = `“${card.copy}”`;
+  els.letterSign.textContent = `${card.day.slice(5)} · 来自 ${state.petName}`;
+  els.postcardModal.classList.add("active");
+  els.postcardModal.setAttribute("aria-hidden", "false");
+}
+
+function closePostcard() {
+  els.postcardModal.classList.remove("active");
+  els.postcardModal.setAttribute("aria-hidden", "true");
+}
+
+function setPetFloatHidden(hidden) {
+  els.petFloat.classList.toggle("hidden", hidden);
+  els.petFloatRestore.classList.toggle("active", hidden);
 }
 
 function confetti(count = 14) {
@@ -888,11 +997,11 @@ function renderExplore() {
   const recentPostcards = state.postcards.slice(-6).reverse();
   els.postcardGrid.innerHTML = recentPostcards.length
     ? recentPostcards.map((card) => `
-      <article>
+      <button class="postcard-card" type="button" data-postcard="${card.id}">
         <span>${card.symbol}</span>
         <strong>${card.title}</strong>
         <small>${card.place} · ${card.day.slice(5)}</small>
-      </article>
+      </button>
     `).join("")
     : `
       <article class="empty-card">
@@ -901,6 +1010,10 @@ function renderExplore() {
         <small>完成投喂后，派宠物去校园探索。</small>
       </article>
     `;
+
+  els.postcardGrid.querySelectorAll("[data-postcard]").forEach((button) => {
+    button.addEventListener("click", () => openPostcard(button.dataset.postcard));
+  });
 }
 
 function renderBadges() {
@@ -1009,15 +1122,13 @@ function render() {
   els.goalSelect.value = state.plan;
   if (state.adopted) els.petInput.value = state.petName;
   applyAvatar(els.userAvatar, state.avatar, avatarText(), state.avatarImage, state.avatarZoom, state.avatarY);
-  applyAvatar(els.profileAvatar, state.avatar, avatarText(), state.avatarImage, state.avatarZoom, state.avatarY);
   els.userName.textContent = state.name;
   els.userLevel.textContent = `@${state.account} · Lv.${userLevel()}`;
-  els.profileName.textContent = state.name;
-  els.profileTitle.textContent = `@${state.account} · Lv.${userLevel()} · ${petType().label}搭档`;
-  els.profileDays.textContent = state.streak;
   els.profileBadge.textContent = state.completed ? "可去校园探索" : available.length ? "有食物待喂" : "今日照顾中";
   els.goalLabel.textContent = currentPlan.label;
   els.petName.textContent = state.petName;
+  els.floatPetName.textContent = state.petName;
+  els.floatPetStatus.textContent = state.completed ? "想去校园探索" : available.length ? "等你投喂" : "在小屋等你";
   els.streakLabel.textContent = state.streak;
   els.stepsLabel.textContent = state.steps;
   els.fedLabel.textContent = `${fedCount()}/${milestones().length}`;
@@ -1064,6 +1175,7 @@ function render() {
   renderEvolution();
   renderPath();
   setTab(state.activeTab);
+  if (currentSheet) openSheet(currentSheet);
 }
 
 function tiltPet(event) {
@@ -1165,11 +1277,28 @@ els.visitButton.addEventListener("click", sendPetVisit);
 els.tabButtons.forEach((button) => {
   button.addEventListener("click", () => setTab(button.dataset.tab));
 });
+els.openPanelButtons.forEach((button) => {
+  button.addEventListener("click", () => openSheet(button.dataset.openPanel));
+});
 els.petRoom.addEventListener("pointermove", tiltPet);
 els.petRoom.addEventListener("pointerleave", () => {
   els.petRoom.style.setProperty("--tilt-x", "0deg");
   els.petRoom.style.setProperty("--tilt-y", "0deg");
 });
+els.closeFeatureSheet.addEventListener("click", closeSheet);
+els.featureSheet.addEventListener("click", (event) => {
+  if (event.target === els.featureSheet) closeSheet();
+});
+els.closePostcard.addEventListener("click", closePostcard);
+els.postcardModal.addEventListener("click", (event) => {
+  if (event.target === els.postcardModal) closePostcard();
+});
+els.petFloatMain.addEventListener("click", () => {
+  setTab("home");
+  closeSheet();
+});
+els.petFloatClose.addEventListener("click", () => setPetFloatHidden(true));
+els.petFloatRestore.addEventListener("click", () => setPetFloatHidden(false));
 els.closeResult.addEventListener("click", closeResult);
 els.resultModal.addEventListener("click", (event) => {
   if (event.target === els.resultModal) closeResult();
