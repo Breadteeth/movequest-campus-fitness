@@ -258,49 +258,22 @@
             </button>
           </section>
 
-          <section class="home-module feed-module">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">小屋投喂</p>
-                <h3>走到节点，就在小屋里喂它。</h3>
-              </div>
-              <span id="food-count">0 份可喂</span>
-            </div>
-            <div class="food-list panel-list" id="food-list"></div>
-          </section>
-
-          <section class="home-module explore-module">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">小屋出发</p>
-                <h3>喂饱后，从小屋派它去校园走走。</h3>
-              </div>
-              <span id="campus-snack-count">0 份便当</span>
-            </div>
-
-            <section class="explore-hero">
-              <div>
-                <span class="route-chip">校园轻探索</span>
-                <strong>继续走路，攒旅行便当。</strong>
-                <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
-              </div>
-              <article>
-                <strong id="postcard-count">0</strong>
-                <span>明信片</span>
-              </article>
-            </section>
-
-            <div class="trip-list" id="trip-list"></div>
-
-            <section class="postcard-section">
-              <div class="section-head compact">
-                <div>
-                  <p class="eyebrow">小屋相册</p>
-                  <h3>宠物今天带回了什么？</h3>
-                </div>
-              </div>
-              <div class="postcard-grid" id="postcard-grid"></div>
-            </section>
+          <section class="feature-grid home-feature-grid" aria-label="小屋功能">
+            <button class="feature-entry accent-feed" type="button" data-open-panel="feed">
+              <span>投喂</span>
+              <strong>打开食盆</strong>
+              <small id="food-count">0 份可喂</small>
+            </button>
+            <button class="feature-entry accent-trip" type="button" data-open-panel="explore">
+              <span>探索</span>
+              <strong>派它出门</strong>
+              <small id="campus-snack-count">0 份便当</small>
+            </button>
+            <button class="feature-entry accent-card" type="button" data-open-panel="postcards">
+              <span>相册</span>
+              <strong>读明信片</strong>
+              <small><b id="postcard-count">0</b> 张来信</small>
+            </button>
           </section>
         </section>
 
@@ -321,57 +294,31 @@
             <button class="quiet-action" type="button" id="friend-button">收下</button>
           </section>
 
-          <section class="social-actions">
-            <article>
-              <div>
-                <strong>约小雨一起走</strong>
-                <p>发出轻提醒，约 20 分钟后一起完成下一段路。</p>
-              </div>
-              <button type="button" id="invite-button">约走</button>
-            </article>
-            <article>
-              <div>
-                <strong>双人投喂挑战</strong>
-                <p id="team-copy">你和小雨合计走到 1500 步，可给两只宠物做便当。</p>
-                <div class="team-progress"><i id="team-progress"></i></div>
-              </div>
-              <button type="button" id="team-button">合喂</button>
-            </article>
-            <article>
-              <div>
-                <strong>派宠物串门</strong>
-                <p id="visit-copy">今日喂饱后，可以让它去小雨的小屋玩一会儿。</p>
-              </div>
-              <button type="button" id="visit-button">串门</button>
-            </article>
-          </section>
-
-          <section class="friend-board">
-            <article>
-              <strong>小雨</strong>
-              <span>今天 920 步，团团已吃 2 口</span>
-            </article>
-            <article>
-              <strong>子豪</strong>
-              <span>还差 180 步解锁晚安奶昔</span>
-            </article>
+          <section class="feature-grid social-feature-grid" aria-label="好友玩法">
+            <button class="feature-entry accent-walk" type="button" data-open-panel="invite">
+              <span>约走</span>
+              <strong>约同学一起动</strong>
+              <small>低打扰提醒</small>
+            </button>
+            <button class="feature-entry accent-feed" type="button" data-open-panel="team">
+              <span>协作</span>
+              <strong>双人便当</strong>
+              <small>合计 1500 步</small>
+            </button>
+            <button class="feature-entry accent-trip" type="button" data-open-panel="visit">
+              <span>串门</span>
+              <strong>宠物去好友家</strong>
+              <small>喂饱后开放</small>
+            </button>
+            <button class="feature-entry accent-card" type="button" data-open-panel="friendsBoard">
+              <span>动态</span>
+              <strong>看看好友进度</strong>
+              <small>校园轻社交</small>
+            </button>
           </section>
         </section>
 
         <section class="tab-panel" data-panel="growth">
-          <section class="profile-panel">
-            <span class="user-avatar avatar-leaf" id="profile-avatar">澈</span>
-            <div>
-              <p class="eyebrow">个人档案</p>
-              <h3 id="profile-name">阿澈</h3>
-              <span id="profile-title">Lv.1 运动饲养员</span>
-            </div>
-            <article>
-              <strong id="profile-days">0</strong>
-              <span>连续天</span>
-            </article>
-          </section>
-
           <section class="evolution-card">
             <div>
               <p class="eyebrow">进化系统</p>
@@ -400,20 +347,32 @@
             </div>
           </section>
 
-          <section class="achievement-panel">
-            <div class="section-head compact">
-              <div>
-                <p class="eyebrow">成就墙</p>
-                <h3>每个徽章都对应一次真实行动。</h3>
-              </div>
-              <span id="achievement-count">0/7</span>
-            </div>
-            <div class="achievement-grid" id="achievement-grid"></div>
+          <section class="feature-grid growth-feature-grid" aria-label="成长详情">
+            <button class="feature-entry accent-card" type="button" data-open-panel="achievements">
+              <span>成就</span>
+              <strong>打开成就墙</strong>
+              <small id="achievement-count">0/10</small>
+            </button>
+            <button class="feature-entry accent-trip" type="button" data-open-panel="stages">
+              <span>图鉴</span>
+              <strong>查看进化路线</strong>
+              <small>按天慢慢长大</small>
+            </button>
           </section>
-
-          <section class="stage-list" id="stage-list"></section>
         </section>
       </div>
+
+      <div class="pet-float" id="pet-float">
+        <button class="pet-float-main" type="button" id="pet-float-main" aria-label="查看宠物">
+          <span class="float-pet" aria-hidden="true"><i></i><b></b><em></em></span>
+          <span>
+            <strong id="float-pet-name">芽芽</strong>
+            <small id="float-pet-status">在小屋等你</small>
+          </span>
+        </button>
+        <button class="pet-float-close" type="button" id="pet-float-close">收起</button>
+      </div>
+      <button class="pet-float-restore" type="button" id="pet-float-restore">宠物</button>
 
       <nav class="bottom-tabs" aria-label="底部功能导航">
         <button class="tab-button active" type="button" data-tab="home"><span>小屋</span></button>
@@ -429,6 +388,102 @@
         <p id="result-copy">宠物开心地转了一圈。</p>
         <button class="primary-action" type="button" id="close-result">继续</button>
       </div>
+    </div>
+
+    <div class="feature-sheet" id="feature-sheet" aria-hidden="true">
+      <section class="feature-sheet-card">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <header class="sheet-head">
+          <div>
+            <p class="eyebrow" id="sheet-eyebrow">详情</p>
+            <h3 id="sheet-title">打开功能</h3>
+            <p id="sheet-copy">完成当前步骤后再继续。</p>
+          </div>
+          <button type="button" id="close-feature-sheet">收起</button>
+        </header>
+
+        <section class="sheet-content" data-sheet-content="feed">
+          <div class="food-list panel-list" id="food-list"></div>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="explore">
+          <section class="explore-hero">
+            <div>
+              <span class="route-chip">校园探索</span>
+              <strong>继续走路，攒旅行便当。</strong>
+              <p>宠物会去图书馆、操场、食堂等校园地点，回来带明信片和贴纸。探索不会替代运动，只奖励真实步数。</p>
+            </div>
+          </section>
+          <div class="trip-list" id="trip-list"></div>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="postcards">
+          <div class="postcard-grid" id="postcard-grid"></div>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="invite">
+          <article class="detail-action-card">
+            <div>
+              <strong>约小雨一起走</strong>
+              <p>发出一条轻提醒，约 20 分钟后一起完成下一段路。</p>
+            </div>
+            <button type="button" id="invite-button">约走</button>
+          </article>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="team">
+          <article class="detail-action-card">
+            <div>
+              <strong>双人投喂挑战</strong>
+              <p id="team-copy">你和小雨合计走到 1500 步，可给两只宠物做便当。</p>
+              <div class="team-progress"><i id="team-progress"></i></div>
+            </div>
+            <button type="button" id="team-button">合喂</button>
+          </article>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="visit">
+          <article class="detail-action-card">
+            <div>
+              <strong>派宠物串门</strong>
+              <p id="visit-copy">今日喂饱后，可以让它去小雨的小屋玩一会儿。</p>
+            </div>
+            <button type="button" id="visit-button">串门</button>
+          </article>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="friendsBoard">
+          <section class="friend-board">
+            <article>
+              <strong>小雨</strong>
+              <span>今天 920 步，团团已吃 2 口</span>
+            </article>
+            <article>
+              <strong>子豪</strong>
+              <span>还差 180 步解锁晚安奶昔</span>
+            </article>
+          </section>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="achievements">
+          <div class="achievement-grid" id="achievement-grid"></div>
+        </section>
+
+        <section class="sheet-content" data-sheet-content="stages">
+          <section class="stage-list" id="stage-list"></section>
+        </section>
+      </section>
+    </div>
+
+    <div class="postcard-modal" id="postcard-modal" aria-hidden="true">
+      <section class="postcard-letter">
+        <button class="letter-close" type="button" id="close-postcard">收起</button>
+        <span class="letter-symbol" id="letter-symbol">书</span>
+        <p class="eyebrow" id="letter-place">图书馆窗边</p>
+        <h3 id="letter-title">窗边自习明信片</h3>
+        <p id="letter-copy">宠物带回了一张校园明信片。</p>
+        <small id="letter-sign">来自芽芽</small>
+      </section>
     </div>
   </main>
 
