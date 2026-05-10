@@ -1811,8 +1811,9 @@ els.setupForm.addEventListener("submit", (event) => {
     switchScreen("app");
     render();
     refreshWeather();
+    const shouldShowWelcome = !state.welcomeSeen;
     maybeShowWelcomeGuide();
-    showToast("登录成功", `${state.petName}已经在小屋等你。`);
+    if (!shouldShowWelcome) showToast("登录成功", `${state.petName}已经在小屋等你。`);
     return;
   }
 
@@ -1850,7 +1851,6 @@ els.setupForm.addEventListener("submit", (event) => {
   render();
   refreshWeather(true);
   maybeShowWelcomeGuide();
-  showToast("领养成功", `${state.petName}住进小屋了。先走到第一个步数节点，食物就会自动解锁。`);
 });
 
 els.motionButton.addEventListener("click", toggleCollecting);
