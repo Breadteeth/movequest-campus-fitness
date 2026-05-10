@@ -567,7 +567,7 @@ function avatarText() {
 }
 
 function formAvatarText() {
-  return (els.nameInput.value || state.name || "我").trim().slice(0, 1) || "我";
+  return (els.nameInput.value || "我").trim().slice(0, 1) || "我";
 }
 
 function userLevel() {
@@ -604,7 +604,11 @@ function setAuthMode(mode) {
   els.authSubmit.textContent = isRegister ? "创建账号并进入小屋" : "登录并进入小屋";
   els.passwordInput.autocomplete = isRegister ? "new-password" : "current-password";
   els.passwordInput.value = "";
-  if (!els.accountInput.value.trim()) els.accountInput.value = isRegister ? "campus01" : "";
+  els.accountInput.value = "";
+  if (isRegister) {
+    els.nameInput.value = "";
+    renderAvatarPreview();
+  }
 }
 
 function openAuth(mode) {
@@ -1620,7 +1624,9 @@ function render() {
   els.shell.dataset.stage = String(stage.index);
   els.shell.classList.toggle("walking", state.collecting);
   els.pet3d.style.setProperty("--growth", `${Math.min(1.16, 1 + state.growth / 1200)}`);
-  els.nameInput.value = state.name;
+  if (document.querySelector(".screen.active")?.dataset.screen === "app") {
+    els.nameInput.value = state.name;
+  }
   els.goalSelect.value = state.plan;
   if (state.adopted) els.petInput.value = state.petName;
   applyAvatar(els.userAvatar, state.avatar, avatarText(), state.avatarImage, state.avatarZoom, state.avatarY);
@@ -1745,8 +1751,15 @@ els.profileChip.addEventListener("click", () => setTab("growth"));
 
 els.setupForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const account = els.accountInput.value.trim() || "campus01";
+  const account = els.accountInput.value.trim();
   const password = els.passwordInput.value.trim();
+  const displayName = els.nameInput.value.trim();
+
+  if (!account) {
+    showToast("请输入账号", "请先填写一个测试用账号。");
+    els.accountInput.focus();
+    return;
+  }
 
   if (password.length < 6) {
     showToast("密码太短", "这是测试 Demo，请使用临时密码，至少 6 位。");
@@ -1787,6 +1800,12 @@ els.setupForm.addEventListener("submit", (event) => {
     return;
   }
 
+  if (!displayName) {
+    showToast("请输入昵称", "给自己起一个昵称，宠物会在小屋里这样称呼你。");
+    els.nameInput.focus();
+    return;
+  }
+
   state = {
     ...structuredClone(defaultState),
     introSeen: true,
@@ -1795,7 +1814,7 @@ els.setupForm.addEventListener("submit", (event) => {
     day: todayKey(),
     account,
     password,
-    name: els.nameInput.value.trim() || "阿澈",
+    name: displayName,
     avatar: selectedAvatar,
     avatarImage: selectedAvatarImage,
     avatarZoom: selectedAvatarZoom,
