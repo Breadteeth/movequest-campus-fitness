@@ -1886,6 +1886,10 @@ select {
   backdrop-filter: blur(14px);
 }
 
+.result-modal {
+  z-index: 92;
+}
+
 .feature-sheet.active,
 .postcard-modal.active,
 .result-modal.active,
@@ -2056,6 +2060,210 @@ select {
 .weather-action-card {
   grid-template-columns: 1fr;
   margin-top: 10px;
+}
+
+.social-run-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  overflow: hidden;
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.78), transparent 24%),
+    linear-gradient(145deg, #dceff5, #e9f5cf);
+  box-shadow: var(--soft-shadow);
+}
+
+.social-run-card strong {
+  display: block;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+  font-size: 21px;
+  line-height: 1.16;
+  letter-spacing: -0.05em;
+}
+
+.social-run-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.social-run-card button {
+  min-height: 50px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #dff47c, #a9ead2);
+  font-weight: 1000;
+}
+
+.run-track {
+  position: relative;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.44), transparent 48%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.4) 0 2px, transparent 2px 32px),
+    linear-gradient(145deg, #badff1, #e8d39b);
+}
+
+.track-line {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.line-a {
+  top: 47px;
+}
+
+.line-b {
+  top: 84px;
+}
+
+.runner-pet {
+  position: absolute;
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.72), transparent 22%),
+    linear-gradient(145deg, #eefb91, #65c98f);
+  box-shadow: 0 12px 22px rgba(43,54,49,0.16), inset -8px -10px 14px rgba(23,33,31,0.1);
+  animation: social-run 3.2s ease-in-out infinite;
+}
+
+.runner-friend {
+  top: 49px;
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.52), transparent 42%),
+    linear-gradient(145deg, #f8fdff, #79cfe9);
+  animation-delay: 260ms;
+}
+
+.runner-me {
+  top: 20px;
+  animation-delay: 0ms;
+}
+
+.runner-npc {
+  top: 80px;
+  width: 38px;
+  height: 38px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.72), transparent 22%),
+    linear-gradient(145deg, #fff0cf, #ed9566);
+  animation-delay: 520ms;
+}
+
+.runner-pet i,
+.runner-pet b {
+  position: absolute;
+  top: 18px;
+  width: 5px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.runner-pet i {
+  left: 13px;
+}
+
+.runner-pet b {
+  right: 13px;
+}
+
+.runner-pet em {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 15px;
+  height: 8px;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.egg-card {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 28px;
+  background: rgba(246, 244, 235, 0.9);
+}
+
+.egg-visual {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 78px;
+  border-radius: 50% 50% 44% 44%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255,255,255,0.76), transparent 22%),
+    linear-gradient(145deg, #fff0cf, #dff47c);
+  box-shadow: var(--soft-shadow), inset -8px -12px 18px rgba(23,33,31,0.08);
+  font-weight: 1000;
+}
+
+.egg-visual.hatched {
+  border-radius: 24px;
+  background: linear-gradient(145deg, #dff47c, #a9ead2);
+}
+
+.egg-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 17px;
+}
+
+.egg-card p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.egg-progress {
+  height: 8px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(23, 33, 31, 0.08);
+}
+
+.egg-progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #dff47c, #a9ead2);
+  transition: width 260ms ease;
+}
+
+@keyframes social-run {
+  0% {
+    left: 0;
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  48% {
+    transform: translateY(-5px) rotate(4deg);
+  }
+
+  100% {
+    left: calc(100% - 38px);
+    transform: translateY(0) rotate(-4deg);
+  }
 }
 
 .panel-list,
