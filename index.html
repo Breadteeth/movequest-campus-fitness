@@ -35,8 +35,8 @@
 
       <div class="intro-copy">
         <p class="eyebrow">校园运动养成 App</p>
-        <h1>登录小屋，把今天的步数喂给你的宠物。</h1>
-        <p>走到阶段步数，解锁食物和互动；喂饱后，宠物会去校园探索，带回明信片和成长事件。</p>
+        <h1>每天走一点，养一只会成长的校园宠物。</h1>
+        <p>真实步数会解锁食物、互动和校园探索。你走得越稳定，宠物越容易长大，也越容易带回新的故事。</p>
       </div>
 
       <div class="intro-steps">
@@ -50,14 +50,14 @@
         </article>
         <article>
           <strong>3</strong>
-          <span>校园旅行进化</span>
+          <span>探索与进化</span>
         </article>
       </div>
 
       <section class="auth-gateway" aria-label="账号入口">
         <button class="primary-action" type="button" id="login-start">登录旧账号</button>
         <button class="secondary-action" type="button" id="register-start">注册新账号</button>
-        <small>每次进入都需要登录；新账号会创建一间新的宠物小屋。</small>
+        <small>每次打开都先登录；注册后会创建一间新的宠物小屋。</small>
       </section>
     </section>
 
@@ -107,6 +107,7 @@
             <input id="password-input" type="password" minlength="6" maxlength="18" placeholder="至少 6 位" autocomplete="current-password">
           </label>
         </div>
+        <p class="demo-warning register-only">这是测试 Demo，请不要使用常用真实账号或真实密码。</p>
         <label class="register-only">
           你的昵称
           <input id="name-input" maxlength="8" value="阿澈" autocomplete="off">
@@ -117,7 +118,7 @@
             <span class="user-avatar avatar-leaf" id="avatar-preview">澈</span>
             <div>
               <strong>头像</strong>
-              <p>先选一个预设头像，也可以上传照片后裁切。</p>
+              <p>可以先用预设头像，也可以上传照片后裁切。</p>
             </div>
             <button class="upload-action" type="button" id="custom-avatar-button">自定义头像</button>
           </section>
@@ -135,9 +136,9 @@
         <label class="register-only">
           今日运动目标
           <select id="goal-select">
-            <option value="easy">课间散步：600 步，解锁 3 次投喂</option>
-            <option value="daily" selected>校园快走：1200 步，解锁 4 次投喂</option>
-            <option value="hard">操场一圈：2000 步，解锁 5 次投喂</option>
+            <option value="easy">轻松开始：600 步，解锁 3 份食物</option>
+            <option value="daily" selected>校园快走：1200 步，解锁 4 份食物</option>
+            <option value="hard">操场挑战：2000 步，解锁 5 份食物</option>
           </select>
         </label>
         <button class="primary-action" type="submit" id="auth-submit">创建账号并进入小屋</button>
@@ -324,7 +325,7 @@
             <button class="feature-entry accent-walk" type="button" data-open-panel="invite">
               <span>结伴</span>
               <strong>宠物一起运动</strong>
-              <small id="social-walk-summary">好友 + NPC</small>
+              <small id="social-walk-summary">好友 + 校园伙伴</small>
             </button>
             <button class="feature-entry accent-card" type="button" data-open-panel="friendsBoard">
               <span>社交</span>
@@ -423,17 +424,17 @@
             <article data-path-step="walk">
               <span>1</span>
               <strong>走路</strong>
-              <small>先把真实步数走出来</small>
+              <small>先积累今日步数</small>
             </article>
             <article data-path-step="feed">
               <span>2</span>
               <strong>投喂</strong>
-              <small>步数到节点再喂食</small>
+              <small>到达节点解锁食物</small>
             </article>
             <article data-path-step="explore">
               <span>3</span>
               <strong>探索</strong>
-              <small>喂饱后派宠物出门</small>
+              <small>喂饱后去校园地点</small>
             </article>
           </section>
         </section>
@@ -460,8 +461,8 @@
           </section>
           <article class="detail-action-card weather-action-card">
             <div>
-              <strong>按天气完成运动，有机会触发额外交互</strong>
-              <p id="weather-event-copy">例如晴天会触发“追光弹跳”，雨天会触发“伞下散步”，奖励成长值和亲密度。</p>
+              <strong>按天气建议运动，可能遇到特殊事件</strong>
+              <p id="weather-event-copy">例如晴天可能遇到追光弹跳，雨天可能遇到伞下散步，宠物会获得额外成长。</p>
             </div>
           </article>
         </section>
@@ -487,8 +488,8 @@
         <section class="sheet-content" data-sheet-content="care">
           <section class="detail-action-card">
             <div>
-              <strong>互动已经合并到“小屋投喂”</strong>
-              <p>为了减少首页入口，你可以在投喂抽屉里完成摸摸、玩球和洗澡。</p>
+              <strong>去小屋陪它玩一会儿</strong>
+              <p>摸摸、玩球和洗澡都在小屋里。运动后获得活力，就能解锁更多互动。</p>
             </div>
             <button type="button" data-open-panel="feed">去小屋</button>
           </section>
@@ -497,8 +498,8 @@
         <section class="sheet-content" data-sheet-content="explore">
           <section class="detail-action-card">
             <div>
-              <strong>探索已经合并到“校园来信”</strong>
-              <p>出发地点和宠物来信放在同一个抽屉里，减少来回切换。</p>
+              <strong>让宠物出门看看校园</strong>
+              <p>喂饱后继续走路可以攒便当。用便当派它出门，它会带回校园来信。</p>
             </div>
             <button type="button" data-open-panel="postcards">去探索</button>
           </section>
@@ -508,8 +509,8 @@
           <section class="explore-hero compact-explore-hero">
             <div>
               <span class="route-chip">校园探索</span>
-              <strong>先看能不能出门，再读它带回来的信。</strong>
-              <p>喂饱后继续走路会获得便当，便当可派宠物去校园地点。</p>
+              <strong>喂饱后出发，回来后读它的信。</strong>
+              <p>继续走路可以攒便当。便当足够时，就能派宠物去图书馆、操场或食堂附近探索。</p>
             </div>
           </section>
           <div class="trip-list" id="trip-list"></div>
@@ -528,7 +529,7 @@
             <div>
               <span class="route-chip">结伴运动</span>
               <strong id="social-run-title">三只宠物在操场集合</strong>
-              <p id="social-run-copy">你、小雨和校园 NPC「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。</p>
+              <p id="social-run-copy">你、小雨和校园伙伴「风团」一起完成一段短走。真实步数越多，步步蛋越容易孵化。</p>
             </div>
             <button type="button" id="invite-button">开始结伴</button>
           </section>
@@ -536,7 +537,7 @@
             <span class="egg-visual" id="egg-visual">蛋</span>
             <div>
               <strong id="egg-title">步步蛋</strong>
-              <p id="egg-copy">完成结伴运动后，有机会获得一枚蛋。蛋会随每日步数慢慢孵化。</p>
+              <p id="egg-copy">完成结伴运动后，可能获得一枚步步蛋。之后每天走路，都能让它继续孵化。</p>
               <div class="egg-progress"><i id="egg-progress"></i></div>
             </div>
           </section>
@@ -545,8 +546,8 @@
         <section class="sheet-content" data-sheet-content="team">
           <article class="detail-action-card">
             <div>
-              <strong>双人便当已经合并到“好友小屋”</strong>
-              <p>好友相关玩法统一放在一个抽屉，避免分散。</p>
+              <strong>和好友一起做宠物便当</strong>
+              <p>你和好友合计走到目标步数后，两只宠物都能获得一份便当奖励。</p>
             </div>
             <button type="button" data-open-panel="friendsBoard">去好友小屋</button>
           </article>
@@ -555,8 +556,8 @@
         <section class="sheet-content" data-sheet-content="visit">
           <article class="detail-action-card">
             <div>
-              <strong>宠物串门已经合并到“好友小屋”</strong>
-              <p>串门和协作放在一起，能更清楚地看到社交奖励。</p>
+              <strong>让宠物去好友小屋串门</strong>
+              <p>今日喂饱后可以出发。串门回来时，它可能带回合照和小礼物。</p>
             </div>
             <button type="button" data-open-panel="friendsBoard">去好友小屋</button>
           </article>
@@ -635,9 +636,9 @@
       <p class="eyebrow">新手指引</p>
       <h3>这是一个用真实步数养宠物的校园运动 App。</h3>
       <ol>
-        <li><strong>先走路：</strong>点击“开始走动”，步数到节点才会解锁食物。</li>
-        <li><strong>再投喂：</strong>投喂不是刷积分，只有真实走到节点才可以喂。</li>
-        <li><strong>去探索：</strong>今天喂饱后继续走路，攒旅行便当，让宠物带回校园明信片。</li>
+        <li><strong>先走路：</strong>点击“开始走动”，模拟记录今日步数。</li>
+        <li><strong>再投喂：</strong>步数到达节点后，食物会自动解锁。</li>
+        <li><strong>去探索：</strong>今天喂饱后继续走路，攒便当，让宠物带回校园来信。</li>
         <li><strong>长期养成：</strong>进化需要多天照料和成长值，不会一天毕业。</li>
       </ol>
       <button class="primary-action" type="button" id="close-guide">我知道了</button>
